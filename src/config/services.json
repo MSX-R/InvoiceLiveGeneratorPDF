@@ -1,0 +1,12 @@
+[
+    { "id": 1, "name": "Séance d'essai", "quantity": 1, "prix": 0, "prixTotal": 0, "type": "unit", "percentage": 0 },
+    { "id": 2, "name": "Séance unique", "quantity": 1, "prix": 60, "prixTotal": 60, "type": "unit", "percentage": 0 },
+    { "id": 11, "name": "Pack-5", "quantity": 5, "prix": 57, "prixTotal": 285, "type": "pack", "percentage": 0.05 },
+    { "id": 12, "name": "Pack-10", "quantity": 10, "prix": 54, "prixTotal": 540, "type": "pack", "percentage": 0.1 },
+    { "id": 13, "name": "Pack-20", "quantity": 20, "prix": 52.5, "prixTotal": 1050, "type": "pack", "percentage": 0.125 },
+    { "id": 21, "name": "2 séances/semaine", "quantity": 24, "prix": 52.5, "prixTotal": 1260, "type": "12weeks", "percentage": 0.125 },
+    { "id": 22, "name": "3 séances/semaine", "quantity": 36, "prix": 48, "prixTotal": 1728, "type": "12weeks", "percentage": 0.2 },
+    { "id": 23, "name": "4 séances/semaine", "quantity": 48, "prix": 45, "prixTotal": 2160, "type": "12weeks", "percentage": 0.25 },
+    { "id": 24, "name": "5 séances/semaine", "quantity": 60, "prix": 45, "prixTotal": 2700, "type": "12weeks", "percentage": 0.25 }
+  ]
+  
