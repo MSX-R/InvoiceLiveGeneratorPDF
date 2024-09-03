@@ -10,7 +10,20 @@ const offerOptions = [
 ];
 
 const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
-  // Fonction pour extraire les services des items
+  // Services initialement définis
+  const initialServices = [
+    { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, prixTotal: 0, type: "unit" },
+    { id: 2, name: "Séance unique", quantity: 1, prix: 60, prixTotal: 60, type: "unit" },
+    { id: 11, name: "Pack-5", quantity: 5, prix: 57, prixTotal: 285, type: "pack" },
+    { id: 12, name: "Pack-10", quantity: 10, prix: 54, prixTotal: 540, type: "pack" },
+    { id: 13, name: "Pack-20", quantity: 20, prix: 52, prixTotal: 1040, type: "pack" },
+    { id: 21, name: "2 séances/semaine", quantity: 24, prix: 52.5, prixTotal: 1260, type: "12weeks" },
+    { id: 22, name: "3 séances/semaine", quantity: 36, prix: 48, prixTotal: 1728, type: "12weeks" },
+    { id: 23, name: "4 séances/semaine", quantity: 48, prix: 45, prixTotal: 2160, type: "12weeks" },
+    { id: 24, name: "5 séances/semaine", quantity: 60, prix: 45, prixTotal: 2700, type: "12weeks" },
+  ];
+
+  // Extraire les services des items
   const extractServices = (items) => {
     return items.map((item) => ({
       value: item.service.id,
@@ -27,62 +40,48 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     clientVille: clientInfo.ville || "",
     clientTelephone: clientInfo.telephone || "",
     selectedOfferType: items[0]?.service?.type || "",
-    selectedServices: extractServices(items) || [], // Assurez-vous que selectedServices est un tableau
+    selectedServices: extractServices(items)[0] || null, // Assurez-vous que selectedServices est un objet unique
   });
 
-  // Services initialement définis
-  const initialServices = [
-    { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, prixTotal: 0, type: "unit" },
-    { id: 2, name: "Séance unique", quantity: 1, prix: 60, prixTotal: 60, type: "unit" },
-    { id: 11, name: "Pack-5", quantity: 5, prix: 57, prixTotal: 285, type: "pack" },
-    { id: 12, name: "Pack-10", quantity: 10, prix: 54, prixTotal: 540, type: "pack" },
-    { id: 13, name: "Pack-20", quantity: 20, prix: 52, prixTotal: 1040, type: "pack" },
-    { id: 21, name: "2 séances/semaine", quantity: 24, prix: 52.5, prixTotal: 1260, type: "12weeks" },
-    { id: 22, name: "3 séances/semaine", quantity: 36, prix: 48, prixTotal: 1728, type: "12weeks" },
-    { id: 23, name: "4 séances/semaine", quantity: 48, prix: 45, prixTotal: 2160, type: "12weeks" },
-    { id: 24, name: "5 séances/semaine", quantity: 60, prix: 45, prixTotal: 2700, type: "12weeks" },
-  ];
+  // État pour les services disponibles selon le type d'offre sélectionné
+  const [availableServices, setAvailableServices] = useState([]);
 
-  // Fonction pour gérer le changement du type d'offre
-  const handleOfferTypeChange = (selectedOption) => {
-    const offerType = selectedOption?.value || "";
+  useEffect(() => {
+    // Mettre à jour les services disponibles quand le type d'offre change
     const filteredServices = initialServices
-      .filter((service) => service.type === offerType)
+      .filter((service) => service.type === formData.selectedOfferType)
       .map((service) => ({
         value: service.id,
         label: service.name,
       }));
 
-    setFormData((prevData) => ({
-      ...prevData,
-      selectedOfferType: offerType,
-      selectedServices: filteredServices,
-    }));
-  };
+    setAvailableServices(filteredServices);
 
-  // Fonction pour gérer le changement des services sélectionnés
-  const handleServiceChange = (selectedOptions) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      selectedServices: selectedOptions || [],
-    }));
-  };
-
-  useEffect(() => {
-    if (formData.selectedOfferType) {
-      const filteredServices = initialServices
-        .filter((service) => service.type === formData.selectedOfferType)
-        .map((service) => ({
-          value: service.id,
-          label: service.name,
-        }));
-
+    // Mettre à jour la sélection des services pour ne conserver que ceux disponibles
+    if (formData.selectedServices && !filteredServices.some((filtered) => filtered.value === formData.selectedServices.value)) {
       setFormData((prevData) => ({
         ...prevData,
-        selectedServices: filteredServices.filter((service) => prevData.selectedServices.some((selected) => selected.value === service.value)),
+        selectedServices: null, // Réinitialiser si la sélection actuelle n'est plus disponible
       }));
     }
   }, [formData.selectedOfferType]);
+
+  // Fonction pour gérer le changement du type d'offre
+  const handleOfferTypeChange = (selectedOption) => {
+    const offerType = selectedOption?.value || "";
+    setFormData((prevData) => ({
+      ...prevData,
+      selectedOfferType: offerType,
+    }));
+  };
+
+  // Fonction pour gérer le changement du service sélectionné
+  const handleServiceChange = (selectedOption) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      selectedServices: selectedOption || null, // Utiliser une seule valeur au lieu d'un tableau
+    }));
+  };
 
   // Fonction pour gérer les changements dans les inputs
   const handleChange = (e) => {
@@ -92,8 +91,8 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
 
   // Fonction pour sauvegarder les données
   const handleSave = () => {
-    if (!Array.isArray(formData.selectedServices)) {
-      console.error("selectedServices n'est pas un tableau");
+    if (formData.selectedServices && typeof formData.selectedServices !== "object") {
+      console.error("selectedServices n'est pas un objet");
       return;
     }
 
@@ -106,22 +105,23 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
       telephone: formData.clientTelephone,
     };
 
-    const updatedItems = formData.selectedServices.map((service) => ({
-      service: {
-        id: service.value,
-        name: service.label,
-        quantity: 1, // Vous pouvez ajuster cela si nécessaire
-        prix: initialServices.find((s) => s.id === service.value)?.prix || 0,
-        prixTotal: initialServices.find((s) => s.id === service.value)?.prixTotal || 0,
-      },
-    }));
+    const updatedItems = formData.selectedServices
+      ? [
+          {
+            service: {
+              id: formData.selectedServices.value,
+              name: formData.selectedServices.label,
+              quantity: 1, // Vous pouvez ajuster cela si nécessaire
+              prix: initialServices.find((s) => s.id === formData.selectedServices.value)?.prix || 0,
+              prixTotal: initialServices.find((s) => s.id === formData.selectedServices.value)?.prixTotal || 0,
+            },
+          },
+        ]
+      : [];
 
     onSave(updatedClientInfo, updatedItems);
     onClose();
   };
-
-  // Déterminer si le sélecteur des services est désactivé
-  const isServiceSelectDisabled = !formData.selectedOfferType;
 
   return isOpen ? (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
@@ -142,27 +142,14 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
         </div>
         <div className="mb-4">
           <h4 className="text-lg font-semibold mb-2">Services</h4>
-
-          <Select
-            options={initialServices
-              .filter((service) => service.type === formData.selectedOfferType)
-              .map((service) => ({
-                value: service.id,
-                label: service.name,
-              }))}
-            onChange={handleServiceChange}
-            closeMenuOnSelect={false} // Permet de garder le menu ouvert lors de la sélection
-            value={formData.selectedServices}
-            placeholder={formData.selectedServices}
-            isDisabled={isServiceSelectDisabled}
-          />
+          <Select options={availableServices} onChange={handleServiceChange} value={formData.selectedServices} isDisabled={!formData.selectedOfferType} placeholder="Sélectionner des services" />
         </div>
-        <div className="flex justify-end mt-4">
-          <button onClick={onClose} className="bg-gray-400 text-white font-medium py-2 px-4 rounded-md mr-2">
-            Annuler
+        <div className="flex justify-end">
+          <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded mr-2">
+            Enregistrer
           </button>
-          <button onClick={handleSave} className="bg-blue-500 text-white font-medium py-2 px-4 rounded-md">
-            Sauvegarder
+          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded">
+            Annuler
           </button>
         </div>
       </div>

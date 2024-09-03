@@ -50,9 +50,21 @@ function App() {
   return (
     <Router>
       <div>
-        {!showPreview ? <InvoiceForm2 onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />}
+        {!showPreview ? (
+          <InvoiceForm2 onGenerateInvoice={handleGenerateInvoice} />
+        ) : (
+          <InvoiceFormPreview
+            clientInfo={invoice.clientInfo}
+            items={invoice.items}
+            entrepriseInfo={invoice.entrepriseInfo}
+            onEdit={handleEditInvoice}
+          />
+        )}
         {showPreview && (
-          <button onClick={handleDownloadInvoice} className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md mt-4">
+          <button
+            onClick={handleDownloadInvoice}
+            className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md mt-4"
+          >
             Télécharger PDF
           </button>
         )}

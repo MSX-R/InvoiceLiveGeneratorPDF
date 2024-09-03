@@ -7,15 +7,15 @@ import EditModal from "./EditModal";
 
 // Informations de l'entreprise
 const entrepriseInfo = {
-    nom: process.env.REACT_APP_ENTREPRISE_NOM,
-    dirigeant: process.env.REACT_APP_ENTREPRISE_DIRIGEANT,
-    siret: process.env.REACT_APP_ENTREPRISE_SIRET,
-    cartePro: process.env.REACT_APP_ENTREPRISE_CARTE_PRO,
-    adresse: process.env.REACT_APP_ENTREPRISE_ADRESSE,
-    codePostal: process.env.REACT_APP_ENTREPRISE_CODE_POSTAL,
-    ville: process.env.REACT_APP_ENTREPRISE_VILLE,
-    telephone: process.env.REACT_APP_ENTREPRISE_TELEPHONE,
-    email: process.env.REACT_APP_ENTREPRISE_EMAIL
+  nom: process.env.REACT_APP_ENTREPRISE_NOM,
+  dirigeant: process.env.REACT_APP_ENTREPRISE_DIRIGEANT,
+  siret: process.env.REACT_APP_ENTREPRISE_SIRET,
+  cartePro: process.env.REACT_APP_ENTREPRISE_CARTE_PRO,
+  adresse: process.env.REACT_APP_ENTREPRISE_ADRESSE,
+  codePostal: process.env.REACT_APP_ENTREPRISE_CODE_POSTAL,
+  ville: process.env.REACT_APP_ENTREPRISE_VILLE,
+  telephone: process.env.REACT_APP_ENTREPRISE_TELEPHONE,
+  email: process.env.REACT_APP_ENTREPRISE_EMAIL,
 };
 
 function InvoiceFormPreview({ clientInfo, items, onEdit }) {
@@ -93,7 +93,7 @@ function InvoiceFormPreview({ clientInfo, items, onEdit }) {
               <div key={index} className="bg-gray-50 p-4 mb-4 rounded-lg shadow-md">
                 <h4 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                   <FaFile className="text-gray-600 mr-2" />
-                  <span>Offre n° {index + 1}</span>
+                  <span className="uppercase">Votre Offre</span>
                 </h4>
                 <p className="text-gray-700">
                   <strong>Nom :</strong> {item.service?.name}
@@ -117,7 +117,7 @@ function InvoiceFormPreview({ clientInfo, items, onEdit }) {
               <div key={index} className="bg-gray-50 p-4 mb-4 rounded-lg shadow-md">
                 <h4 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                   <FaFile className="text-gray-600 mr-2" />
-                  <span>Offre n° {index + 1}</span>
+                  <span className="uppercase">Votre Offre</span>
                 </h4>{" "}
                 <p className="text-gray-700">
                   <strong>Nom :</strong> {item.service?.name}
