@@ -167,7 +167,7 @@ function InvoiceForm2({ onGenerateInvoice }) {
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
       <button type="button" onClick={fillDefaultClientInfo} className="fixed top-4 right-4 bg-green-600 text-white font-semibold py-2 px-4 rounded-md shadow-lg">
-        Remplir info client
+        Remplir avec Info-TEST
       </button>
 
       <div className="max-w-3xl w-full bg-white rounded-lg shadow-lg p-6 border border-gray-200">

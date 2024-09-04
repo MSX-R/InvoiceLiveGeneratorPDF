@@ -9,21 +9,19 @@ const offerOptions = [
   { value: "12weeks", label: "OFFRE 12 SEMAINES" },
 ];
 
-const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
-  // Services initialement définis
-  const initialServices = [
-    { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, prixTotal: 0, type: "unit" },
-    { id: 2, name: "Séance unique", quantity: 1, prix: 60, prixTotal: 60, type: "unit" },
-    { id: 11, name: "Pack-5", quantity: 5, prix: 57, prixTotal: 285, type: "pack" },
-    { id: 12, name: "Pack-10", quantity: 10, prix: 54, prixTotal: 540, type: "pack" },
-    { id: 13, name: "Pack-20", quantity: 20, prix: 52, prixTotal: 1040, type: "pack" },
-    { id: 21, name: "2 séances/semaine", quantity: 24, prix: 52.5, prixTotal: 1260, type: "12weeks" },
-    { id: 22, name: "3 séances/semaine", quantity: 36, prix: 48, prixTotal: 1728, type: "12weeks" },
-    { id: 23, name: "4 séances/semaine", quantity: 48, prix: 45, prixTotal: 2160, type: "12weeks" },
-    { id: 24, name: "5 séances/semaine", quantity: 60, prix: 45, prixTotal: 2700, type: "12weeks" },
-  ];
+const initialServices = [
+  { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, prixTotal: 0, type: "unit" },
+  { id: 2, name: "Séance unique", quantity: 1, prix: 60, prixTotal: 60, type: "unit" },
+  { id: 11, name: "Pack-5", quantity: 5, prix: 57, prixTotal: 285, type: "pack" },
+  { id: 12, name: "Pack-10", quantity: 10, prix: 54, prixTotal: 540, type: "pack" },
+  { id: 13, name: "Pack-20", quantity: 20, prix: 52, prixTotal: 1040, type: "pack" },
+  { id: 21, name: "2 séances/semaine", quantity: 24, prix: 52.5, prixTotal: 1260, type: "12weeks" },
+  { id: 22, name: "3 séances/semaine", quantity: 36, prix: 48, prixTotal: 1728, type: "12weeks" },
+  { id: 23, name: "4 séances/semaine", quantity: 48, prix: 45, prixTotal: 2160, type: "12weeks" },
+  { id: 24, name: "5 séances/semaine", quantity: 60, prix: 45, prixTotal: 2700, type: "12weeks" },
+];
 
-  // Extraire les services des items
+const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
   const extractServices = (items) => {
     return items.map((item) => ({
       value: item.service.id,
@@ -31,7 +29,6 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     }));
   };
 
-  // Initialiser les données du formulaire
   const [formData, setFormData] = useState({
     clientName: clientInfo.nom || "",
     clientPrenom: clientInfo.prenom || "",
@@ -40,14 +37,13 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     clientVille: clientInfo.ville || "",
     clientTelephone: clientInfo.telephone || "",
     selectedOfferType: items[0]?.service?.type || "",
-    selectedServices: extractServices(items)[0] || null, // Assurez-vous que selectedServices est un objet unique
+    selectedServices: extractServices(items)[0] || null,
   });
 
-  // État pour les services disponibles selon le type d'offre sélectionné
   const [availableServices, setAvailableServices] = useState([]);
 
   useEffect(() => {
-    // Mettre à jour les services disponibles quand le type d'offre change
+    // Effectuer les calculs et mises à jour
     const filteredServices = initialServices
       .filter((service) => service.type === formData.selectedOfferType)
       .map((service) => ({
@@ -57,16 +53,18 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
 
     setAvailableServices(filteredServices);
 
-    // Mettre à jour la sélection des services pour ne conserver que ceux disponibles
-    if (formData.selectedServices && !filteredServices.some((filtered) => filtered.value === formData.selectedServices.value)) {
+    // Vérifier si le service sélectionné est encore valide
+    const isSelectedServiceValid = formData.selectedServices ? filteredServices.some((filtered) => filtered.value === formData.selectedServices.value) : true;
+
+    // Mettre à jour les données du formulaire uniquement si nécessaire
+    if (!isSelectedServiceValid) {
       setFormData((prevData) => ({
         ...prevData,
-        selectedServices: null, // Réinitialiser si la sélection actuelle n'est plus disponible
+        selectedServices: null,
       }));
     }
-  }, [formData.selectedOfferType]);
+  }, [formData.selectedOfferType]); // Dépendance uniquement sur selectedOfferType
 
-  // Fonction pour gérer le changement du type d'offre
   const handleOfferTypeChange = (selectedOption) => {
     const offerType = selectedOption?.value || "";
     setFormData((prevData) => ({
@@ -75,21 +73,18 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     }));
   };
 
-  // Fonction pour gérer le changement du service sélectionné
   const handleServiceChange = (selectedOption) => {
     setFormData((prevData) => ({
       ...prevData,
-      selectedServices: selectedOption || null, // Utiliser une seule valeur au lieu d'un tableau
+      selectedServices: selectedOption || null,
     }));
   };
 
-  // Fonction pour gérer les changements dans les inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Fonction pour sauvegarder les données
   const handleSave = () => {
     if (formData.selectedServices && typeof formData.selectedServices !== "object") {
       console.error("selectedServices n'est pas un objet");
@@ -111,7 +106,7 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
             service: {
               id: formData.selectedServices.value,
               name: formData.selectedServices.label,
-              quantity: 1, // Vous pouvez ajuster cela si nécessaire
+              quantity: 1,
               prix: initialServices.find((s) => s.id === formData.selectedServices.value)?.prix || 0,
               prixTotal: initialServices.find((s) => s.id === formData.selectedServices.value)?.prixTotal || 0,
             },
