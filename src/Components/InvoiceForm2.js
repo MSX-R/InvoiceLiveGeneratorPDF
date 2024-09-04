@@ -29,7 +29,7 @@ function InvoiceForm2({ onGenerateInvoice }) {
   const initialServices = [
     { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, prixTotal: 0, type: "unit", percentage: 0 },
     { id: 2, name: "Séance unique", quantity: 1, prix: prixFixe, prixTotal: prixFixe, type: "unit", percentage: 0 },
-
+    //! A REGLER SI Seance d'essai je change le prix, le prix de la seance d'essai change.. de 0 au nouveau prix. A REGLER !
     { id: 11, name: "Pack-5", quantity: 5, prix: prixFixe * 0.95, prixTotal: prixFixe * 0.95 * 5, type: "pack", percentage: 0.05 },
     { id: 12, name: "Pack-10", quantity: 10, prix: prixFixe * 0.9, prixTotal: prixFixe * 0.9 * 10, type: "pack", percentage: 0.1 },
     { id: 13, name: "Pack-20", quantity: 20, prix: prixFixe * 0.875, prixTotal: prixFixe * 0.875 * 20, type: "pack", percentage: 0.125 },
