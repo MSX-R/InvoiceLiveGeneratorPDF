@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router } from "react-router-dom"; // Import du Router
+import { HashRouter as Router } from "react-router-dom"; // Import du HashRouter
 import InvoiceForm2 from "./Components/InvoiceForm2";
 import InvoiceFormPreview from "./Components/InvoicePreview2";
 import generatePDF from "./Functions/generatePDF";
