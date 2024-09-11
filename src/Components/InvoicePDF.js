@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
 });
 
 // Composant pour le document PDF
-const InvoicePDF = ({ clientInfo, items, entrepriseInfo }) => {
+const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
   const totalAmount = items.reduce((total, item) => total + (item.service?.prixTotal || 0), 0);
   const today = new Date().toLocaleDateString("fr-FR");
 
@@ -128,7 +128,7 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo }) => {
       <Page style={styles.page}>
         {/* En-tête avec Logo */}
         <View style={styles.header}>
-          <Text style={styles.title}>FACTURE N° XX</Text>
+          <Text style={styles.title}> {name.toUpperCase()} N°XX</Text>
           <Image src={logo} style={styles.logo} /> {/* Ajout du logo */}
         </View>
         {/* Date d'émission et Date d'échéance */}
@@ -148,9 +148,7 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo }) => {
             <Text style={styles.infoText}>
               {entrepriseInfo.telephone} | {entrepriseInfo.email}
             </Text>
-            {/* <Text style={styles.infoText}>{entrepriseInfo.email}</Text> */}
             <Text style={styles.infoText}>SIRET: {entrepriseInfo.siret}</Text>
-            {/* <Text style={styles.infoText}>Carte Professionnelle: {entrepriseInfo.cartePro}</Text> */}
           </View>
 
           <View style={styles.infoBox}>
@@ -201,57 +199,32 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo }) => {
             Pour les séances unitaires ou packs, le paiement intégral est dû le jour de la séance ou de l'achat du pack. Pour les offres de type '12 semaines', un acompte équivalent à un tiers du montant total TTC est dû avant le début des prestations. Les paiements restants seront effectués les 3 de chaque mois suivant.
             {"\n"}
             <Text style={{ fontWeight: "bold" }}>2.3 Retard de Paiement: </Text>
-            En cas de retard de paiement, des pénalités peuvent être appliquées à hauteur de [X%] par mois de retard, à compter de la date d'échéance.
+            En cas de retard de paiement, des pénalités peuvent être appliquées à hauteur de [X%] du montant dû par jour de retard, sans préjudice des frais supplémentaires engagés pour recouvrer la créance.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>3. Annulation et Report: </Text>
+            <Text style={{ fontWeight: "bold" }}>3. Annulation et Remboursement: </Text>
             <Text style={{ fontWeight: "bold" }}>3.1 Annulation par le Client: </Text>
-            Le Client doit notifier toute annulation ou demande de report au moins 24 heures avant la séance prévue. En cas d'annulation dans les 24 heures précédant la séance, des frais d'annulation de 50% du montant de la séance seront appliqués. En cas d'absence non prévenue le jour de la séance, la séance est due en totalité.
+            Les annulations doivent être faites au moins 24 heures à l'avance. En cas de non-présentation ou d'annulation tardive, le Coach se réserve le droit de facturer la séance. Les prestations prépayées ne seront pas remboursées, sauf dans des cas exceptionnels approuvés par le Coach.
             {"\n"}
             <Text style={{ fontWeight: "bold" }}>3.2 Annulation par le Coach: </Text>
-            En cas d'annulation par le Coach, celui-ci proposera une nouvelle date ou remboursera le montant payé, au choix du Client.
+            En cas d'annulation par le Coach, une autre séance sera proposée au Client ou un remboursement sera effectué pour la séance annulée.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>4. Confirmation de Séance: </Text>
-            La réservation des séances peut se faire via Train Me, Fitness Park, ou directement avec le Coach. Une séance est considérée comme confirmée uniquement après acceptation par le Coach. Toute séance non confirmée par le Coach ne sera pas considérée comme valide.
+            <Text style={{ fontWeight: "bold" }}>4. Responsabilité et Assurance: </Text>
+            Le Coach ne pourra être tenu responsable des blessures ou dommages corporels subis par le Client pendant les séances. Le Client est responsable de ses propres assurances et doit informer le Coach de toute condition médicale ou limitation avant le début des séances.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>5. Engagement du Client: </Text>
-            Être en tenue adéquate pour s'entraîner. Nettoyer son équipement après utilisation. Être en état physique et mental de s'entraîner. Suivre les recommandations du Coach et respecter les horaires de rendez-vous fixés.
+            <Text style={{ fontWeight: "bold" }}>5. Confidentialité: </Text>
+            Les informations personnelles recueillies lors des séances seront traitées de manière confidentielle et ne seront pas divulguées à des tiers sans le consentement préalable du Client.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>6. Confidentialité: </Text>
-            Le Coach s'engage à respecter la confidentialité des informations personnelles et médicales du Client. Ces informations ne seront utilisées que dans le cadre de la prestation de services.
-          </Text>
-          <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>7. Responsabilité: </Text>
-            Le Coach a souscrit une assurance couvrant les blessures en lien avec son encadrement et son matériel. Toutefois, le Coach ne pourra être tenu responsable des blessures ou dommages non liés directement à l'encadrement ou au matériel fourni.
-          </Text>
-          <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>8. Modifications des Conditions Générales: </Text>
-            Le Coach se réserve le droit de modifier les présentes conditions générales. Toute modification sera communiquée au Client et prendra effet pour les prestations à venir.
-          </Text>
-          <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>9. Litiges: </Text>
-            En cas de litige, les parties tenteront de résoudre le différend à l'amiable. À défaut d'accord amiable, le litige sera soumis aux tribunaux compétents du lieu du siège social du Coach.
-          </Text>
-          <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>10. Mentions Légales: </Text>
-            Conformément à la législation en vigueur, la TVA n'est pas applicable pour les prestations fournies par le Coach en tant qu'auto-entrepreneur.
-          </Text>
-          <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>11. Contact: </Text>
-            Pour toute question relative aux présentes conditions générales, le Client peut contacter le Coach à l'adresse suivante : [Email de Contact] ou par téléphone au [Numéro de Téléphone].
+            <Text style={{ fontWeight: "bold" }}>6. Loi Applicable: </Text>
+            Le présent contrat est régi par la législation en vigueur en [pays]. En cas de litige, les parties conviennent de se soumettre aux tribunaux compétents de [ville/pays].
           </Text>
         </View>
-        {/* Mentions Légales */}
+        {/* Footer */}
         <View style={styles.footer}>
-          <Text>
-            <Text style={{ fontWeight: "bold" }}>Mentions Légales:</Text> TVA non applicable, article 293 B du CGI
-          </Text>
-          <Text>
-            <Text style={{ fontWeight: "bold" }}>Pénalités de Retard:</Text> En cas de non-paiement, des frais de retard seront appliqués. Pour plus de détails, veuillez consulter les conditions générales.
-          </Text>
+          <Text>Pour toute question concernant cette facture, veuillez contacter [Nom du Coach] à [adresse email].</Text>
         </View>
       </Page>
     </Document>
