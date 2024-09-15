@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { usePrix } from "../contexts/PrixContext"; // Importation du hook usePrix
+import { usePrix } from "../contexts/PrixContext";
 
 // Exemple de types d'offres
 const offerOptions = [
@@ -12,13 +12,13 @@ const offerOptions = [
 ];
 
 const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
-  const { prixFixe, services, updatePrixFixe } = usePrix(); // Utilisation de usePrix
+  const { prixFixe, services, updatePrixFixe } = usePrix();
 
-  // Extraire les services à partir des items
   const extractServices = (items) => {
     return items.map((item) => ({
       value: item.service.id,
       label: item.service.name,
+      quantity: item.service.quantity || "erreur", // Ajoutez quantity si disponible
     }));
   };
 
@@ -29,49 +29,61 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     clientCodePostal: clientInfo.codePostal || "",
     clientVille: clientInfo.ville || "",
     clientTelephone: clientInfo.telephone || "",
-    clientEmail: clientInfo.email || "", // Ajout de l'email du client
+    clientEmail: clientInfo.email || "",
     selectedOfferType: items[0]?.service?.type || "",
     selectedServices: extractServices(items)[0] || null,
-    prixFixeLocal: prixFixe, // Initialisation du prix fixe localement
+    prixFixeLocal: prixFixe,
+    numberOfSessions: items[0]?.service?.quantity || 0, // Nombre de séances initial c etait marqué .sessions
+    // ERREUR PRESENTE ICI JE PENSE
   });
 
   const [availableServices, setAvailableServices] = useState([]);
 
   useEffect(() => {
-    // Filtrer les services en fonction du type d'offre sélectionné et du contexte
     const filteredServices = services
       .filter((service) => service.type === formData.selectedOfferType)
       .map((service) => ({
         value: service.id,
         label: service.name,
+        quantity: service.quantity || 0, // Ajoutez sessions aux options
       }));
 
     setAvailableServices(filteredServices);
 
-    // Vérifier si le service sélectionné est encore valide
     const isSelectedServiceValid = formData.selectedServices ? filteredServices.some((filtered) => filtered.value === formData.selectedServices.value) : true;
 
-    // Mettre à jour les données du formulaire si nécessaire
     if (!isSelectedServiceValid) {
       setFormData((prevData) => ({
         ...prevData,
         selectedServices: null,
+        numberOfSessions: 0, // Réinitialiser les séances si le service sélectionné est invalide
+      }));
+    } else {
+      // Mettre à jour le nombre de séances basé sur le service sélectionné
+      const selectedService = services.find((service) => service.id === formData.selectedServices?.value);
+      setFormData((prevData) => ({
+        ...prevData,
+        numberOfSessions: selectedService ? selectedService.sessions : 0,
       }));
     }
-  }, [formData.selectedOfferType, services]); // Dépendance sur selectedOfferType et services
+  }, [formData.selectedOfferType, services, formData.selectedServices]);
 
   const handleOfferTypeChange = (selectedOption) => {
     const offerType = selectedOption?.value || "";
     setFormData((prevData) => ({
       ...prevData,
       selectedOfferType: offerType,
+      selectedServices: null,
+      numberOfSessions: 0, // Réinitialiser les séances lorsque le type d'offre change
     }));
   };
 
   const handleServiceChange = (selectedOption) => {
+    const service = services.find((s) => s.id === selectedOption?.value);
     setFormData((prevData) => ({
       ...prevData,
       selectedServices: selectedOption || null,
+      numberOfSessions: service ? service.sessions : 0, // Met à jour le nombre de séances
     }));
   };
 
@@ -85,7 +97,6 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
   };
 
   const handleSavePrixFixe = () => {
-    // Mettre à jour le prix fixe dans le contexte
     updatePrixFixe(Number(formData.prixFixeLocal));
   };
 
@@ -102,7 +113,7 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
       codePostal: formData.clientCodePostal,
       ville: formData.clientVille,
       telephone: formData.clientTelephone,
-      email: formData.clientEmail, // Ajout de l'email du client
+      email: formData.clientEmail,
     };
 
     const updatedItems = formData.selectedServices
@@ -111,8 +122,9 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
             service: {
               id: formData.selectedServices.value,
               name: formData.selectedServices.label,
-              quantity: 1,
+              quantity: formData.selectedServices.quantity || 1, // Utilise quantity mis à jour
               prix: services.find((s) => s.id === formData.selectedServices.value)?.prix || 0,
+              sessions: formData.numberOfSessions, // Utilise le nombre de séances mis à jour
             },
           },
         ]
@@ -146,6 +158,12 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
         <div className="mb-4">
           <h4 className="text-lg font-semibold mb-2">Services</h4>
           <Select options={availableServices} onChange={handleServiceChange} value={formData.selectedServices} isDisabled={!formData.selectedOfferType} placeholder="Sélectionner des services" />
+        </div>
+
+        {/* Champ pour entrer la quantité */}
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold mb-2">Quantité</h4>
+          <input type="number" name="quantity" value={formData.selectedServices?.quantity || 1} onChange={handleChange} placeholder="Quantité" className="block w-full mb-2 border border-gray-300 rounded p-2" />
         </div>
 
         {/* Formulaire pour les informations client */}

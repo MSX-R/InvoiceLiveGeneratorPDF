@@ -6,6 +6,7 @@ const TermsModal = ({ show, handleClose }) => {
 
   // Conditions Générales de Vente en dur
   const conditionsGeneralesDeVente = {
+    // METTRE SES TERMES DAN?S LE FICHIER !
     "1. Objet du Contrat": "Les présentes conditions générales régissent la vente de prestations de coaching sportif fournies par la société MARSALEIX ROMAIN coach sportif (ci-après dénommé 'le Coach') au client (ci-après dénommé 'le Client'). Les prestations incluent, sans s'y limiter, des séances individuelles ou en groupe de coaching sportif, des conseils nutritionnels, et des programmes d'entraînement personnalisés.",
 
     "2. Réservation et Paiement": {

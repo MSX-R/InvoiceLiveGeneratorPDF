@@ -66,8 +66,8 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
 
-    // Le champ peut être vide ou contenir un nombre positif
-    if (value === "" || (Number(value) > 0 && !isNaN(Number(value)))) {
+    // Vérifiez si la valeur est un nombre positif ou zéro
+    if (value === "" || (Number(value) >= 0 && !isNaN(Number(value)))) {
       updatePrixFixe(value);
       setPrixInputError(false);
     } else {
@@ -82,7 +82,13 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
 
   const handleItemChange = (index, selectedOption) => {
     const selectedService = services.find((service) => service.id === selectedOption.value);
-    setItems([{ typeOffre: selectedTypeOffre, service: selectedService }]);
+    // Assurez-vous que la quantité est correctement définie ici
+    const updatedService = {
+      ...selectedService,
+      quantity: selectedService?.quantity || 1, // Valeur par défaut
+    };
+
+    setItems([{ typeOffre: selectedTypeOffre, service: updatedService }]);
   };
 
   const handleChangeClientInfo = (key, value) => {
@@ -115,8 +121,8 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
       setFormError("Tous les champs doivent être remplis et un service doit être sélectionné.");
       return;
     }
-    if (prixInputError || prixFixe === "" || prixFixe <= 0) {
-      setFormError("Le prix fixe doit être un nombre positif.");
+    if (prixInputError || prixFixe === "" || Number(prixFixe) < 0) {
+      setFormError("Le prix fixe doit être un nombre positif ou zéro.");
       return;
     }
     setFormError("");
@@ -214,7 +220,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {/* Prix Fixe */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Prix Fixe</h2>
-            <input type="number" value={prixFixe} onChange={handlePrixFixeChange} className={`w-full p-3 border ${prixInputError ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`} placeholder="Prix Fixe impérativement supérieur à 0€" />
+            <input type="number" value={prixFixe} onChange={handlePrixFixeChange} className={`w-full p-3 border ${prixInputError ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`} placeholder="Prix Fixe (0€ ou plus)" />
             {prixInputError && <p className="text-red-500 mt-2">Veuillez entrer un prix fixe valide.</p>}
           </div>
 

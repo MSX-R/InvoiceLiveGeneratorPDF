@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HashRouter as Router } from "react-router-dom"; // Import du HashRouter
+import { HashRouter as Router, Route, Routes, useNavigate } from "react-router-dom"; // Import du HashRouter et des hooks de navigation
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import generatePDF from "./Functions/generatePDF";
@@ -49,7 +49,10 @@ function App() {
 
   return (
     <Router>
-      <div>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />}</div>
+      <Routes>
+        <Route path="/" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
+      </Routes>
     </Router>
   );
 }

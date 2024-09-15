@@ -97,7 +97,13 @@ const styles = StyleSheet.create({
 
 // Composant pour le document PDF
 const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
-  const totalAmount = items.reduce((total, item) => total + (item.service?.prixTotal || 0), 0);
+  // Calculer le montant total pour chaque item
+  const totalAmount = items.reduce((total, item) => {
+    const quantity = item.service?.quantity || 0;
+    const price = item.service?.prix || 0;
+    return total + price * quantity;
+  }, 0);
+
   const today = new Date().toLocaleDateString("fr-FR");
 
   const calculateDueDate = () => {
@@ -172,14 +178,19 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
               <Text style={[styles.tableCell, { flex: 1 }]}>Prix Unitaire</Text>
               <Text style={[styles.tableCell, { flex: 1 }]}>Prix Total</Text>
             </View>
-            {items.map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={[styles.tableCell, { flex: 2 }]}>{item.service?.name}</Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{item.service?.quantity}</Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{(item.service?.prix || 0).toFixed(2)}€</Text>
-                <Text style={[styles.tableCell, { flex: 1 }]}>{(item.service?.prixTotal || 0).toFixed(2)}€</Text>
-              </View>
-            ))}
+            {items.map((item, index) => {
+              const quantity = item.service?.quantity || 0;
+              const price = item.service?.prix || 0;
+              const totalPrice = (price * quantity).toFixed(2);
+              return (
+                <View key={index} style={styles.tableRow}>
+                  <Text style={[styles.tableCell, { flex: 2 }]}>{item.service?.name}</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{quantity}</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{price.toFixed(2)}€</Text>
+                  <Text style={[styles.tableCell, { flex: 1 }]}>{totalPrice}€</Text>
+                </View>
+              );
+            })}
           </View>
           <Text style={styles.total}>Total TTC à régler: {totalAmount.toFixed(2)}€</Text>
         </View>
@@ -188,44 +199,46 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
         <View style={styles.cgvSection}>
           <Text style={styles.cgvParagraph}>
             <Text style={{ fontWeight: "bold" }}>1. Objet du Contrat: </Text>
-            Les présentes conditions générales régissent la vente de prestations de coaching sportif fournies par [Nom de l'Entreprise] (ci-après dénommé 'le Coach') au client (ci-après dénommé 'le Client'). Les prestations incluent, sans s'y limiter, des séances individuelles ou en groupe de coaching sportif.
+            Les présentes conditions générales régissent la vente de prestations de coaching sportif fournies par Marsaleix Romain Coach sportif (ci-après dénommé 'le Coach') au client (ci-après dénommé 'le Client'). Les prestations incluent, sans s'y limiter, des séances individuelles ou en groupe de coaching sportif et des programmes d'entraînement personnalisés, si "mentionnés" dans le details de la facture établie.
           </Text>
           <Text style={styles.cgvParagraph}>
             <Text style={{ fontWeight: "bold" }}>2. Réservation et Paiement: </Text>
             <Text style={{ fontWeight: "bold" }}>2.1 Réservation: </Text>
             La réservation des séances peut se faire via les plateformes Train Me, Fitness Park, ou directement auprès du Coach. Une séance est confirmée uniquement après réception de l'acceptation du Coach. Les réservations non acceptées par le Coach ne seront pas prises en compte.
             {"\n"}
-            <Text style={{ fontWeight: "bold" }}>2.2 Paiement: </Text>
-            Pour les séances unitaires ou packs, le paiement intégral est dû le jour de la séance ou de l'achat du pack. Pour les offres de type '12 semaines', un acompte équivalent à un tiers du montant total TTC est dû avant le début des prestations. Les paiements restants seront effectués les 3 de chaque mois suivant.
+            <Text style={{ fontWeight: "bold" }}>2.2 Confirmation de Séance: </Text>
+            Une séance est considérée comme confirmée uniquement après acceptation écrite par le Coach. Toute séance non confirmée par le Coach ne sera pas valide et ne pourra donner lieu à une réclamation de la part du Client.
             {"\n"}
-            <Text style={{ fontWeight: "bold" }}>2.3 Retard de Paiement: </Text>
-            En cas de retard de paiement, des pénalités peuvent être appliquées à hauteur de [X%] du montant dû par jour de retard, sans préjudice des frais supplémentaires engagés pour recouvrer la créance.
+            <Text style={{ fontWeight: "bold" }}>2.3 Paiement: </Text>
+            <Text style={{ fontWeight: "bold" }}>Séances unitaires: </Text>
+            Le paiement intégral doit être effectué le jour de la séance ou au plus tard 48 heures avant. Le non-paiement dans ce délai peut entraîner l'annulation de la séance.
+            {"\n"}
+            <Text style={{ fontWeight: "bold" }}>Pack de 12 semaines: </Text>
+            Le paiement total doit être effectué à l'avance, au plus tard 7 jours avant le début du programme. Aucun remboursement ne sera accordé après le début du programme, sauf en cas de force majeure.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>3. Annulation et Remboursement: </Text>
-            <Text style={{ fontWeight: "bold" }}>3.1 Annulation par le Client: </Text>
-            Les annulations doivent être faites au moins 24 heures à l'avance. En cas de non-présentation ou d'annulation tardive, le Coach se réserve le droit de facturer la séance. Les prestations prépayées ne seront pas remboursées, sauf dans des cas exceptionnels approuvés par le Coach.
+            <Text style={{ fontWeight: "bold" }}>3. Annulation et Report: </Text>
+            <Text style={{ fontWeight: "bold" }}>3.1 Annulation: </Text>
+            Toute annulation de séance doit être effectuée au moins 24 heures avant la séance prévue. Les annulations effectuées dans un délai inférieur à 24 heures seront facturées et ne seront pas remboursées.
             {"\n"}
-            <Text style={{ fontWeight: "bold" }}>3.2 Annulation par le Coach: </Text>
-            En cas d'annulation par le Coach, une autre séance sera proposée au Client ou un remboursement sera effectué pour la séance annulée.
+            <Text style={{ fontWeight: "bold" }}>3.2 Report: </Text>
+            Les séances peuvent être reportées une seule fois, avec un préavis minimum de 24 heures. Le report doit être accepté par le Coach et sera soumis à la disponibilité de ce dernier.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>4. Responsabilité et Assurance: </Text>
-            Le Coach ne pourra être tenu responsable des blessures ou dommages corporels subis par le Client pendant les séances. Le Client est responsable de ses propres assurances et doit informer le Coach de toute condition médicale ou limitation avant le début des séances.
+            <Text style={{ fontWeight: "bold" }}>4. Responsabilité: </Text>
+            Le Coach ne pourra être tenu responsable des blessures ou accidents pouvant survenir lors des séances de coaching. Le Client est responsable de sa condition physique et doit consulter un médecin avant de commencer tout programme d'entraînement.
           </Text>
           <Text style={styles.cgvParagraph}>
             <Text style={{ fontWeight: "bold" }}>5. Confidentialité: </Text>
-            Les informations personnelles recueillies lors des séances seront traitées de manière confidentielle et ne seront pas divulguées à des tiers sans le consentement préalable du Client.
+            Les informations personnelles collectées auprès du Client seront traitées conformément aux lois en vigueur sur la protection des données personnelles. Ces informations ne seront pas divulguées à des tiers sans le consentement explicite du Client.
           </Text>
           <Text style={styles.cgvParagraph}>
-            <Text style={{ fontWeight: "bold" }}>6. Loi Applicable: </Text>
-            Le présent contrat est régi par la législation en vigueur en [pays]. En cas de litige, les parties conviennent de se soumettre aux tribunaux compétents de [ville/pays].
+            <Text style={{ fontWeight: "bold" }}>6. Litiges: </Text>
+            Tout litige relatif à l'application ou à l'interprétation des présentes conditions générales sera soumis à la juridiction compétente du lieu de résidence du Coach.
           </Text>
         </View>
         {/* Footer */}
-        <View style={styles.footer}>
-          <Text>Pour toute question concernant cette facture, veuillez contacter [Nom du Coach] à [adresse email].</Text>
-        </View>
+        <Text style={styles.footer}>Merci de votre confiance. Pour toute question ou demande, veuillez nous contacter à l'adresse suivante : {entrepriseInfo.email}</Text>
       </Page>
     </Document>
   );
