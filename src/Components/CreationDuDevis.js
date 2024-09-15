@@ -42,7 +42,7 @@ const calculateDueDate = (items) => {
   return dueDate.toLocaleDateString("fr-FR");
 };
 
-function InvoiceFormPreview({ clientInfo, items, onEdit }) {
+function CreationDuDevis({ clientInfo, items, onEdit }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [updatedClientInfo, setUpdatedClientInfo] = useState(clientInfo);
@@ -173,7 +173,7 @@ function InvoiceFormPreview({ clientInfo, items, onEdit }) {
                 <strong>Prix Unitaire :</strong> {item.service?.prix}€
               </p>
               <p className="text-gray-700">
-                <strong>Prix Total :</strong> {item.service?.prixTotal}€
+                <strong>Prix Total :</strong> {item.service?.prix * item.service?.quantity}€
               </p>
             </div>
           ))}
@@ -230,4 +230,4 @@ function InvoiceFormPreview({ clientInfo, items, onEdit }) {
   );
 }
 
-export default InvoiceFormPreview;
+export default CreationDuDevis;

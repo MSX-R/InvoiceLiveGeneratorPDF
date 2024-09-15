@@ -1,32 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import { Dialog } from "@headlessui/react";
 import Select from "react-select";
-import { IoMdInformationCircleOutline } from "react-icons/io";
-
-const initialServices = (prixFixe) => [
-  { id: 1, name: "Séance d'essai", quantity: 1, prix: 0, type: "unit", remise: 0 },
-  { id: 2, name: "Séance unique", quantity: 1, prix: prixFixe, type: "unit", remise: 0 },
-  { id: 11, name: "Pack-5", quantity: 5, prix: prixFixe * 0.95, type: "pack", remise: 5 },
-  { id: 12, name: "Pack-10", quantity: 10, prix: prixFixe * 0.9, type: "pack", remise: 10 },
-  { id: 13, name: "Pack-20", quantity: 20, prix: prixFixe * 0.875, type: "pack", remise: 12.5 },
-  { id: 21, name: "2 séances/semaine", quantity: 24, prix: prixFixe * 0.875, type: "12weeks", remise: 12.5 },
-  { id: 22, name: "3 séances/semaine", quantity: 36, prix: prixFixe * 0.8, type: "12weeks", remise: 20 },
-  { id: 23, name: "4 séances/semaine", quantity: 48, prix: prixFixe * 0.75, type: "12weeks", remise: 25 },
-  { id: 24, name: "5 séances/semaine", quantity: 60, prix: prixFixe * 0.75, type: "12weeks", remise: 25 },
-  { id: 31, name: "1 séance/semaine", quantity: 1, prix: prixFixe, type: "weeklyTraining", remise: 0 },
-  { id: 32, name: "2 séances/semaine", quantity: 2, prix: prixFixe - 2.5, type: "weeklyTraining", remise: 0 },
-  { id: 33, name: "3 séances/semaine", quantity: 3, prix: prixFixe - 5, type: "weeklyTraining", remise: 0 },
-  { id: 34, name: "4 séances/semaine", quantity: 4, prix: prixFixe - 7.5, type: "weeklyTraining", remise: 0 },
-  { id: 35, name: "5 séances/semaine", quantity: 5, prix: prixFixe - 10, type: "weeklyTraining", remise: 0 },
-];
+import { usePrix } from "../contexts/PrixContext";
 
 const offerOptions = [
-  { value: "", label: "Sélectionner le type d'offre" },
-  { value: "unit", label: "OFFRE UNITAIRE" },
+  { value: "", label: "Choisir un type d'offre" },
+  { value: "unit", label: "OFFRE UNE SEANCE" },
   { value: "pack", label: "OFFRE PACK" },
+  { value: "weekly", label: "OFFRE 1 SEMAINE" },
   { value: "12weeks", label: "OFFRE 12 SEMAINES" },
-  { value: "weeklyTraining", label: "ENTRAINEMENT À LA SEMAINE" },
 ];
 
 const customStyles = {
@@ -43,9 +27,8 @@ const customStyles = {
   singleValue: (provided) => ({ ...provided, color: "#333" }),
 };
 
-const InvoiceForm2 = ({ onGenerateInvoice }) => {
-  const [prixFixe, setPrixFixe] = useState(60);
-  const [nouveauPrixFixe, setNouveauPrixFixe] = useState(prixFixe);
+const FormulaireDevis = ({ onGenerateInvoice }) => {
+  const { prixFixe, services, updatePrixFixe } = usePrix();
   const [items, setItems] = useState([{ typeOffre: "", service: null }]);
   const [clientInfo, setClientInfo] = useState({
     nom: "",
@@ -63,39 +46,34 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
   const [formError, setFormError] = useState("");
 
   useEffect(() => {
-    const updatedServices = initialServices(nouveauPrixFixe).map((service) => ({
-      ...service,
-      prixTotal: service.prix * service.quantity,
-    }));
-
-    setItems((prevItems) => {
-      return prevItems.map((item) => {
-        const updatedService = updatedServices.find((service) => service.id === item.service?.id);
-        return { ...item, service: updatedService || null };
-      });
-    });
-  }, [nouveauPrixFixe]);
-
-  useEffect(() => {
     const allFieldsFilled = Object.values(clientInfo).every((value) => value) && items[0].service;
     setIsFormComplete(allFieldsFilled);
   }, [clientInfo, items]);
 
+  useEffect(() => {
+    if (items[0].service) {
+      const updatedItems = items.map((item) => ({
+        ...item,
+        service: {
+          ...item.service,
+          prix: services.find((service) => service.id === item.service.id)?.prix || 0,
+        },
+      }));
+      setItems(updatedItems);
+    }
+  }, [prixFixe, services]);
+
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
-    setNouveauPrixFixe(value === "" ? "" : Number(value));
-  };
 
-  const handlePrixFixeValidation = () => {
-    if (nouveauPrixFixe > 0) {
-      setPrixFixe(nouveauPrixFixe);
+    // Le champ peut être vide ou contenir un nombre positif
+    if (value === "" || (Number(value) > 0 && !isNaN(Number(value)))) {
+      updatePrixFixe(value);
       setPrixInputError(false);
     } else {
       setPrixInputError(true);
     }
   };
-
-  const handleKeyPress = (event) => event.key === "Enter" && handlePrixFixeValidation();
 
   const handleOfferChange = (selectedOption) => {
     setSelectedTypeOffre(selectedOption?.value || "");
@@ -103,7 +81,7 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
   };
 
   const handleItemChange = (index, selectedOption) => {
-    const selectedService = initialServices(nouveauPrixFixe).find((service) => service.id === selectedOption.value);
+    const selectedService = services.find((service) => service.id === selectedOption.value);
     setItems([{ typeOffre: selectedTypeOffre, service: selectedService }]);
   };
 
@@ -126,10 +104,19 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
     setClientInfo((prev) => ({ ...prev, [field]: "" }));
   };
 
+  const resetPrixFixe = () => {
+    updatePrixFixe(0);
+    setPrixInputError(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!isFormComplete) {
       setFormError("Tous les champs doivent être remplis et un service doit être sélectionné.");
+      return;
+    }
+    if (prixInputError || prixFixe === "" || prixFixe <= 0) {
+      setFormError("Le prix fixe doit être un nombre positif.");
       return;
     }
     setFormError("");
@@ -149,6 +136,16 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
       setShowModal(false);
     }
   };
+
+  const getTotalPrice = () => {
+    if (items[0].service) {
+      return items[0].service.prix * items[0].service.quantity;
+    }
+    return 0;
+  };
+
+  const totalPrice = getTotalPrice();
+  const monthlyCost = selectedTypeOffre === "12weeks" ? (totalPrice / 3).toFixed(2) : null;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -175,17 +172,7 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Sélection des Offres</h2>
             <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleOfferChange} styles={customStyles} />
-            {selectedTypeOffre && (
-              <Select
-                options={initialServices(nouveauPrixFixe)
-                  .filter((service) => service.type === selectedTypeOffre)
-                  .map((service) => ({ value: service.id, label: service.name }))}
-                value={items[0].service ? { value: items[0].service.id, label: items[0].service.name } : null}
-                onChange={(selectedOption) => handleItemChange(0, selectedOption)}
-                styles={customStyles}
-                className="mt-4"
-              />
-            )}
+            {selectedTypeOffre && <Select options={services.filter((service) => service.type === selectedTypeOffre).map((service) => ({ value: service.id, label: service.name }))} value={items[0].service ? { value: items[0].service.id, label: items[0].service.name } : null} onChange={(selectedOption) => handleItemChange(0, selectedOption)} styles={customStyles} className="mt-4" />}
           </div>
 
           {/* Détails de l'Offre */}
@@ -205,14 +192,18 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
                       <strong>Remise sur prix initial :</strong> {items[0].service.remise}%
                     </p>
                   )}
-                  <p>
+                  <p className=" ml-4 mt-2">
                     <strong>Prix Unitaire :</strong> {items[0].service.prix} €
                   </p>
-                  <p>
-                    <strong>Prix Total :</strong> {items[0].service.prixTotal} €
+                  <p className=" ml-4">
+                    <strong>Prix Total :</strong> {totalPrice} €
                   </p>
 
-                  <IoMdInformationCircleOutline className="text-gray-500 mt-2" />
+                  {monthlyCost && (
+                    <p className="flex items-center gap-2 ml-4">
+                      <strong>Cout mensuel :</strong> {monthlyCost} €
+                    </p>
+                  )}
                 </>
               ) : (
                 <p>Aucune offre n'est sélectionnée. Veuillez choisir une offre pour afficher les détails.</p>
@@ -223,38 +214,42 @@ const InvoiceForm2 = ({ onGenerateInvoice }) => {
           {/* Prix Fixe */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Prix Fixe</h2>
-            <div className="flex items-center space-x-4">
-              <input type="number" value={nouveauPrixFixe === "" ? "" : nouveauPrixFixe} onChange={handlePrixFixeChange} onKeyDown={handleKeyPress} className="w-32 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              <button type="button" onClick={handlePrixFixeValidation} className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700">
-                Mettre à jour
-              </button>
-              {prixInputError && <p className="text-red-500 mt-2">Le prix doit être supérieur à 0.</p>}
-            </div>
+            <input type="number" value={prixFixe} onChange={handlePrixFixeChange} className={`w-full p-3 border ${prixInputError ? "border-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`} placeholder="Prix Fixe impérativement supérieur à 0€" />
+            {prixInputError && <p className="text-red-500 mt-2">Veuillez entrer un prix fixe valide.</p>}
           </div>
 
-          {/* Bouton de Soumission */}
-          <button type="submit" className={`w-full py-3 text-lg font-bold text-white rounded-md ${isFormComplete ? "bg-green-600" : "bg-gray-400 cursor-not-allowed"}`} disabled={!isFormComplete || loading}>
-            {loading ? "Génération en cours..." : "Générer la facture"}
-          </button>
+          {/* Boutons */}
+          <div className="flex justify-between mb-8">
+            <button type="button" onClick={resetPrixFixe} className="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300">
+              Réinitialiser
+            </button>
+            <button type="submit" disabled={!isFormComplete || loading || prixInputError || prixFixe === ""} className={`bg-${prixFixe === "" || !isFormComplete ? "gray-400" : prixFixe >= 0 ? "green-600" : "gray-400"} text-white font-semibold py-2 px-4 rounded-md hover:${prixFixe === "" || !isFormComplete ? "bg-gray-500" : prixFixe > 0 ? "bg-green-700" : "bg-gray-500"}`}>
+              Générer la Facture
+            </button>
+          </div>
+
+          {/* Modal de Confirmation */}
+          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+              <Dialog.Title className="text-xl font-bold">Confirmer la génération</Dialog.Title>
+              <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer cette facture ?</Dialog.Description>
+              <div className="mt-4 flex justify-end space-x-2">
+                <button onClick={cancelGeneration} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md">
+                  Annuler
+                </button>
+                <button onClick={confirmGeneration} className="bg-green-600 text-white px-4 py-2 rounded-md">
+                  Confirmer
+                </button>
+              </div>
+            </div>
+          </Dialog>
+
+          {/* Message d'erreur */}
+          {formError && <p className="text-red-500 text-center mt-4">{formError}</p>}
         </form>
-
-        {/* Modal de Confirmation */}
-        <Dialog open={showModal} onClose={() => setShowModal(false)} className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <Dialog.Title className="text-2xl font-bold mb-4">Confirmer la Génération de la Facture</Dialog.Title>
-            <div className="flex justify-end space-x-4">
-              <button onClick={cancelGeneration} className="py-2 px-4 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600">
-                Annuler
-              </button>
-              <button onClick={confirmGeneration} className="py-2 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700">
-                Confirmer
-              </button>
-            </div>
-          </div>
-        </Dialog>
       </div>
     </div>
   );
 };
 
-export default InvoiceForm2;
+export default FormulaireDevis;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { HashRouter as Router } from "react-router-dom"; // Import du HashRouter
-import InvoiceForm2 from "./Components/InvoiceForm2";
-import InvoiceFormPreview from "./Components/InvoicePreview2";
+import FormulaireDevis from "./Components/FormulaireDevis";
+import InvoiceFormPreview from "./Components/CreationDuDevis";
 import generatePDF from "./Functions/generatePDF";
 
 function App() {
@@ -9,15 +9,15 @@ function App() {
   const [showPreview, setShowPreview] = useState(false);
 
   const entrepriseInfo = {
-    nom: process.env.REACT_APP_ENTREPRISE_NOM || "",
-    directeur: process.env.REACT_APP_ENTREPRISE_DIRECTEUR || "",
-    adresse: process.env.REACT_APP_ENTREPRISE_ADRESSE || "",
-    siret: process.env.REACT_APP_ENTREPRISE_SIRET || "",
-    codePostal: process.env.REACT_APP_ENTREPRISE_CODE_POSTAL || "",
-    ville: process.env.REACT_APP_ENTREPRISE_VILLE || "",
-    telephone: process.env.REACT_APP_ENTREPRISE_TELEPHONE || "",
-    email: process.env.REACT_APP_ENTREPRISE_MAIL || "",
-    fonction: process.env.REACT_APP_ENTREPRISE_FONCTION || "",
+    nom: process.env.REACT_APP_ENTREPRISE_NOM || "Nom de l'entreprise non défini",
+    directeur: process.env.REACT_APP_ENTREPRISE_DIRECTEUR || "Directeur non défini",
+    adresse: process.env.REACT_APP_ENTREPRISE_ADRESSE || "Adresse non définie",
+    siret: process.env.REACT_APP_ENTREPRISE_SIRET || "SIRET non défini",
+    codePostal: process.env.REACT_APP_ENTREPRISE_CODE_POSTAL || "Code postal non défini",
+    ville: process.env.REACT_APP_ENTREPRISE_VILLE || "Ville non définie",
+    telephone: process.env.REACT_APP_ENTREPRISE_TELEPHONE || "Téléphone non défini",
+    email: process.env.REACT_APP_ENTREPRISE_MAIL || "Email non défini",
+    fonction: process.env.REACT_APP_ENTREPRISE_FONCTION || "Fonction non définie",
   };
 
   const handleGenerateInvoice = (clientInfo, items) => {
@@ -49,7 +49,7 @@ function App() {
 
   return (
     <Router>
-      <div>{!showPreview ? <InvoiceForm2 onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />}</div>
+      <div>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />}</div>
     </Router>
   );
 }
