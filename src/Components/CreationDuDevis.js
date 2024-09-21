@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import InvoicePDF from "./InvoicePDF";
-import { FaAddressCard, FaPhoneAlt, FaFile, FaArrowLeft } from "react-icons/fa"; // Importer l'icône de retour
+import { FaAddressCard, FaPhoneAlt, FaFile, FaArrowLeft } from "react-icons/fa";
 import EditModal from "./EditModal";
 import TermsModal from "../config/TermsModal";
 
@@ -95,7 +95,6 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-50 px-4 py-8 lg:px-12 lg:py-16">
       <div className="relative w-full max-w-3xl bg-white rounded-lg shadow-xl p-8 border border-gray-200">
-        {/* Icône de retour */}
         <button onClick={() => navigate(-1)} className="absolute top-4 left-4 p-2 text-gray-600 hover:text-gray-800 transition-colors" aria-label="Retour">
           <FaArrowLeft size={24} />
         </button>
@@ -165,7 +164,6 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
             <h4 className="text-lg font-semibold text-gray-800 text-center mb-4">Détails</h4>
             {updatedItems.map((item, index) => (
               <div key={index} className="mb-4">
-                {console.log(item, "ITEMMEEMEMEMEMEMEM")}
                 <h4 className="text-lg font-semibold text-gray-800 mb-2 flex items-center">
                   <FaFile className="text-gray-600 mr-2" />
                   <span className="uppercase">Votre Offre</span>
@@ -174,65 +172,43 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
                   <strong>Nom :</strong> {item.service?.name}
                 </p>
                 <p className="text-gray-700">
-                  <strong>Nombre de séance(s) :</strong> {item.service?.quantity}
+                  <strong>Prix :</strong> {item.service?.price}€
                 </p>
                 <p className="text-gray-700">
-                  <strong>Prix Unitaire :</strong> {item.service?.prix}€
-                </p>
-                <p className="text-gray-700">
-                  <strong>Prix Total :</strong> {item.service?.prix * item.service?.quantity}€
+                  <strong>Quantité :</strong> {item.quantity}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="text-gray-600 text-xs text-center mt-8">
-            <p>
-              <strong>Mentions Légales :</strong>
-            </p>
-            <p>TVA non applicable, article 293 B du CGI</p>
-            <p className="mt-4">
-              <strong>Pénalités de Retard :</strong>
-            </p>
-            <p>{showFullText ? "En cas de non-paiement le jour de la signature du contrat ou dans un délai de trois jours pour les offres de type 'Séance Unitaire' ou 'Pack', des frais de retard seront appliqués. Pour les séances mensualisées, un premier versement équivalant à un tiers du montant total doit être effectué à la signature du contrat. Les paiements restants devront être réglés le 3 de chaque mois suivant. Toutefois, il est également possible de régler la totalité du montant à la signature du contrat. Tout retard de paiement au-delà de ces délais entraînera l'application de pénalités." : "En cas de non-paiement, des frais de retard seront appliqués. Pour plus de détails, voir plus..."}</p>
-            <button onClick={toggleText} className="text-blue-600 mt-2">
-              {showFullText ? "Voir moins" : "Voir plus"}
-            </button>
-          </div>
-
-          <div className="flex flex-col md:flex-row md:justify-between items-stretch border-t border-gray-300 pt-6 mt-8 space-y-4 md:space-y-0 md:space-x-4 w-full">
-            <button onClick={handleOpenTermsModal} className="bg-blue-600 text-white font-medium py-2 px-4 rounded-md flex-1">
-              Conditions Générales de Vente
-            </button>
-
-            <button onClick={handleEdit} className="bg-gray-600 text-white font-medium py-2 px-4 rounded-md flex-1">
-              Apporter une correction
-            </button>
-
-            <PDFDownloadLink
-              document={<InvoicePDF clientInfo={updatedClientInfo} items={updatedItems} entrepriseInfo={entrepriseInfo} name="Devis" />}
-              fileName="devis.pdf"
-              onClick={() => setIsPreparingPDF(true)} // Début de la préparation du PDF
-            >
+          <div className="text-center">
+            <p className="text-lg font-medium text-gray-800 mb-4">Date limite d'acceptation : {formattedDueDate}</p>
+            <PDFDownloadLink document={<InvoicePDF clientInfo={updatedClientInfo} items={updatedItems} quoteNumber={quoteNumber} />} fileName={`Devis_${quoteNumber}.pdf`}>
               {({ loading }) =>
                 loading ? (
-                  <button className="bg-gray-400 text-white font-medium py-2 px-4 rounded-md flex-1" disabled>
-                    Devis en préparation...
+                  <button className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-600" disabled>
+                    Préparation du PDF...
                   </button>
                 ) : (
-                  <button
-                    className="bg-green-600 text-white font-medium py-2 px-4 rounded-md flex-1"
-                    onClick={() => setIsPreparingPDF(false)} // Fin de la préparation du PDF
-                  >
-                    DEVIS.PDF
-                  </button>
+                  <button className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-600">Télécharger le devis</button>
                 )
               }
             </PDFDownloadLink>
           </div>
+
+          <div className="text-center mt-8">
+            <button onClick={handleEdit} className="bg-green-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-green-600 mr-4">
+              <FaAddressCard className="inline mr-2" /> Modifier
+            </button>
+            <button onClick={handleOpenTermsModal} className="bg-yellow-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-yellow-600">
+              Conditions générales
+            </button>
+          </div>
         </div>
-        <EditModal isOpen={isModalOpen} onClose={handleCloseModal} clientInfo={updatedClientInfo} items={updatedItems} onSave={handleSaveChanges} />
-        <TermsModal show={isTermsModalOpen} handleClose={handleCloseTermsModal} />
+
+        {isModalOpen && <EditModal isOpen={isModalOpen} onClose={handleCloseModal} clientInfo={updatedClientInfo} items={updatedItems} onSave={handleSaveChanges} />}
+
+        {isTermsModalOpen && <TermsModal isOpen={isTermsModalOpen} onClose={handleCloseTermsModal} />}
       </div>
     </div>
   );
