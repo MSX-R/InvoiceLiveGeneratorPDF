@@ -91,49 +91,54 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-50 px-4 py-8 lg:px-12 lg:py-16">
-      <div className="relative w-full max-w-3xl bg-white rounded-lg shadow-xl p-8 border border-gray-200">
+      <div className="relative w-full max-w-lg bg-white rounded-xl shadow-xl p-6 border border-gray-200">
         <button onClick={() => navigate(-1)} className="absolute top-4 left-4 p-2 text-gray-600 hover:text-gray-800 transition-colors" aria-label="Retour">
           <FaArrowLeft size={24} />
         </button>
 
-        <div className="flex flex-col items-center mb-12">
-          <h2 className="text-3xl font-semibold text-gray-900 mb-6 text-center">Création de document</h2>
+        <div className="flex flex-col items-center mb-6">
+          <h2 className="text-3xl font-semibold text-gray-900 mb-4 text-center">Création de document</h2>
         </div>
 
         {/* Champ d'affichage pour le numéro de devis */}
-        <div className="mb-4 flex items-center">
-          <label className="block text-gray-700 mb-1 mr-4" htmlFor="quoteNumber">
+        <div className="mb-6 flex flex-col items-start">
+          <label className="block text-gray-700 mb-1" htmlFor="quoteNumber">
             Numéro de Devis:
           </label>
-          <input
-            id="quoteNumber"
-            type="text"
-            value={quoteNumber}
-            disabled // Champ désactivé pour afficher le numéro de devis actuel
-            className="border rounded-md p-2 w-32"
-          />
-          <input
-            id="newQuoteNumber"
-            type="text"
-            value={newQuoteNumber}
-            onChange={(e) => setNewQuoteNumber(e.target.value)} // Met à jour le numéro de devis à modifier
-            className="border rounded-md p-2 ml-4 w-32"
-          />
-          <button onClick={handleValidateQuoteNumber} className="bg-green-500 text-white py-1 px-3 ml-2 rounded-md hover:bg-green-600">
-            Valider
-          </button>
-          <button onClick={handleResetQuoteNumber} className="bg-red-500 text-white py-1 px-3 ml-2 rounded-md hover:bg-red-600">
-            Effacer
-          </button>
+          <div className="flex flex-col w-full md:flex-row md:items-center md:space-x-2">
+            <input
+              id="quoteNumber"
+              type="text"
+              value={quoteNumber}
+              disabled // Champ désactivé pour afficher le numéro de devis actuel
+              className="border rounded-md p-2 w-full bg-gray-100 mb-2 md:mb-0"
+            />
+            <input
+              id="newQuoteNumber"
+              type="text"
+              value={newQuoteNumber}
+              onChange={(e) => setNewQuoteNumber(e.target.value)} // Met à jour le numéro de devis à modifier
+              className="border rounded-md p-2 w-full md:w-32 mb-2 md:mb-0"
+              placeholder="Nouveau numéro"
+            />
+          </div>
+          <div className="text-center mt-4 flex flex-row justify-end w-full">
+            <button onClick={handleResetQuoteNumber} className="bg-red-600 text-white py-2 px-4 text-center rounded-md focus:outline-none mr-2 hover:bg-red-700 transition-colors w-full">
+              Effacer
+            </button>
+            <button onClick={handleValidateQuoteNumber} className="bg-green-600 text-white py-2 px-4 text-center rounded-md focus:outline-none hover:bg-green-700 transition-colors  md:mb-0 w-full ">
+              Valider
+            </button>
+          </div>{" "}
         </div>
 
-        <div className="text-center mb-8 flex justify-between">
-          <p className="text-lg font-medium text-gray-900 mb-2">Date du jour : {formattedToday}</p>
-          <p className="text-lg font-medium text-gray-700 mb-4">Date d'émission : {formattedToday}</p>
+        <div className="text-center mb-6">
+          <p className="text-lg font-medium text-gray-900 mb-1">Date du jour : {formattedToday}</p>
+          <p className="text-lg font-medium text-gray-700">Date d'émission : {formattedToday}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+        <div className="grid grid-cols-1 gap-8 mb-8">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-md">
             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <FaAddressCard className="text-gray-600 mr-2" />
               <span>CONTRACTANT</span>
@@ -151,7 +156,7 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
             <p className="text-gray-600">SIRET : {entrepriseInfo.siret}</p>
           </div>
 
-          <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+          <div className="bg-gray-50 p-4 rounded-lg shadow-md">
             <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <FaAddressCard className="text-gray-600 mr-2" />
               <span>CLIENT</span>
@@ -169,7 +174,7 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
           </div>
         </div>
 
-        <div className="bg-gray-50 p-6 rounded-lg shadow-md mb-8">
+        <div className="bg-gray-50 p-4 rounded-lg shadow-md mb-8">
           <h4 className="text-lg font-semibold text-gray-800 text-center mb-4">Détails</h4>
           {updatedItems.map((item, index) => (
             <div key={index} className="mb-4">
@@ -186,32 +191,35 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
               <p className="text-gray-700">
                 <strong>Quantité :</strong> {item.service?.quantity}
               </p>
+              <p className="text-gray-700 mt-2">
+                <strong>TOTAL :</strong> {item.service?.quantity * item.service?.prix}€
+              </p>
             </div>
           ))}
         </div>
 
-        <div className="text-center">
+        <div className="text-center mt-8 md:mt-4 flex flex-col md:flex-row justify-center">
+          <button onClick={handleEdit} className="bg-green-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-green-700 transition-colors mr-4 mb-2 md:mb-0 w-full ">
+            <FaAddressCard className="inline mr-2" /> Modifier
+          </button>
+          <button onClick={handleOpenTermsModal} className="bg-yellow-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-yellow-600 transition-colors w-full">
+            Conditions
+          </button>
+        </div>
+
+        <div className="text-center mt-8 mb-2">
           <p className="text-lg font-medium text-gray-800 mb-4">Offre valide jusqu'au {formattedValidityDateStr}</p>
           <PDFDownloadLink document={<InvoicePDF clientInfo={updatedClientInfo} items={updatedItems} entrepriseInfo={entrepriseInfo} validityDate={formattedValidityDateStr} fileName={`Devis_${quoteNumber}`} />} fileName={`Devis_${quoteNumber}.pdf`}>
             {({ loading }) =>
               loading ? (
-                <button className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-600" disabled>
+                <button className="bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-700 w-full md:w-auto" disabled>
                   Préparation du PDF...
                 </button>
               ) : (
-                <button className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-600">Télécharger le devis</button>
+                <button className="bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-700 w-full md:w-auto">Télécharger le devis</button>
               )
             }
           </PDFDownloadLink>
-        </div>
-
-        <div className="text-center mt-8">
-          <button onClick={handleEdit} className="bg-green-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-green-600 mr-4">
-            <FaAddressCard className="inline mr-2" /> Modifier les informations
-          </button>
-          <button onClick={handleOpenTermsModal} className="bg-yellow-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-yellow-600">
-            Conditions
-          </button>
         </div>
 
         {/* Modal de modification */}

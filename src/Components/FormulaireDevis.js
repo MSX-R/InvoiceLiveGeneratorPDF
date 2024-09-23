@@ -169,8 +169,8 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
                 </div>
               ))}
             </div>
-            <button type="button" onClick={fillDefaultClientInfo} className="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700">
-              Remplir avec des données de test
+            <button type="button" onClick={fillDefaultClientInfo} className="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 w-full md:w-auto">
+              Remplir avec des données test
             </button>
           </div>
 
@@ -225,25 +225,29 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           </div>
 
           {/* Boutons */}
-          <div className="flex justify-between mb-8">
-            <button type="button" onClick={resetPrixFixe} className="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300">
+          <div className="flex justify-between mb-8 w-full md:w-auto">
+            <button type="button" onClick={resetPrixFixe} className="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 w-full md:w-auto mr-2">
               Réinitialiser
             </button>
-            <button type="submit" disabled={!isFormComplete || loading || prixInputError || prixFixe === ""} className={`bg-${prixFixe === "" || !isFormComplete ? "gray-400" : prixFixe >= 0 ? "green-600" : "gray-400"} text-white font-semibold py-2 px-4 rounded-md hover:${prixFixe === "" || !isFormComplete ? "bg-gray-500" : prixFixe > 0 ? "bg-green-700" : "bg-gray-500"}`}>
+            <button type="submit" disabled={!isFormComplete || loading || prixInputError || prixFixe === ""} className={`bg-${prixFixe === "" || !isFormComplete ? "gray-400" : prixFixe >= 0 ? "green-600" : "gray-400"} text-white font-semibold py-2 px-4 rounded-md hover:${prixFixe === "" || !isFormComplete ? "bg-gray-500" : prixFixe > 0 ? "bg-green-700" : "bg-gray-500"} w-full md:w-auto`}>
               Générer la Facture
             </button>
           </div>
 
           {/* Modal de Confirmation */}
-          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center z-50 p-6 ">
+            {/* Backdrop */}
+            <div className="fixed inset-0 bg-black opacity-50" onClick={cancelGeneration} /> {/* This creates the transparent black background */}
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10">
+              {" "}
+              {/* Ensure modal content is above the backdrop */}
               <Dialog.Title className="text-xl font-bold">Confirmer la génération</Dialog.Title>
               <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer cette facture ?</Dialog.Description>
               <div className="mt-4 flex justify-end space-x-2">
-                <button onClick={cancelGeneration} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md">
+                <button onClick={cancelGeneration} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md w-full md:w-auto">
                   Annuler
                 </button>
-                <button onClick={confirmGeneration} className="bg-green-600 text-white px-4 py-2 rounded-md">
+                <button onClick={confirmGeneration} className="bg-green-600 text-white px-4 py-2 rounded-md w-full md:w-auto">
                   Confirmer
                 </button>
               </div>
