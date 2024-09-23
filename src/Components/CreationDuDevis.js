@@ -191,8 +191,8 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
         </div>
 
         <div className="text-center">
-          <p className="text-lg font-medium text-gray-800 mb-4">Date limite d'acceptation (+5 jours) : {formattedValidityDateStr}</p>
-          <PDFDownloadLink document={<InvoicePDF clientInfo={updatedClientInfo} items={updatedItems} entrepriseInfo={entrepriseInfo} fileName={`Devis_${quoteNumber}`} />} fileName={`Devis_${quoteNumber}.pdf`}>
+          <p className="text-lg font-medium text-gray-800 mb-4">Offre valide jusqu'au {formattedValidityDateStr}</p>
+          <PDFDownloadLink document={<InvoicePDF clientInfo={updatedClientInfo} items={updatedItems} entrepriseInfo={entrepriseInfo} validityDate={formattedValidityDateStr} fileName={`Devis_${quoteNumber}`} />} fileName={`Devis_${quoteNumber}.pdf`}>
             {({ loading }) =>
               loading ? (
                 <button className="bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-blue-600" disabled>
