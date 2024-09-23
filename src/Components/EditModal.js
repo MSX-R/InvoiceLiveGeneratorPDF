@@ -93,7 +93,9 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
   };
 
   const handlePrixFixeChange = (e) => {
-    setFormData((prevData) => ({ ...prevData, prixFixeLocal: e.target.value }));
+    const newPrix = e.target.value;
+    setFormData((prevData) => ({ ...prevData, prixFixeLocal: newPrix }));
+    updatePrixFixe(Number(newPrix)); // Mettre à jour directement le prix fixe global
   };
 
   const handleSavePrixFixe = () => {

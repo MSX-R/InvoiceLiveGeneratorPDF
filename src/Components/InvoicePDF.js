@@ -97,8 +97,9 @@ const styles = StyleSheet.create({
 });
 
 // Composant pour le document PDF
-const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
+const InvoicePDF = ({ clientInfo, items, entrepriseInfo, fileName }) => {
   // Calculer le montant total pour chaque item
+
   const totalAmount = items.reduce((total, item) => {
     const quantity = item.service?.quantity || 0;
     const price = item.service?.prix || 0;
@@ -135,7 +136,7 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo, name }) => {
       <Page style={styles.page}>
         {/* En-tête avec Logo */}
         <View style={styles.header}>
-          <Text style={styles.title}> {name ? name.toUpperCase() : "Nom non spécifié"} N°XX</Text>
+          <Text style={styles.title}> {fileName ? fileName.toUpperCase() : "Nom non spécifié"} N°XX</Text>
           <Image src={logo} style={styles.logo} /> {/* Ajout du logo */}
         </View>
         {/* Date d'émission et Date d'échéance */}
