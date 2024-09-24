@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { HashRouter as Router, Route, Routes, useNavigate } from "react-router-dom"; // Import du HashRouter et des hooks de navigation
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import Menu from "./pages/Menu";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
+import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
+import FormulaireMensurations from "./pages/FormulaireMensurations"; // Nouveau composant pour les mensurations
 import generatePDF from "./Functions/generatePDF";
 
 function App() {
@@ -35,14 +38,6 @@ function App() {
     setShowPreview(true);
   };
 
-  const handleDownloadInvoice = () => {
-    if (invoice) {
-      generatePDF(invoice);
-    } else {
-      console.error("No invoice data available for download.");
-    }
-  };
-
   const handleEditInvoice = () => {
     setShowPreview(false);
   };
@@ -50,7 +45,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/" element={<Menu />} />
+        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/tableau-berger" element={<TableauBerger />} />
+        <Route path="/formulaire-mensurations" element={<FormulaireMensurations />} />
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
       </Routes>
     </Router>

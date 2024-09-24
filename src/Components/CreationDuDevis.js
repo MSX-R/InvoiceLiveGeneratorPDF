@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import InvoicePDF from "./InvoicePDF";
 import { FaAddressCard, FaPhoneAlt, FaFile, FaArrowLeft } from "react-icons/fa";
+import InvoicePDF from "./InvoicePDF";
 import EditModal from "./EditModal";
 import TermsModal from "../config/TermsModal";
+import { DateContext } from "../contexts/DateContext"; // Import du contexte de la date
 
 // Informations de l'entreprise
 const entrepriseInfo = {
@@ -19,8 +20,8 @@ const entrepriseInfo = {
   email: process.env.REACT_APP_ENTREPRISE_EMAIL,
 };
 
-const calculateDueDate = (items) => {
-  const today = new Date();
+const calculateDueDate = (items, currentDate) => {
+  const today = new Date(currentDate); // Utiliser la date provenant du contexte
   const dueDate = new Date(today);
 
   if (items.some((item) => item.service?.type === "12weeks")) {
@@ -43,6 +44,7 @@ const calculateDueDate = (items) => {
 };
 
 function CreationDuDevis({ clientInfo, items, onEdit }) {
+  const currentDate = useContext(DateContext); // Utilisation de la date depuis le contexte
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [updatedClientInfo, setUpdatedClientInfo] = useState(clientInfo);
@@ -73,10 +75,18 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
     setIsTermsModalOpen(false);
   };
 
-  const today = new Date();
-  const formattedToday = today.toLocaleDateString("fr-FR");
-  const formattedValidityDate = new Date(today);
-  formattedValidityDate.setDate(today.getDate() + 5);
+  let formattedValidityDate;
+  if (currentDate && !isNaN(Date.parse(currentDate))) {
+    formattedValidityDate = new Date(currentDate);
+  } else {
+    console.warn("currentDate is not a valid date:", currentDate);
+    formattedValidityDate = new Date(); // Utilise la date actuelle si currentDate n'est pas valide
+  }
+
+  // Ajout de 5 jours à la date de validité
+  formattedValidityDate.setDate(formattedValidityDate.getDate() + 5);
+
+  // Formatage de la date de validité en chaîne
   const formattedValidityDateStr = formattedValidityDate.toLocaleDateString("fr-FR");
 
   // Fonction pour valider le nouveau numéro de devis
@@ -102,39 +112,37 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
 
         {/* Champ d'affichage pour le numéro de devis */}
         <div className="mb-6 flex flex-col items-start">
-          <label className="block text-gray-700 mb-1" htmlFor="quoteNumber">
-            Numéro de Devis:
-          </label>
-          <div className="flex flex-col w-full md:flex-row md:items-center md:space-x-2">
-            <input
-              id="quoteNumber"
-              type="text"
-              value={quoteNumber}
-              disabled // Champ désactivé pour afficher le numéro de devis actuel
-              className="border rounded-md p-2 w-full bg-gray-100 mb-2 md:mb-0"
-            />
-            <input
-              id="newQuoteNumber"
-              type="text"
-              value={newQuoteNumber}
-              onChange={(e) => setNewQuoteNumber(e.target.value)} // Met à jour le numéro de devis à modifier
-              className="border rounded-md p-2 w-full md:w-32 mb-2 md:mb-0"
-              placeholder="Nouveau numéro"
-            />
+          <div className="flex flex-col w-full md:flex-row md:items-start md:space-x-2">
+            {/* Champ d'affichage pour le numéro de devis */}
+            <div className="flex flex-col w-full md:w-1/2 mb-2">
+              <label className="block text-gray-700 mb-1" htmlFor="quoteNumber">
+                Numéro de Devis
+              </label>
+              <input id="quoteNumber" type="text" value={quoteNumber} disabled className="border rounded-md p-2 w-full bg-gray-100" />
+            </div>
+
+            {/* Champ d'affichage pour le numéro de devis modifié */}
+            <div className="flex flex-col w-full md:w-1/2 mb-2">
+              <label className="block text-gray-700 mb-1" htmlFor="newQuoteNumber">
+                Modifier Numéro Devis
+              </label>
+              <input id="newQuoteNumber" type="text" value={newQuoteNumber} onChange={(e) => setNewQuoteNumber(e.target.value)} className="border rounded-md p-2 w-full" placeholder="Nouveau numéro" />
+            </div>
           </div>
+
           <div className="text-center mt-4 flex flex-row justify-end w-full">
             <button onClick={handleResetQuoteNumber} className="bg-red-600 text-white py-2 px-4 text-center rounded-md focus:outline-none mr-2 hover:bg-red-700 transition-colors w-full">
               Effacer
             </button>
-            <button onClick={handleValidateQuoteNumber} className="bg-green-600 text-white py-2 px-4 text-center rounded-md focus:outline-none hover:bg-green-700 transition-colors  md:mb-0 w-full ">
+            <button onClick={handleValidateQuoteNumber} className="bg-green-600 text-white py-2 px-4 text-center rounded-md focus:outline-none hover:bg-green-700 transition-colors w-full">
               Valider
             </button>
-          </div>{" "}
+          </div>
         </div>
 
         <div className="text-center mb-6">
-          <p className="text-lg font-medium text-gray-900 mb-1">Date du jour : {formattedToday}</p>
-          <p className="text-lg font-medium text-gray-700">Date d'émission : {formattedToday}</p>
+          <p className="text-lg font-medium text-gray-900 mb-1">Date du jour : {currentDate}</p> {/* Affichage de la date depuis le contexte */}
+          <p className="text-lg font-medium text-gray-700">Date d'émission : {currentDate}</p>
         </div>
 
         <div className="grid grid-cols-1 gap-8 mb-8">
@@ -199,7 +207,7 @@ function CreationDuDevis({ clientInfo, items, onEdit }) {
         </div>
 
         <div className="text-center mt-8 md:mt-4 flex flex-col md:flex-row justify-center">
-          <button onClick={handleEdit} className="bg-green-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-green-700 transition-colors mr-4 mb-2 md:mb-0 w-full ">
+          <button onClick={handleEdit} className="bg-green-600 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-green-700 transition-colors mr-4 mb-2 md:mb-0 w-full">
             <FaAddressCard className="inline mr-2" /> Modifier
           </button>
           <button onClick={handleOpenTermsModal} className="bg-yellow-500 text-white py-2 px-4 rounded-md focus:outline-none hover:bg-yellow-600 transition-colors w-full">
