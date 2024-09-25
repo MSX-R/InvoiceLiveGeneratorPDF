@@ -1,0 +1,49 @@
+name: Deploy to O2Switch
+
+on:
+  push:
+    branches:
+      - prod  # Le workflow s'exécute lorsque des modifications sont poussées à la branche prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Étape 1 : Checker le dépôt
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    # Étape 2 : Configurer Node.js et installer les dépendances
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # Utilisez la version que votre projet nécessite
+
+    - name: Install dependencies
+      run: npm install
+
+    # Étape 3 : Build l'application React
+    - name: Build the React app
+      run: npm run build
+
+    # Étape 4 : Déployer le dossier build/ via SSH
+    - name: Deploy to O2Switch
+      uses: appleboy/scp-action@v0.1.2
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "./build/*"
+        target: "/msx.boardy.fr/prod"  # Remplacez par le chemin réel de votre dossier sur O2Switch
+
+    # Étape 5 : Connectez-vous au serveur et exécutez npm install
+    - name: SSH and run npm install
+      uses: appleboy/ssh-action@v0.1.2
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /msx.boardy.fr/prod  # Remplacez par le chemin de votre projet sur O2Switch
+          npm install  # Pour installer les dépendances sur le serveur, si nécessaire
