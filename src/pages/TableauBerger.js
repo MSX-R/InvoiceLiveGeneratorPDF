@@ -23,6 +23,7 @@ const TableauBerger = () => {
       const calculatedValues = RM_VALUES.map((rm) => {
         const equivalentWeight = selectedRMWeight * (1.0278 - 0.0278 * rm.id);
         return {
+          id: rm.id, // Ajout de l'ID ici pour faciliter la comparaison
           label: rm.label,
           value: equivalentWeight,
         };
@@ -57,11 +58,7 @@ const TableauBerger = () => {
 
         <div className="flex mb-4">
           <div className="flex flex-1 mr-2">
-            <select
-              value={selectedRM}
-              onChange={handleRMChange} // Call the new handler
-              className="flex-1 p-4 border rounded-md"
-            >
+            <select value={selectedRM} onChange={handleRMChange} className="flex-1 p-4 border rounded-md">
               {RM_VALUES.map((rm) => (
                 <option key={rm.label} value={rm.id}>
                   {rm.label}
@@ -70,13 +67,7 @@ const TableauBerger = () => {
             </select>
           </div>
           <div className="relative flex-1">
-            <input
-              type="number"
-              placeholder="Charge"
-              value={poids}
-              onChange={handlePoidsChange} // Call the new handler
-              className="flex-1 p-4 border rounded-md pr-10"
-            />
+            <input type="number" placeholder="Charge" value={poids} onChange={handlePoidsChange} className="flex-1 p-4 border rounded-md pr-10" />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
           </div>
         </div>
@@ -93,7 +84,10 @@ const TableauBerger = () => {
               </thead>
               <tbody>
                 {rmValues.map((rm) => (
-                  <tr key={rm.label} className="text-center">
+                  <tr
+                    key={rm.label}
+                    className={`text-center ${rm.id === selectedRM ? "bg-yellow-300" : ""}`} // Highlight the selected RM
+                  >
                     <td className="border px-4 py-2">{rm.label}</td>
                     <td className="border px-4 py-2">{rm.value.toFixed(2)} kg</td>
                   </tr>
