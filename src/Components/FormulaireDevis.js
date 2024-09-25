@@ -136,7 +136,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
     try {
       await onGenerateInvoice(clientInfo, items);
     } catch (error) {
-      console.error("Erreur lors de la génération de la facture:", error);
+      console.error("Erreur lors de la génération du Devis:", error);
     } finally {
       setLoading(false);
       setShowModal(false);
@@ -230,7 +230,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
               Réinitialiser
             </button>
             <button type="submit" disabled={!isFormComplete || loading || prixInputError || prixFixe === ""} className={`bg-${prixFixe === "" || !isFormComplete ? "gray-400" : prixFixe >= 0 ? "green-600" : "gray-400"} text-white font-semibold py-2 px-4 rounded-md hover:${prixFixe === "" || !isFormComplete ? "bg-gray-500" : prixFixe > 0 ? "bg-green-700" : "bg-gray-500"} w-full md:w-auto`}>
-              Générer la Facture
+              Générer le devis
             </button>
           </div>
 
@@ -242,7 +242,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
               {" "}
               {/* Ensure modal content is above the backdrop */}
               <Dialog.Title className="text-xl font-bold">Confirmer la génération</Dialog.Title>
-              <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer cette facture ?</Dialog.Description>
+              <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer ce devis ?</Dialog.Description>
               <div className="mt-4 flex justify-end space-x-2">
                 <button onClick={cancelGeneration} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md w-full md:w-auto">
                   Annuler
