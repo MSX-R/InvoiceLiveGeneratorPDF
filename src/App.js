@@ -3,8 +3,9 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
-import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
-import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles"; // Nouveau composant pour les mensurations
+import TableauBerger from "./pages/TableauBerger";
+import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
+import TestVmaTapis from "./pages/TestVmaTapis"; // Importation du nouveau composant
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -48,6 +49,7 @@ function App() {
         <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
         <Route path="/tableau-berger" element={<TableauBerger />} />
         <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
+        <Route path="/vma-tapis" element={<TestVmaTapis />} /> {/* Ajout de la nouvelle route */}
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
       </Routes>
     </Router>

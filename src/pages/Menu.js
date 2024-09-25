@@ -19,6 +19,10 @@ const Menu = () => {
           <button className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>
             DONNEES CORPORELLES | Réaliser un bilan
           </button>
+          <button className="bg-red-600 text-white py-4 px-6 rounded-md hover:bg-red-700" onClick={() => navigate("/vma-tapis")}>
+            VMA | Trouver sa VMA au VAMEVAL (tapis)
+          </button>{" "}
+          {/* Nouveau bouton */}
         </div>
       </div>
     </div>
