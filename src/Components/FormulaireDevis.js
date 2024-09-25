@@ -60,7 +60,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
       }));
       setItems(updatedItems);
     }
-  }, [prixFixe, services]);
+  }, [items, prixFixe, services]);
 
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
