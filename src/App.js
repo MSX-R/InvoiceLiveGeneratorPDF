@@ -5,7 +5,6 @@ import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles"; // Nouveau composant pour les mensurations
-import generatePDF from "./Functions/generatePDF";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
