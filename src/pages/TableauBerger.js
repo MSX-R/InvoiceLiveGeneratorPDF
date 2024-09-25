@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // This array will represent RM values from RM1 to RM20, with IDs.
 const RM_VALUES = Array.from({ length: 20 }, (_, index) => ({
@@ -11,12 +11,13 @@ const TableauBerger = () => {
   const [poids, setPoids] = useState("");
   const [rmValues, setRmValues] = useState([]);
 
-  const calculRM = (newPoids) => {
+  // Function to calculate RM values
+  const calculRM = (currentPoids) => {
     const repsForSelectedRM = selectedRM; // Using the selected RM as the number of repetitions
 
-    // Ensure we have a valid poids
-    if (newPoids) {
-      const selectedRMWeight = newPoids / (1.0278 - 0.0278 * repsForSelectedRM);
+    // Ensure we have a valid poids and it's a positive number
+    if (currentPoids > 0) {
+      const selectedRMWeight = currentPoids / (1.0278 - 0.0278 * repsForSelectedRM);
 
       // Calculate the weights for RM1 to RM20 based on the selected RM weight
       const calculatedValues = RM_VALUES.map((rm) => {
@@ -29,25 +30,24 @@ const TableauBerger = () => {
 
       setRmValues(calculatedValues);
     } else {
-      // Reset rmValues if poids is not valid
+      // Reset rmValues if poids is not valid or empty
       setRmValues([]);
     }
   };
 
+  // Trigger recalculation when poids or RM changes
+  useEffect(() => {
+    calculRM(poids);
+  }, [selectedRM, poids]);
+
   const handleRMChange = (e) => {
     const newSelectedRM = parseInt(e.target.value);
     setSelectedRM(newSelectedRM);
-    calculRM(poids); // Recalculate when RM changes
-
-    // Log the selected RM ID
-    const selectedRMData = RM_VALUES.find((rm) => rm.id === newSelectedRM);
-    console.log("Selected RM ID:", selectedRMData.id); // Access the ID here
   };
 
   const handlePoidsChange = (e) => {
     const newPoids = e.target.value;
     setPoids(newPoids);
-    calculRM(newPoids); // Recalculate when poids changes
   };
 
   return (
@@ -80,9 +80,6 @@ const TableauBerger = () => {
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
           </div>
         </div>
-        <button onClick={calculRM} className="w-full bg-green-600 text-white p-4 rounded-md hover:bg-green-700">
-          Calculer
-        </button>
 
         {rmValues.length > 0 && (
           <div className="mt-8">
