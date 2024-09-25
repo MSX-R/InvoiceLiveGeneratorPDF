@@ -107,29 +107,6 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo, fileName, validityDate 
 
   const today = new Date().toLocaleDateString("fr-FR");
 
-  const calculateDueDate = () => {
-    const today = new Date();
-    const dueDate = new Date(today);
-
-    if (items.some((item) => item.service?.type === "12weeks")) {
-      const nextMonth = today.getMonth() + 1;
-      const year = today.getFullYear();
-      if (nextMonth > 11) {
-        dueDate.setMonth(0);
-        dueDate.setFullYear(year + 1);
-      } else {
-        dueDate.setMonth(nextMonth);
-      }
-      dueDate.setDate(3);
-    } else if (items.some((item) => item.service?.type === "unit" || item.service?.type === "pack")) {
-      dueDate.setDate(today.getDate());
-    }
-
-    return dueDate.toLocaleDateString("fr-FR");
-  };
-
-  const formattedDueDate = calculateDueDate();
-
   return (
     <Document>
       <Page style={styles.page}>

@@ -23,6 +23,7 @@ const TableauBerger = () => {
       const calculatedValues = RM_VALUES.map((rm) => {
         const equivalentWeight = selectedRMWeight * (1.0278 - 0.0278 * rm.id);
         return {
+          id: rm.id, // Adding ID for easier comparison
           label: rm.label,
           value: equivalentWeight,
         };
@@ -38,6 +39,7 @@ const TableauBerger = () => {
   // Trigger recalculation when poids or RM changes
   useEffect(() => {
     calculRM(poids);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRM, poids]);
 
   const handleRMChange = (e) => {
@@ -55,28 +57,19 @@ const TableauBerger = () => {
       <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Calcul de RM (Répetition Maximale)</h1>
 
-        <div className="flex mb-4">
-          <div className="flex flex-1 mr-2">
-            <select
-              value={selectedRM}
-              onChange={handleRMChange} // Call the new handler
-              className="flex-1 p-4 border rounded-md"
-            >
-              {RM_VALUES.map((rm) => (
-                <option key={rm.label} value={rm.id}>
-                  {rm.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="relative flex-1">
-            <input
-              type="number"
-              placeholder="Charge"
-              value={poids}
-              onChange={handlePoidsChange} // Call the new handler
-              className="flex-1 p-4 border rounded-md pr-10"
-            />
+        <div className="flex flex-col md:flex-row space-x-4 items-stretch">
+          {/* LISTE DEROULANTE RM */}
+          <select value={selectedRM} onChange={handleRMChange} className="w-full p-4 border rounded-md mb-2">
+            {RM_VALUES.map((rm) => (
+              <option key={rm.label} value={rm.id}>
+                {rm.label}
+              </option>
+            ))}
+          </select>
+
+          {/* INPUT KG */}
+          <div className="relative w-full">
+            <input type="number" placeholder="Charge" value={poids} onChange={handlePoidsChange} className="w-full p-4 border rounded-md pr-10" />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">kg</span>
           </div>
         </div>
@@ -93,7 +86,10 @@ const TableauBerger = () => {
               </thead>
               <tbody>
                 {rmValues.map((rm) => (
-                  <tr key={rm.label} className="text-center">
+                  <tr
+                    key={rm.label}
+                    className={`text-center ${rm.id === selectedRM ? "bg-yellow-300" : ""}`} // Highlight selected RM
+                  >
                     <td className="border px-4 py-2">{rm.label}</td>
                     <td className="border px-4 py-2">{rm.value.toFixed(2)} kg</td>
                   </tr>
