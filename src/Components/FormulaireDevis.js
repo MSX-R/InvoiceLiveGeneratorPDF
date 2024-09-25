@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import { Dialog } from "@headlessui/react";
 import Select from "react-select";
 import { usePrix } from "../contexts/PrixContext";
@@ -61,7 +60,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
       }));
       setItems(updatedItems);
     }
-  }, [prixFixe, services]);
+  }, [items, prixFixe, services]);
 
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;

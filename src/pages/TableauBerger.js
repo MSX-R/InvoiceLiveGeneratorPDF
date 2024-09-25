@@ -38,6 +38,7 @@ const TableauBerger = () => {
   // Trigger recalculation when poids or RM changes
   useEffect(() => {
     calculRM(poids);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRM, poids]);
 
   const handleRMChange = (e) => {
