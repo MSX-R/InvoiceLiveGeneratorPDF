@@ -156,7 +156,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-center mb-8">Formulaire de Facturation</h1>
+        <h1 className="text-4xl font-bold text-center mb-8">Création de Devis</h1>
         <form onSubmit={handleSubmit}>
           {/* Informations Client */}
           <div className="mb-8">
