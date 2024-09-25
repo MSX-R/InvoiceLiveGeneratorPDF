@@ -4,7 +4,7 @@ import Menu from "./pages/Menu";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
-import FormulaireMensurations from "./pages/FormulaireMensurations"; // Nouveau composant pour les mensurations
+import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles"; // Nouveau composant pour les mensurations
 import generatePDF from "./Functions/generatePDF";
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
         <Route path="/" element={<Menu />} />
         <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
         <Route path="/tableau-berger" element={<TableauBerger />} />
-        <Route path="/formulaire-mensurations" element={<FormulaireMensurations />} />
+        <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
       </Routes>
     </Router>

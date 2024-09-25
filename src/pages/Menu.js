@@ -16,8 +16,8 @@ const Menu = () => {
           <button className="bg-green-600 text-white py-4 px-6 rounded-md hover:bg-green-700" onClick={() => navigate("/tableau-berger")}>
             RM | Trouver sa RM (tableau de berger)
           </button>
-          <button className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700" onClick={() => navigate("/formulaire-mensurations")}>
-            MENSURATIONS | Réaliser un bilan
+          <button className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>
+            DONNEES CORPORELLES | Réaliser un bilan
           </button>
         </div>
       </div>
