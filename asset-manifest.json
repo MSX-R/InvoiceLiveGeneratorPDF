@@ -1,16 +1,19 @@
 {
   "files": {
-    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.5298b08c.css",
-    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.5f51ec9d.js",
+    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.d33cba8e.css",
+    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.7f197936.js",
     "static/js/453.a376ded4.chunk.js": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js",
     "static/media/Noir.png": "/InvoiceLiveGeneratorPDF/static/media/Noir.7de718ad05ef497a3b76.png",
+    "static/media/effort.mp3": "/InvoiceLiveGeneratorPDF/static/media/effort.17ad4410856736a3fd4e.mp3",
+    "static/media/rest.mp3": "/InvoiceLiveGeneratorPDF/static/media/rest.6ab4d19d66ccea612336.mp3",
+    "static/media/preparation.mp3": "/InvoiceLiveGeneratorPDF/static/media/preparation.0f3c4c708f02ca50d5b7.mp3",
     "index.html": "/InvoiceLiveGeneratorPDF/index.html",
-    "main.5298b08c.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.5298b08c.css.map",
-    "main.5f51ec9d.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.5f51ec9d.js.map",
+    "main.d33cba8e.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.d33cba8e.css.map",
+    "main.7f197936.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.7f197936.js.map",
     "453.a376ded4.chunk.js.map": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5298b08c.css",
-    "static/js/main.5f51ec9d.js"
+    "static/css/main.d33cba8e.css",
+    "static/js/main.7f197936.js"
   ]
 }
