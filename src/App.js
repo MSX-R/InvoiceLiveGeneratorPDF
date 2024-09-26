@@ -6,7 +6,7 @@ import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
 import TestVmaTapis from "./pages/TestVmaTapis";
-import SuiviClients from "./pages/SuiviClients"; // Importation du nouveau composant
+import SuiviClients from "./pages/suiviClients"; // Importation du nouveau composant
 
 function App() {
   const [invoice, setInvoice] = useState(null);
