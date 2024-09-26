@@ -7,7 +7,7 @@ import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
 import TestVmaTapis from "./pages/TestVmaTapis";
-import SuiviClients from "./pages/SuiviClients",
+import SuiviClients from "./pages/SuiviClients";
 import TabataChrono from "./pages/TabataChrono"; // Importation du nouveau composant TabataChrono
 import ChronoDetail from "./Components/ChronoDetail"; // Importation du nouveau composant ChronoDetail
 
