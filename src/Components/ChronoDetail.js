@@ -219,7 +219,7 @@ const ChronoDetail = () => {
               </button>
             )}
 
-            <h3>J'ai TOURJOURS CE PROBLEME niveau timing.. le chrono s'arraite, risque fatigue, Le chrono s'arret etjr avant la p^hase de recuperation je ne sais pas pk...</h3>
+            <h3 className="bg-red-600">J'ai TOURJOURS CE PROBLEME niveau timing.. le chrono s'arraite, risque fatigue, Le chrono s'arret etjr avant la p^hase de recuperation je ne sais pas pk...</h3>
           </>
         )}
       </div>
