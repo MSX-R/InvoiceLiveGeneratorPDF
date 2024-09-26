@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
@@ -49,7 +50,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Menu />} />
-        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />} />
         <Route path="/tableau-berger" element={<TableauBerger />} />
         <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
         <Route path="/vma-tapis" element={<TestVmaTapis />} />
@@ -57,6 +58,7 @@ function App() {
         <Route path="/compteur-seances" element={<SuiviClients />} /> {/* Route pour Suivi des Clients */}
         <Route path="/tabata-chrono" element={<TabataChrono />} /> {/* Nouvelle route pour TabataChrono */}
         <Route path="/chrono/:id" element={<ChronoDetail />} /> {/* Nouvelle route pour ChronoDetail */}
+        <Route path="*" element={<div>404 Not Found</div>} /> {/* Route pour les pages non trouvées */}
       </Routes>
     </Router>
   );
