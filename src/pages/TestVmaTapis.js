@@ -2,44 +2,42 @@ import React, { useState, useEffect } from "react";
 
 const TestVmaTapis = () => {
   const [palier, setPalier] = useState(1);
-  const [vitesse, setVitesse] = useState(5.5); // Vitesse initiale de l'échauffement à 5.5 km/h
+  const [ciblePalier, setCiblePalier] = useState(null);
+  const [vitesse, setVitesse] = useState(5.5);
   const [isWarmUpRunning, setIsWarmUpRunning] = useState(false);
   const [isTestRunning, setIsTestRunning] = useState(false);
   const [testResults, setTestResults] = useState(null);
   const [startTime, setStartTime] = useState(null);
-  const [elapsedTime, setElapsedTime] = useState(0); // État pour stocker le temps écoulé en secondes
-  const totalWarmUpDuration = 300; // Durée totale de l'échauffement en secondes (5 minutes)
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const totalWarmUpDuration = 300;
 
-  // Fonction pour formater le temps au format min:ss
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds}`;
   };
 
-  // Démarrer l'échauffement
   const startWarmUp = () => {
     setIsWarmUpRunning(true);
     setStartTime(new Date());
     setElapsedTime(0);
-    setVitesse(5.5); // Commencer à 5.5 km/h pour l'échauffement
+    setVitesse(5.5);
   };
 
-  // Démarrer le test
   const startTest = () => {
-    setIsWarmUpRunning(false); // Assurez-vous que l'échauffement est arrêté
+    setIsWarmUpRunning(false);
     setIsTestRunning(true);
     setStartTime(new Date());
-    setElapsedTime(0); // Réinitialiser le temps écoulé au début du test
-    setVitesse(8); // Commencer le test à 8 km/h
-    setPalier(1); // Initialiser le palier à 1 au début du test
+    setElapsedTime(0);
+    setVitesse(8);
+    setPalier(1);
+    setCiblePalier(null);
   };
 
-  // Terminer le test
   const endTest = () => {
     setIsTestRunning(false);
-    const timeElapsed = (new Date() - startTime) / 1000; // En secondes
-    const VMA = vitesse - 0.5; // Dernière vitesse atteinte
+    const timeElapsed = (new Date() - startTime) / 1000;
+    const VMA = vitesse - 0.5; // Calcul de la VMA
     setTestResults({
       palier,
       VMA,
@@ -48,13 +46,11 @@ const TestVmaTapis = () => {
     });
   };
 
-  // Terminer l'échauffement
   const endWarmUp = () => {
-    setIsWarmUpRunning(false); // Arrêter l'échauffement
-    startTest(); // Démarrer le test automatiquement
+    setIsWarmUpRunning(false);
+    startTest();
   };
 
-  // Mettre à jour le temps écoulé toutes les secondes
   useEffect(() => {
     let timer;
     if (isWarmUpRunning || isTestRunning) {
@@ -62,68 +58,100 @@ const TestVmaTapis = () => {
         setElapsedTime(Math.floor((new Date() - startTime) / 1000));
       }, 1000);
     }
-    return () => clearInterval(timer); // Nettoyer l'intervalle lorsque le test ou l'échauffement se termine
+    return () => clearInterval(timer);
   }, [isWarmUpRunning, isTestRunning, startTime]);
 
-  // Augmenter la vitesse toutes les minutes pendant l'échauffement
   useEffect(() => {
     let warmUpInterval;
     if (isWarmUpRunning) {
       warmUpInterval = setInterval(() => {
         setElapsedTime((prevElapsed) => {
-          const newElapsed = prevElapsed + 60; // Chaque intervalle est de 60 secondes
+          const newElapsed = prevElapsed + 60;
           if (newElapsed >= totalWarmUpDuration) {
-            endWarmUp(); // Finir l'échauffement automatiquement après 5 minutes
+            endWarmUp();
           }
           return newElapsed;
         });
 
         setVitesse((prevVitesse) => {
           if (prevVitesse < 8) {
-            return Math.min(prevVitesse + 0.5, 8); // Augmenter jusqu'à 8 km/h
+            return Math.min(prevVitesse + 0.5, 8);
           }
-          return prevVitesse; // Garder la vitesse à 8 km/h si elle est déjà atteinte
+          return prevVitesse;
         });
-      }, 60000); // Augmente la vitesse toutes les 60 secondes
+      }, 60000);
     }
     return () => clearInterval(warmUpInterval);
   }, [isWarmUpRunning]);
 
-  // Mettre à jour le test
   useEffect(() => {
     if (isWarmUpRunning && elapsedTime >= totalWarmUpDuration) {
-      startTest(); // Démarrer le test automatiquement après 5 minutes d'échauffement
+      startTest();
     }
   }, [isWarmUpRunning, elapsedTime]);
 
-  // Augmenter la vitesse toutes les minutes pendant le test
   useEffect(() => {
     let interval;
     if (isTestRunning) {
       interval = setInterval(() => {
-        setPalier((prevPalier) => prevPalier + 1);
-        setVitesse((prevVitesse) => prevVitesse + 0.5);
-      }, 60000); // Augmentation toutes les 60 secondes
+        setPalier((prevPalier) => {
+          const newPalier = prevPalier < 20 ? prevPalier + 1 : prevPalier;
+
+          // Update vitesse based on the new palier
+          setVitesse((prevVitesse) => {
+            return Math.min(8 + (newPalier - 1) * 0.5, 20); // Ensure vitesse does not exceed 20 km/h
+          });
+
+          // End test if we've reached the maximum palier
+          if (newPalier === 20) {
+            endTest();
+          }
+
+          return newPalier;
+        });
+      }, 60000);
     }
     return () => clearInterval(interval);
   }, [isTestRunning]);
 
-  // Avancer le chrono à 04:50
   const fastForwardWarmUp = () => {
-    // Fixer l'écoulement à 290 secondes
     setElapsedTime(290);
-    setIsWarmUpRunning(true); // Garder l'échauffement en cours
+    setIsWarmUpRunning(true);
+    setStartTime(new Date(Date.now() - 290 * 1000));
 
-    // Démarrer un compte à rebours pour les 10 secondes restantes
+    const timer = setInterval(() => {
+      setElapsedTime((prevElapsedTime) => {
+        if (prevElapsedTime < 299) {
+          return prevElapsedTime + 1;
+        } else {
+          clearInterval(timer);
+          endWarmUp();
+          return prevElapsedTime;
+        }
+      });
+    }, 1000);
+
     setTimeout(() => {
-      endWarmUp(); // Démarrer le test automatiquement après 10 secondes
-    }, 10000); // Attendre 10 secondes avant de démarrer le test
+      clearInterval(timer);
+      endWarmUp();
+    }, 10000);
   };
 
-  // Passer directement au test
   const skipToTest = () => {
-    endWarmUp(); // Terminer l'échauffement pour démarrer le test
+    endWarmUp();
   };
+
+  const getVitesseCible = (palier) => {
+    return 8 + (palier - 1) * 0.5; // 8 km/h de départ et augmente de 0.5 km/h par palier
+  };
+
+  // Calculer le temps total pour atteindre le palier cible
+  const calculateTotalTestDuration = (palier) => {
+    return palier * 60; // 60 secondes par palier
+  };
+
+  // Calcul de la largeur de la barre de progression pour le test
+  const progressBarWidth = ciblePalier !== null ? Math.min((elapsedTime / calculateTotalTestDuration(ciblePalier)) * 100, 100) : 0;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -157,17 +185,27 @@ const TestVmaTapis = () => {
               Temps écoulé : {formatTime(elapsedTime)} / {formatTime(totalWarmUpDuration)}
             </p>
             <p className="text-xl mb-4">Vitesse actuelle : {vitesse.toFixed(1)} km/h</p>
-            <p className="text-xl mb-4">Prépare-toi pour le test de VMA.</p>
 
-            {/* Bouton pour avancer le chronomètre à 04:50 */}
-            <button className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 mr-2" onClick={fastForwardWarmUp}>
-              Avancer à 04:50
-            </button>
+            {/* Barre de progression */}
+            <div className="relative w-full h-6 bg-gray-200 rounded">
+              <div
+                className="absolute top-0 left-0 h-full rounded"
+                style={{
+                  width: `${(elapsedTime / totalWarmUpDuration) * 100}%`,
+                  background: "blue",
+                }}
+              ></div>
+            </div>
 
-            {/* Bouton pour passer directement au test */}
-            <button className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={skipToTest}>
-              Passer au test directement
-            </button>
+            <div className="flex justify-between mt-2">
+              <button className="bg-yellow-600 text-white py-2 px-4 rounded-md hover:bg-yellow-700 mr-2" onClick={fastForwardWarmUp}>
+                Avancer à 04:50
+              </button>
+
+              <button className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={skipToTest}>
+                Passer au test directement
+              </button>
+            </div>
           </div>
         )}
 
@@ -177,6 +215,44 @@ const TestVmaTapis = () => {
             <p className="text-xl mb-2">Palier actuel : {palier}</p>
             <p className="text-xl mb-2">Temps écoulé : {formatTime(elapsedTime)}</p>
             <p className="text-xl mb-4">Vitesse actuelle : {vitesse.toFixed(1)} km/h</p>
+
+            {/* Liste déroulante pour sélectionner le palier cible */}
+            <div className="mb-4">
+              <label htmlFor="ciblePalier" className="block text-lg font-semibold mb-2">
+                Sélectionnez un palier cible :
+              </label>
+              <select id="ciblePalier" value={ciblePalier || ""} onChange={(e) => setCiblePalier(Number(e.target.value))} className="border border-gray-300 rounded-md p-2">
+                <option value="" disabled>
+                  Sélectionnez un palier
+                </option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(
+                  (
+                    p // Ajout des paliers 9 et 10
+                  ) => (
+                    <option key={p} value={p}>
+                      Palier {p}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+            {/* Barre de progression pour le palier cible */}
+            {ciblePalier !== null && (
+              <>
+                <p className="text-lg font-semibold mb-2">Vitesse cible : {getVitesseCible(ciblePalier).toFixed(1)} km/h</p>
+                <div className="relative w-full h-6 bg-gray-200 rounded mb-4">
+                  <div
+                    className="absolute top-0 left-0 h-full rounded"
+                    style={{
+                      width: `${progressBarWidth}%`,
+                      background: "green",
+                    }}
+                  ></div>
+                </div>
+              </>
+            )}
+
             <button className="bg-red-600 text-white py-4 px-6 rounded-md hover:bg-red-700 w-full" onClick={endTest}>
               Terminer le Test
             </button>
