@@ -138,9 +138,9 @@ const SuiviClients = () => {
               ))}
             </select>
           </div>
-          <div className="relative mb-4">
-            <input type="number" name="seancesAchetees" value={nouveauClient.seancesAchetees} disabled placeholder="Séances achetées" className="w-full p-4 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed text-right pr-16" />
-            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600">{nouveauClient.seancesAchetees === 1 ? "séance" : "séances"}</span>
+          <div className="mb-4 border border-gray-300 rounded-md bg-gray-200 p-4 text-left w-full h-16 flex items-center">
+            <div className=" text-gray-600 pr-2">{nouveauClient.seancesAchetees}</div>
+            <div className=" text-gray-600">{nouveauClient.seancesAchetees === 1 ? "séance" : "séances"}</div>
           </div>
 
           <button onClick={ajouterClient} className="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300">
@@ -179,33 +179,37 @@ const SuiviClients = () => {
         {/* CE TABLEAU DOIT AU FORMAT MOBILE DEVENIR UNE CARD , AVEC UN SLIDER QUI PERMET DE PASSER D'UNE CARTE A UNE AUTRE */}
 
         {/* Modale d'édition des séances utilisées */}
-        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className="bg-white p-8 rounded-lg shadow-lg transition-transform transform scale-100 sm:scale-105">
-          <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center tracking-tight">Modifier les séances pour</h2>
-          <p className="text-xl text-gray-600 mb-4 text-center">
-            {selectedClient?.prenom} {selectedClient?.nom}
-          </p>
-          <hr className="border-gray-300 mb-6" />
-          <div className="flex flex-col items-center mb-6">
-            <div className="flex items-center mb-4">
-              <button onClick={() => setNewSeances(newSeances + 1)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-              <input type="number" value={newSeances} onChange={(e) => setNewSeances(Number(e.target.value))} className="w-20 p-2 mx-2 border border-gray-300 rounded-md text-center bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400" style={{ minWidth: "60px" }} />
-              <button onClick={() => setNewSeances(newSeances - 1)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 flex items-center" disabled={newSeances <= 0}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex justify-between gap-4 w-full">
-              <button onClick={handleSave} className="mt-4 bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300">
-                Sauvegarder
-              </button>
-              <button onClick={closeModal} className="mt-4 bg-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-400 transition duration-300">
-                Annuler
-              </button>
+        <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" overlayClassName="fixed inset-0 bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg transition-transform transform scale-100 w-full max-w-lg">
+            <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center tracking-tight">Modifier les séances pour</h2>
+            <p className="text-xl text-gray-600 mb-6 text-center">
+              {selectedClient?.prenom} {selectedClient?.nom}
+            </p>
+            <hr className="border-gray-300 mb-6" />
+
+            <div className="flex flex-col items-center mb-6">
+              <div className="flex items-center mb-4">
+                <button onClick={() => setNewSeances(newSeances + 1)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <input type="number" value={newSeances} onChange={(e) => setNewSeances(Number(e.target.value))} className="w-20 p-2 mx-2 border border-gray-300 rounded-md text-center bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" style={{ minWidth: "60px" }} />
+                <button onClick={() => setNewSeances(newSeances - 1)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 flex items-center" disabled={newSeances <= 0}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex justify-center gap-4 w-full">
+                <button onClick={handleSave} className="mt-4 bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300 w-full">
+                  Sauvegarder
+                </button>
+                <button onClick={closeModal} className="mt-4 bg-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-400 transition duration-300 w-full">
+                  Annuler
+                </button>
+              </div>
             </div>
           </div>
         </Modal>
