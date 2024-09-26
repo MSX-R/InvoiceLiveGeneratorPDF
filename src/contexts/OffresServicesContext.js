@@ -8,11 +8,10 @@ const OffresServicesContext = createContext();
 export const OffresServicesProvider = ({ children }) => {
   // Définir les options d'offres
   const offerOptions = [
-    { value: "", label: "Choisir un type d'offre" },
-    { value: "unit", label: "OFFRE UNE SEANCE" },
-    { value: "pack", label: "OFFRE PACK" },
-    { value: "weekly", label: "OFFRE 1 SEMAINE" },
-    { value: "12weeks", label: "OFFRE 12 SEMAINES" },
+    { value: "unit", label: "A LA SEANCE" },
+    { value: "pack", label: "AU PACK" },
+    { value: "weekly", label: "A LA SEMAINE" },
+    { value: "12weeks", label: "SUR 12 SEMAINES" },
   ];
 
   // Les services provenant du fichier JSON

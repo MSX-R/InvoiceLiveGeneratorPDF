@@ -115,7 +115,10 @@ const SuiviClients = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <select name="offre" value={nouveauClient.offre} onChange={handleChange} className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Sélectionner une offre</option>
+              <option value="" disabled>
+                CHOISIR UN TYPE D'OFFRE
+              </option>
+              {/* Liste des types d'offres */}
               {offerOptions.map((offer) => (
                 <option key={offer.value} value={offer.value}>
                   {offer.label}
@@ -123,8 +126,11 @@ const SuiviClients = () => {
               ))}
             </select>
 
-            <select name="service" value={nouveauClient.service} onChange={handleChange} className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={!nouveauClient.offre}>
-              <option value="">Choisir un service</option>
+            <select name="service" value={filteredServices.find((service) => service.name === nouveauClient.service)?.id || ""} onChange={handleChange} className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" disabled={!nouveauClient.offre}>
+              <option value="" disabled>
+                CHOISIR UNE OFFRE
+              </option>
+              {/* Liste des services filtrés */}
               {filteredServices.map((service) => (
                 <option key={service.id} value={service.id}>
                   {service.name}
@@ -132,7 +138,11 @@ const SuiviClients = () => {
               ))}
             </select>
           </div>
-          <input type="number" name="seancesAchetees" value={nouveauClient.seancesAchetees} disabled placeholder="Séances achetées" className="w-full p-4 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed mb-4" />
+          <div className="relative mb-4">
+            <input type="number" name="seancesAchetees" value={nouveauClient.seancesAchetees} disabled placeholder="Séances achetées" className="w-full p-4 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed text-right pr-16" />
+            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600">{nouveauClient.seancesAchetees === 1 ? "séance" : "séances"}</span>
+          </div>
+
           <button onClick={ajouterClient} className="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300">
             Enregistrer le profil
           </button>
@@ -143,7 +153,7 @@ const SuiviClients = () => {
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
               <tr>
-                {["ID", "Prénom", "Nom", "Offre", "Service", "Achat", "Utilisés", "Actions"].map((header) => (
+                {["ID", "Prénom", "Nom", "Offre", "Service", "Achat", "Utilisés"].map((header) => (
                   <th key={header} className="py-3 px-4 text-left">
                     {header}
                   </th>
@@ -160,33 +170,13 @@ const SuiviClients = () => {
                   <td className="border px-4 py-2">{client.service}</td>
                   <td className="border px-4 py-2">{client.seancesAchetees}</td>
                   <td className="border px-4 py-2">{client.seancesConsommees}</td>
-                  <td className="border px-4 py-2">
-                    <div className="flex flex-col space-y-2">
-                      <button
-                        className="bg-green-600 text-white w-24 py-1 rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          ajouterSeance(client.id);
-                        }}
-                      >
-                        +1
-                      </button>
-                      <button
-                        className="bg-red-600 text-white w-24 py-1 rounded-lg shadow-md transition duration-300 transform hover:scale-105 hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-300"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          retirerSeance(client.id);
-                        }}
-                      >
-                        -1
-                      </button>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* CE TABLEAU DOIT AU FORMAT MOBILE DEVENIR UNE CARD , AVEC UN SLIDER QUI PERMET DE PASSER D'UNE CARTE A UNE AUTRE */}
 
         {/* Modale d'édition des séances utilisées */}
         <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className="bg-white p-8 rounded-lg shadow-lg transition-transform transform scale-100 sm:scale-105">
