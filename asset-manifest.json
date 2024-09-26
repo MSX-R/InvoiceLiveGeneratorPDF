@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.41c6a5ef.css",
-    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.6f99e5fc.js",
+    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.5298b08c.css",
+    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.5f51ec9d.js",
     "static/js/453.a376ded4.chunk.js": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js",
     "static/media/Noir.png": "/InvoiceLiveGeneratorPDF/static/media/Noir.7de718ad05ef497a3b76.png",
     "index.html": "/InvoiceLiveGeneratorPDF/index.html",
-    "main.41c6a5ef.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.41c6a5ef.css.map",
-    "main.6f99e5fc.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.6f99e5fc.js.map",
+    "main.5298b08c.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.5298b08c.css.map",
+    "main.5f51ec9d.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.5f51ec9d.js.map",
     "453.a376ded4.chunk.js.map": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.41c6a5ef.css",
-    "static/js/main.6f99e5fc.js"
+    "static/css/main.5298b08c.css",
+    "static/js/main.5f51ec9d.js"
   ]
 }
