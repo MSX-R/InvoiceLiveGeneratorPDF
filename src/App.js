@@ -5,7 +5,8 @@ import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
-import TestVmaTapis from "./pages/TestVmaTapis"; // Importation du nouveau composant
+import TestVmaTapis from "./pages/TestVmaTapis";
+import SuiviClients from "./pages/suiviClients"; // Importation du nouveau composant
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -49,8 +50,10 @@ function App() {
         <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
         <Route path="/tableau-berger" element={<TableauBerger />} />
         <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
-        <Route path="/vma-tapis" element={<TestVmaTapis />} /> {/* Ajout de la nouvelle route */}
+        <Route path="/vma-tapis" element={<TestVmaTapis />} />
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
+        {/* Nouvelle route pour Suivi des Clients */}
+        <Route path="/compteur-seances" element={<SuiviClients />} /> {/* Ajout de la route */}
       </Routes>
     </Router>
   );

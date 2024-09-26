@@ -2,8 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { PrixProvider } from "./contexts/PrixContext"; // Import du Provider pour les prix
-import { DateProvider } from "./contexts/DateContext"; // Import du Provider pour la date
+import { PrixProvider } from "./contexts/PrixContext";
+import { DateProvider } from "./contexts/DateContext";
+import { OffresServicesProvider } from "./contexts/OffresServicesContext"; // Import du provider OffresServices
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -15,7 +16,11 @@ root.render(
       <DateProvider>
         {" "}
         {/* Provider pour la date */}
-        <App />
+        <OffresServicesProvider>
+          {" "}
+          {/* Provider pour les offres et services */}
+          <App />
+        </OffresServicesProvider>
       </DateProvider>
     </PrixProvider>
   </React.StrictMode>
