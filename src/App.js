@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
@@ -8,8 +7,14 @@ import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
 import TestVmaTapis from "./pages/TestVmaTapis";
 import SuiviClients from "./pages/SuiviClients";
-import TabataChrono from "./pages/TabataChrono"; // Importation du nouveau composant TabataChrono
-import ChronoDetail from "./Components/ChronoDetail"; // Importation du nouveau composant ChronoDetail
+import TabataChrono from "./pages/TabataChrono";
+import ChronoDetail from "./Components/ChronoDetail";
+
+// Importation des pages tarifaires
+import OffresCoachings from "./pages/OffresCoachings";
+import SoloTarifs from "./pages/Tarifs/SoloTarifs";
+import DuoTarifs from "./pages/Tarifs/DuoTarifs";
+import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -55,10 +60,17 @@ function App() {
         <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
         <Route path="/vma-tapis" element={<TestVmaTapis />} />
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
-        <Route path="/compteur-seances" element={<SuiviClients />} /> {/* Route pour Suivi des Clients */}
-        <Route path="/tabata-chrono" element={<TabataChrono />} /> {/* Nouvelle route pour TabataChrono */}
-        <Route path="/chrono/:id" element={<ChronoDetail />} /> {/* Nouvelle route pour ChronoDetail */}
-        <Route path="*" element={<div>404 Not Found</div>} /> {/* Route pour les pages non trouvées */}
+        <Route path="/compteur-seances" element={<SuiviClients />} />
+        <Route path="/tabata-chrono" element={<TabataChrono />} />
+        <Route path="/chrono/:id" element={<ChronoDetail />} />
+
+        {/* Routes pour les offres coachings */}
+        <Route path="/offres-coachings" element={<OffresCoachings />} />
+        <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+        <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
+        <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
+
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </Router>
   );
