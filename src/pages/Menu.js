@@ -33,6 +33,11 @@ const Menu = () => {
           <button className="bg-teal-600 text-white py-4 px-6 rounded-md hover:bg-teal-700" onClick={() => navigate("/tabata-chrono")}>
             TABATA-CHRONO | Chronomètre Personnalisable
           </button>
+          {/* Nouveau bouton pour TABLEAU DES STATS */}
+          <hr />
+          <button className="bg-indigo-600 text-white py-4 px-6 rounded-md hover:bg-indigo-700" onClick={() => navigate("/tableau-des-stats")}>
+            TABLEAU DES STATS
+          </button>
         </div>
       </div>
     </div>

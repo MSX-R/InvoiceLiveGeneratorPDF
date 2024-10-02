@@ -16,6 +16,9 @@ import SoloTarifs from "./pages/Tarifs/SoloTarifs";
 import DuoTarifs from "./pages/Tarifs/DuoTarifs";
 import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
 
+// Importation de la page Tableau des Stats
+import TableauDesStats from "./pages/TableauDesStats"; // Assurez-vous que ce chemin est correct
+
 function App() {
   const [invoice, setInvoice] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -63,6 +66,9 @@ function App() {
         <Route path="/compteur-seances" element={<SuiviClients />} />
         <Route path="/tabata-chrono" element={<TabataChrono />} />
         <Route path="/chrono/:id" element={<ChronoDetail />} />
+
+        {/* Route pour le tableau des stats */}
+        <Route path="/tableau-des-stats" element={<TableauDesStats />} />
 
         {/* Routes pour les offres coachings */}
         <Route path="/offres-coachings" element={<OffresCoachings />} />

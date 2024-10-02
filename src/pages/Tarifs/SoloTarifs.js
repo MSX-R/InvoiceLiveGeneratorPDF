@@ -37,7 +37,7 @@ const SoloTarifs = () => {
             <p className="text-current text-sm mt-1">Profitez d'un tarif réduit avec un engagement minimal.</p>
             <p className="text-current text-xs mt-1 ">Un bon début pour entamer votre coaching.</p>
 
-            <p className="w-full text-start mt-4">
+            <p className="w-full text-center mt-4">
               <span className="font-bold text-current text-3xl text-right w-full ">60 €/</span>
               <span className="font-bold text-current text-lg text-right w-full ">séance</span>
             </p>
