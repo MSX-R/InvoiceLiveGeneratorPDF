@@ -6,9 +6,8 @@ import { FaCheckCircle, FaTimes } from "react-icons/fa"; // Importer les icônes
 const TableauDesStats = () => {
   const [bilanFormValue, setBilanFormValue] = useState({ date: new Date().toISOString().split("T")[0] });
   const [inputs, setInputs] = useState({});
-  const [exercises, setExercises] = useState({}); // État pour stocker les exercices
+  const [exercises, setExercises] = useState({});
 
-  // Utiliser useEffect pour charger les données JSON
   useEffect(() => {
     // Charger les exercices à partir du fichier JSON
     setExercises(exercicesData.exercises);
@@ -34,22 +33,19 @@ const TableauDesStats = () => {
         [exercise]: "",
       },
     }));
-    console.log(`Valeur réinitialisée pour ${exercise} dans ${theme}`);
   };
 
   const handleValidate = (theme, exercise) => {
-    // Validation d'entrée de l'utilisateur
     const value = inputs[theme]?.[exercise] || "";
     if (value) {
       console.log(`Valeur enregistrée pour ${exercise} : ${value}`);
     }
   };
 
-  // Nouvelle fonction pour insérer des valeurs de test
   const insertTestValues = () => {
     const testValues = {
       avec_equipement: {
-        "Développé couché (barre ou haltères)": 80, // 80 kg
+        "Développé couché (barre ou haltères)": 80,
         "Développé incliné (barre ou haltères)": 70,
         "Pec Fly": 25,
         "Tirage horizontal (machine)": 60,
@@ -70,7 +66,7 @@ const TableauDesStats = () => {
         "Obliques (haltères)": 15,
       },
       sans_equipement: {
-        Pompes: 10, // 10 répétitions
+        Pompes: 10,
         "Pompes déclinées": 10,
         "Pompes inclinées": 10,
         "Tractions pronation": 5,
@@ -82,44 +78,40 @@ const TableauDesStats = () => {
         "Pont fessier": 15,
         "Fentes bulgares": 10,
         Crunchs: 15,
-        Planches: 30, // 30 secondes
+        Planches: 30,
         "Mountain climber": 30,
-        "Gainage latéral oblique": 20, // 20 secondes
+        "Gainage latéral oblique": 20,
       },
       tests_cardio: {
-        "Test Vameval au tapis": 1600, // Distance en mètres
-        "Test Vameval modifié à l'elliptique": 20, // Durée en minutes
+        "Test Vameval au tapis": 1600,
+        "Test Vameval modifié à l'elliptique": 20,
       },
     };
 
     // Mettre à jour les entrées avec les valeurs de test
-    const newInputs = {};
-    Object.keys(exercises).forEach((theme) => {
-      newInputs[theme] = {};
+    const newInputs = Object.keys(exercises).reduce((acc, theme) => {
+      acc[theme] = {};
       Object.entries(exercises[theme]).forEach(([key, exerciseList]) => {
         exerciseList.forEach((exercise) => {
-          newInputs[theme][exercise] = testValues[theme]?.[exercise] || 0; // Insère une valeur de test ou 0 si aucune valeur de test n'est définie
+          acc[theme][exercise] = testValues[theme]?.[exercise] || 0;
         });
       });
-    });
+      return acc;
+    }, {});
 
-    setInputs(newInputs); // Mettez à jour l'état avec les nouvelles valeurs
+    setInputs(newInputs);
   };
 
   const handleSave = () => {
-    // Supprime les exercices vides
     const filteredInputs = Object.fromEntries(Object.entries(inputs).map(([theme, exercises]) => [theme, Object.fromEntries(Object.entries(exercises).filter(([exercise, value]) => value !== ""))]));
 
-    // Affichez les entrées avant de les enregistrer
     console.log("Valeurs actuelles des exercices :", filteredInputs);
 
-    // Mettez à jour le bilan
     setBilanFormValue((prev) => ({
       ...prev,
       exercises: { ...filteredInputs },
     }));
 
-    // Affichez l'objet de bilan avec les exercices mis à jour
     console.log("Données enregistrées :", { ...bilanFormValue, exercises: { ...filteredInputs } });
     alert("Valeurs sauvegardées pour la date : " + bilanFormValue.date);
   };
