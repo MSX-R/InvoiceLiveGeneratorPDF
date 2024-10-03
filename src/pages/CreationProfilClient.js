@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom"; // Import du hook useNavigate
+import { ClientsContext } from "../contexts/ClientsContext"; // Import du ClientContext
 
 const CreationProfilClient = () => {
+  const { addClient, clients } = useContext(ClientsContext); // Utilisation du contexte pour ajouter un client
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -12,8 +15,11 @@ const CreationProfilClient = () => {
     city: "",
     birthDate: "",
     isMale: true, // True pour homme, False pour femme
+    profilePicture: null, // Champ pour la photo de profil
+    profilePictureUrl: "", // Champ pour l'URL de la photo de profil
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate(); // Initialisation du hook useNavigate
 
   // Animation d'apparition au montage du composant
   useEffect(() => {
@@ -32,6 +38,7 @@ const CreationProfilClient = () => {
     if (!formData.postalCode.trim()) newErrors.postalCode = "Le code postal est requis";
     if (!formData.city.trim()) newErrors.city = "La ville est requise";
     if (!formData.birthDate) newErrors.birthDate = "La date de naissance est requise";
+    // Pas d'erreur pour la photo, car c'est facultatif
     return newErrors;
   };
 
@@ -40,8 +47,15 @@ const CreationProfilClient = () => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length === 0) {
-      // Création de l'objet "Nouveau Client"
+      // Si aucune photo n'est fournie, utilisez l'URL par défaut
+      const finalProfilePicture = formData.profilePicture ? URL.createObjectURL(formData.profilePicture) : formData.profilePictureUrl || "https://cdn-icons-png.flaticon.com/512/8847/8847419.png"; // URL par défaut
+
+      // Ajout du nouveau client via le contexte
+      addClient({ ...formData, profilePicture: finalProfilePicture });
       console.log("Nouveau client créé :", formData);
+      console.log("Etat de clients au moment de l'enregistrement du client :", clients); // Affichez les clients ici, mais attention à la fermeture
+
+      // Réinitialiser le formulaire après la soumission
       setFormData({
         firstName: "",
         lastName: "",
@@ -52,8 +66,13 @@ const CreationProfilClient = () => {
         city: "",
         birthDate: "",
         isMale: true,
+        profilePicture: null, // Réinitialiser le champ de photo
+        profilePictureUrl: "", // Réinitialiser l'URL de la photo
       });
       setErrors({});
+
+      // Redirection vers la page ListeClients après l'ajout
+      navigate("/liste-clients"); // Assurez-vous que ce chemin correspond à votre route
     } else {
       setErrors(validationErrors);
     }
@@ -68,6 +87,32 @@ const CreationProfilClient = () => {
     }));
   };
 
+  // Gestion de la sélection de fichier
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Vérification du type de fichier
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        setErrors((prevErrors) => ({ ...prevErrors, profilePicture: "Le fichier doit être une image JPEG ou PNG." }));
+        return;
+      }
+
+      // Vérification de la taille du fichier (2 Mo max)
+      if (file.size > 2 * 1024 * 1024) {
+        setErrors((prevErrors) => ({ ...prevErrors, profilePicture: "La taille de l'image ne doit pas dépasser 2 Mo." }));
+        return;
+      }
+
+      // Réinitialiser les erreurs si tout va bien
+      setErrors((prevErrors) => ({ ...prevErrors, profilePicture: undefined }));
+      setFormData((prevData) => ({
+        ...prevData,
+        profilePicture: file,
+      }));
+    }
+  };
+
   // Fonction pour remplir le formulaire avec des données fictives
   const fillDummyData = () => {
     setFormData({
@@ -80,6 +125,8 @@ const CreationProfilClient = () => {
       city: "Cannes",
       birthDate: "1992-03-11",
       isMale: true,
+      profilePicture: null,
+      profilePictureUrl: "", // Réinitialiser l'URL de la photo
     });
   };
 
@@ -94,6 +141,23 @@ const CreationProfilClient = () => {
         </button>
 
         <form onSubmit={handleSubmit}>
+          {/* Champ pour la photo de profil */}
+          <div className="relative mb-6">
+            <label htmlFor="profilePicture" className="block text-gray-700 mb-2">
+              Photo de Profil (ou URL)
+            </label>
+            <input type="file" name="profilePicture" accept="image/*" onChange={handleFileChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} />
+            {errors.profilePicture && <p className="text-red-500 text-sm mt-1">{errors.profilePicture}</p>}
+          </div>
+
+          {/* Champ pour l'URL de la photo de profil */}
+          <div className="relative mb-6">
+            <label htmlFor="profilePictureUrl" className="block text-gray-700 mb-2">
+              Ou entrez l'URL de la photo de profil
+            </label>
+            <input type="url" name="profilePictureUrl" value={formData.profilePictureUrl} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} placeholder="https://exemple.com/ma-photo.jpg" />
+          </div>
+
           {/* Prénom */}
           <div className="relative mb-6">
             <label htmlFor="firstName" className="block text-gray-700 mb-2">
@@ -135,7 +199,7 @@ const CreationProfilClient = () => {
             <label htmlFor="address" className="block text-gray-700 mb-2">
               Adresse
             </label>
-            <textarea name="address" value={formData.address} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.address ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} />
+            <input type="text" name="address" value={formData.address} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.address ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} />
             {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
           </div>
 
@@ -167,21 +231,20 @@ const CreationProfilClient = () => {
           </div>
 
           {/* Sexe */}
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Sexe :</label>
-            <label className="inline-flex items-center mr-6">
-              <input type="radio" name="isMale" value="true" checked={formData.isMale} onChange={() => setFormData({ ...formData, isMale: true })} className="mr-1" />
-              Homme
+          <div className="mb-6 flex items-center">
+            <label htmlFor="isMale" className="block text-gray-700 mr-4">
+              Sexe:
             </label>
-            <label className="inline-flex items-center">
-              <input type="radio" name="isMale" value="false" checked={!formData.isMale} onChange={() => setFormData({ ...formData, isMale: false })} className="mr-1" />
-              Femme
+            <label className="mr-4">
+              <input type="radio" name="isMale" value={true} checked={formData.isMale} onChange={handleInputChange} /> Homme
+            </label>
+            <label>
+              <input type="radio" name="isMale" value={false} checked={!formData.isMale} onChange={handleInputChange} /> Femme
             </label>
           </div>
 
-          {/* Bouton de soumission */}
-          <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-md">
-            Créer le profil
+          <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-md mt-4">
+            Créer le Profil
           </button>
         </form>
       </div>
