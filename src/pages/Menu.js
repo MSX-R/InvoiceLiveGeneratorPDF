@@ -13,7 +13,7 @@ const Menu = () => {
         <div className="flex flex-col space-y-4">
           
           {/* Affichage des boutons en fonction du rôle */}
-          {/* Par exemple, pour le rôle Administrateur (1) */}
+          {/* Administrateur (1) */}
           {userRole === "1" && (
             <>
               <button
