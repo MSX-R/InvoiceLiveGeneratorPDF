@@ -1,10 +1,15 @@
+// App.js
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import Menu from "./pages/Menu";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
-import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
-import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles"; // Nouveau composant pour les mensurations
+import TableauBerger from "./pages/TableauBerger";
+import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
+import TestVmaTapis from "./pages/TestVmaTapis";
+import SuiviClients from "./pages/SuiviClients"; // Importation du suivi des clients
+import TabataChrono from "./pages/TabataChrono"; // Importation du nouveau composant TabataChrono
+import ChronoDetail from "./Components/ChronoDetail"; // Importation du nouveau composant ChronoDetail
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -45,10 +50,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Menu />} />
-        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />} />
         <Route path="/tableau-berger" element={<TableauBerger />} />
         <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
+        <Route path="/vma-tapis" element={<TestVmaTapis />} />
         <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
+        <Route path="/compteur-seances" element={<SuiviClients />} /> {/* Route pour Suivi des Clients */}
+        <Route path="/tabata-chrono" element={<TabataChrono />} /> {/* Nouvelle route pour TabataChrono */}
+        <Route path="/chrono/:id" element={<ChronoDetail />} /> {/* Nouvelle route pour ChronoDetail */}
+        <Route path="*" element={<div>404 Not Found</div>} /> {/* Route pour les pages non trouvées */}
       </Routes>
     </Router>
   );

@@ -1,4 +1,3 @@
-// Components/Menu.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +17,16 @@ const Menu = () => {
           </button>
           <button className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>
             DONNEES CORPORELLES | Réaliser un bilan
+          </button>
+          <button className="bg-red-600 text-white py-4 px-6 rounded-md hover:bg-red-700" onClick={() => navigate("/vma-tapis")}>
+            VMA | Trouver sa VMA au VAMEVAL (tapis)
+          </button>
+          {/* Nouveau bouton */}
+          <button className="bg-yellow-600 text-white py-4 px-6 rounded-md hover:bg-yellow-700" onClick={() => navigate("/compteur-seances")}>
+            SUIVI CONSO | Compteur de Séances
+          </button>
+          <button className="bg-teal-600 text-white py-4 px-6 rounded-md hover:bg-teal-700" onClick={() => navigate("/tabata-chrono")}>
+            TABATA-CHRONO | Chronomètre Personnalisable
           </button>
         </div>
       </div>
