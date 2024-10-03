@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../contexts/AuthContext'; // Importez le contexte d'authentification
 
 const Menu = () => {
   const navigate = useNavigate();
-  const { userRole } = useAuth(); // Utilisez le contexte pour obtenir le rôle de l'utilisateur
+  const { userRole, isAuthenticated, refreshUserRole } = useAuth(); // Utilisez le contexte pour obtenir le rôle et le statut d'authentification
+  const [role, setRole] = useState(null);
+
+  // Utilisez useEffect pour mettre à jour l'état local 'role' quand 'userRole' change
+  useEffect(() => {
+    if (isAuthenticated) {
+      refreshUserRole(); // Actualiser les informations de rôle
+      setRole(userRole);
+    }
+  }, [userRole, isAuthenticated, refreshUserRole]);
+
+  // Si l'utilisateur n'est pas encore prêt, afficher un chargement
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6">
+        <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg text-center">
+          <h1 className="text-4xl font-bold mb-8">Chargement du menu...</h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -14,7 +34,7 @@ const Menu = () => {
           
           {/* Affichage des boutons en fonction du rôle */}
           {/* Administrateur (1) */}
-          {userRole === "1" && (
+          {role === "1" && (
             <>
               <button
                 className="bg-gray-600 text-white py-4 px-6 rounded-md hover:bg-gray-700"
@@ -54,7 +74,7 @@ const Menu = () => {
           </button>
 
           {/* Données Corporelles et Stats - Rôle Admin (1) et Client (3) */}
-          {(userRole === "1" || userRole === "3") && (
+          {(role === "1" || role === "3") && (
             <>
               <button
                 className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700"
@@ -73,7 +93,7 @@ const Menu = () => {
           )}
 
           {/* Tableau de Berger, VMA et Tabata Chrono - Pour les utilisateurs connectés */}
-          {userRole && (
+          {role && (
             <>
               <button
                 className="bg-green-600 text-white py-4 px-6 rounded-md hover:bg-green-700"
