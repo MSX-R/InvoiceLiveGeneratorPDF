@@ -124,7 +124,7 @@ const CreationProfilClient = () => {
       postalCode: "06400",
       city: "Cannes",
       birthDate: "1992-03-11",
-      isMale: true,
+      sexe: "Homme",
       profilePicture: null,
       profilePictureUrl: "", // Réinitialiser l'URL de la photo
     });
@@ -141,23 +141,6 @@ const CreationProfilClient = () => {
         </button>
 
         <form onSubmit={handleSubmit}>
-          {/* Champ pour la photo de profil */}
-          <div className="relative mb-6">
-            <label htmlFor="profilePicture" className="block text-gray-700 mb-2">
-              Photo de Profil (ou URL)
-            </label>
-            <input type="file" name="profilePicture" accept="image/*" onChange={handleFileChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} />
-            {errors.profilePicture && <p className="text-red-500 text-sm mt-1">{errors.profilePicture}</p>}
-          </div>
-
-          {/* Champ pour l'URL de la photo de profil */}
-          <div className="relative mb-6">
-            <label htmlFor="profilePictureUrl" className="block text-gray-700 mb-2">
-              Ou entrez l'URL de la photo de profil
-            </label>
-            <input type="url" name="profilePictureUrl" value={formData.profilePictureUrl} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} placeholder="https://exemple.com/ma-photo.jpg" />
-          </div>
-
           {/* Prénom */}
           <div className="relative mb-6">
             <label htmlFor="firstName" className="block text-gray-700 mb-2">
@@ -231,16 +214,33 @@ const CreationProfilClient = () => {
           </div>
 
           {/* Sexe */}
-          <div className="mb-6 flex items-center">
-            <label htmlFor="isMale" className="block text-gray-700 mr-4">
-              Sexe:
+          <div className="relative mb-6">
+            <label htmlFor="sexe" className="block text-gray-700 mb-2">
+              Sexe
             </label>
-            <label className="mr-4">
-              <input type="radio" name="isMale" value={true} checked={formData.isMale} onChange={handleInputChange} /> Homme
+            <select name="sexe" value={formData.sexe} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.sexe ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`}>
+              <option value="">Sélectionnez...</option>
+              <option value="Homme">Homme</option>
+              <option value="Femme">Femme</option>
+            </select>
+            {errors.sexe && <p className="text-red-500 text-sm mt-1">{errors.sexe}</p>}
+          </div>
+
+          {/* Champ pour la photo de profil */}
+          <div className="relative mb-6">
+            <label htmlFor="profilePicture" className="block text-gray-700 mb-2">
+              Photo de Profil (ou URL)
             </label>
-            <label>
-              <input type="radio" name="isMale" value={false} checked={!formData.isMale} onChange={handleInputChange} /> Femme
+            <input type="file" name="profilePicture" accept="image/*" onChange={handleFileChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} />
+            {errors.profilePicture && <p className="text-red-500 text-sm mt-1">{errors.profilePicture}</p>}
+          </div>
+
+          {/* Champ pour l'URL de la photo de profil */}
+          <div className="relative mb-6">
+            <label htmlFor="profilePictureUrl" className="block text-gray-700 mb-2">
+              Ou entrez l'URL de la photo de profil
             </label>
+            <input type="url" name="profilePictureUrl" value={formData.profilePictureUrl} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-100 border ${errors.profilePicture ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:border-blue-500 transition-all`} placeholder="https://exemple.com/ma-photo.jpg" />
           </div>
 
           <button type="submit" className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-md mt-4">
