@@ -1,3 +1,4 @@
+// AuthContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -8,11 +9,11 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-  const [userRole, setUserRole] = useState(localStorage.getItem('role') || '');
+  const [userRole, setUserRole] = useState(localStorage.getItem('role') || null);
 
   const login = (token, role) => {
     localStorage.setItem('token', token);
-    localStorage.setItem('role', role); // Enregistrer le rôle dans le stockage local
+    localStorage.setItem('role', role);
     setIsAuthenticated(true);
     setUserRole(role);
   };
@@ -21,11 +22,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     setIsAuthenticated(false);
-    setUserRole('');
+    setUserRole(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, userRole }}>
       {children}
     </AuthContext.Provider>
   );
