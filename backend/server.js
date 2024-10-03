@@ -121,7 +121,7 @@ app.get('/api/users', verifyToken, async (req, res) => {
 // Route pour la connexion (login)
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
-  const hashedPassword = hashPassword(password); // Hachage du mot de passe fourni
+  const hashedPassword = hashPassword(password);
 
   const sql = 'SELECT * FROM User WHERE email = ? AND password = ?';
   try {
@@ -130,7 +130,7 @@ app.post('/api/login', async (req, res) => {
     if (Array.isArray(results) && results.length > 0) {
       const user = results[0];
       const token = createToken(user); // Créer un jeton
-      res.json({ message: 'Connexion réussie !', token });
+      res.json({ message: 'Connexion réussie !', token, role: user.role_id }); // Retourner également le rôle
     } else {
       res.status(401).json({ message: 'Identifiants incorrects' });
     }

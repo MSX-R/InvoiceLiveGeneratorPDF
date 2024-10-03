@@ -23,14 +23,14 @@ import DuoTarifs from "./pages/Tarifs/DuoTarifs";
 import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
 
 // Importation de la page Tableau des Stats
-import TableauDesStats from "./pages/TableauDesStats"; // Assurez-vous que ce chemin est correct
+import TableauDesStats from "./pages/TableauDesStats";
 
 // Import the new components
-import CreationProfilClient from "./pages/CreationProfilClient"; // Path might vary based on folder structure
-import ListeClients from "./pages/ListeClients"; // Path might vary based on folder structure
+import CreationProfilClient from "./pages/CreationProfilClient";
+import ListeClients from "./pages/ListeClients";
 
 // Import the NotFound component
-import NotFound from "./pages/NotFound"; // Adjust the path if necessary
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -73,11 +73,18 @@ function App() {
         <Router>
           <Header />
           <Routes>
+            {/*
+              Droits pour les routes (requiredRoles)
+              1 - Administrateur
+              2 - Entreprise
+              3 - Client
+              4 - Visiteur
+            */}
             {/* Routes publiques */}
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
-            {/* Route privées */}
+            {/* Routes privées pour tout utilisateur connecté */}
             <Route path="/menu" element={<PrivateRoute><Menu /></PrivateRoute>} />
             <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
             <Route path="/tableau-berger" element={<PrivateRoute><TableauBerger /></PrivateRoute>} />
@@ -87,25 +94,24 @@ function App() {
             <Route path="/compteur-seances" element={<PrivateRoute><SuiviClients /></PrivateRoute>} />
             <Route path="/tabata-chrono" element={<PrivateRoute><TabataChrono /></PrivateRoute>} />
             <Route path="/chrono/:id" element={<PrivateRoute><ChronoDetail /></PrivateRoute>} />
+            <Route path="/tableau-des-stats" element={<PrivateRoute><TableauDesStats /></PrivateRoute>} />
 
-        {/* Route pour le tableau des stats */}
-        <Route path="/tableau-des-stats" element={<TableauDesStats />} />
-        {/* Routes pour les offres coachings */}
-        <Route path="/offres-coachings" element={<OffresCoachings />} />
-        <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
-        <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
-        <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
-        {/* Routes for Création Profils Client and Liste de Clients */}
-        <Route path="/creation-profil-client" element={<CreationProfilClient />} />
-        <Route path="/liste-clients" element={<ListeClients />} />
-        {/* Catch-all route for 404 */}
-        <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
+            {/* Routes pour les offres coachings */}
+            <Route path="/offres-coachings" element={<OffresCoachings />} />
+            <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+            <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
+            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
 
+            {/* Routes protégées selon le rôle */}
+            <Route path="/creation-profil-client" element={<PrivateRoute requiredRoles={[1]}><CreationProfilClient /></PrivateRoute>} />
+            <Route path="/liste-clients" element={<PrivateRoute requiredRoles={[1]}><ListeClients /></PrivateRoute>} />
+
+            {/* Catch-all route for 404 */}
+            <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
           </Routes>
         </Router>
       </NotificationProvider>
     </AuthProvider>
-
   );
 }
 

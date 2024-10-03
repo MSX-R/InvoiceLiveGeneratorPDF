@@ -8,19 +8,24 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [userRole, setUserRole] = useState(localStorage.getItem('role') || '');
 
-  const login = (token) => {
+  const login = (token, role) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('role', role); // Enregistrer le rôle dans le stockage local
     setIsAuthenticated(true);
+    setUserRole(role);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     setIsAuthenticated(false);
+    setUserRole('');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
