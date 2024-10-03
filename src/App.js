@@ -1,7 +1,13 @@
 // App.js
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import PrivateRoute from './services/PrivateRoute';
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { AuthProvider } from './contexts/AuthContext';
+import Login from "./pages/Login";
+import Signup from './pages/Signup';
 import Menu from "./pages/Menu";
+import Header from './Components/Header';
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
@@ -47,20 +53,30 @@ function App() {
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Menu />} />
-        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />} />
-        <Route path="/tableau-berger" element={<TableauBerger />} />
-        <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
-        <Route path="/vma-tapis" element={<TestVmaTapis />} />
-        <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
-        <Route path="/compteur-seances" element={<SuiviClients />} /> {/* Route pour Suivi des Clients */}
-        <Route path="/tabata-chrono" element={<TabataChrono />} /> {/* Nouvelle route pour TabataChrono */}
-        <Route path="/chrono/:id" element={<ChronoDetail />} /> {/* Nouvelle route pour ChronoDetail */}
-        <Route path="*" element={<div>404 Not Found</div>} /> {/* Route pour les pages non trouvées */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <NotificationProvider>
+        <Router>
+          <Header />
+          <Routes>
+            {/* Routes publiques */}
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Route privées */}
+            <Route path="/menu" element={<PrivateRoute><Menu /></PrivateRoute>} />
+            <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+            <Route path="/tableau-berger" element={<PrivateRoute><TableauBerger /></PrivateRoute>} />
+            <Route path="/formulaire-donnees-corporelles" element={<PrivateRoute><FormulaireDonneesCorporelles /></PrivateRoute>} />
+            <Route path="/vma-tapis" element={<PrivateRoute><TestVmaTapis /></PrivateRoute>} />
+            <Route path="/invoice-preview" element={<PrivateRoute><InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} /></PrivateRoute>} />
+            <Route path="/compteur-seances" element={<PrivateRoute><SuiviClients /></PrivateRoute>} />
+            <Route path="/tabata-chrono" element={<PrivateRoute><TabataChrono /></PrivateRoute>} />
+            <Route path="/chrono/:id" element={<PrivateRoute><ChronoDetail /></PrivateRoute>} />
+            <Route path="*" element={<div>404 Not Found</div>} />
+          </Routes>
+        </Router>
+      </NotificationProvider>
+    </AuthProvider>
   );
 }
 
