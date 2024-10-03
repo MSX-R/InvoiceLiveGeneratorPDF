@@ -1,20 +1,20 @@
-// pages/TableauDesStats.js
 import React, { useState, useEffect } from "react";
-import exercicesData from "../config/exercicesRM.json"; // Assurez-vous que le chemin est correct
-import { FaCheckCircle, FaTimes } from "react-icons/fa"; // Importer les icônes
+import exercicesData from "../config/exercicesRM.json";
+import { FaCheckCircle, FaTimes } from "react-icons/fa";
+import Modal from "../Components/Modal"; // Importer le composant Modal
 
 const TableauDesStats = () => {
   const [bilanFormValue, setBilanFormValue] = useState({ date: new Date().toISOString().split("T")[0] });
   const [inputs, setInputs] = useState({});
   const [exercises, setExercises] = useState({});
+  const [isModalOpen, setModalOpen] = useState(false); // État pour gérer l'ouverture de la modale
+  const [summaryData, setSummaryData] = useState({}); // État pour stocker les données à résumer
 
   useEffect(() => {
-    // Charger les exercices à partir du fichier JSON
     setExercises(exercicesData.exercises);
   }, []);
 
   const handleChange = (theme, exercise, value) => {
-    // Met à jour l'état avec la nouvelle valeur saisie
     setInputs((prevInputs) => ({
       ...prevInputs,
       [theme]: {
@@ -25,7 +25,6 @@ const TableauDesStats = () => {
   };
 
   const handleReset = (theme, exercise) => {
-    // Réinitialiser la valeur de l'exercice
     setInputs((prevInputs) => ({
       ...prevInputs,
       [theme]: {
@@ -83,12 +82,11 @@ const TableauDesStats = () => {
         "Gainage latéral oblique": 20,
       },
       tests_cardio: {
-        "Test Vameval au tapis": 1600,
-        "Test Vameval modifié à l'elliptique": 20,
+        "Test sur tapis": 1600,
+        "Test modifié à l'elliptique": 20,
       },
     };
 
-    // Mettre à jour les entrées avec les valeurs de test
     const newInputs = Object.keys(exercises).reduce((acc, theme) => {
       acc[theme] = {};
       Object.entries(exercises[theme]).forEach(([key, exerciseList]) => {
@@ -112,8 +110,8 @@ const TableauDesStats = () => {
       exercises: { ...filteredInputs },
     }));
 
-    console.log("Données enregistrées :", { ...bilanFormValue, exercises: { ...filteredInputs } });
-    alert("Valeurs sauvegardées pour la date : " + bilanFormValue.date);
+    setSummaryData(filteredInputs); // Enregistrer les données à résumer
+    setModalOpen(true); // Ouvrir la modale
   };
 
   return (
@@ -161,6 +159,24 @@ const TableauDesStats = () => {
           </button>
         </div>
       </div>
+
+      {/* Modale récapitulative */}
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Récapitulatif des Valeurs">
+        <div>
+          {Object.entries(summaryData).map(([theme, exercises]) => (
+            <div key={theme} className="mb-4">
+              <h3 className="text-xl font-semibold">{theme.replace("_", " ").toUpperCase()}</h3>
+              <ul className="list-disc list-inside">
+                {Object.entries(exercises).map(([exercise, value]) => (
+                  <li key={exercise}>
+                    <strong>{exercise}:</strong> {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 };

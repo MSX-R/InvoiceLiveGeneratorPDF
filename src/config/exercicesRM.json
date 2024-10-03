@@ -17,7 +17,7 @@
       "abdominaux": ["Crunchs", "Planches", "Mountain climber", "Gainage latéral oblique"]
     },
     "tests_cardio": {
-      "tests": ["Test Vameval au tapis", "Test Vameval modifié à l'elliptique"]
+      "VAMEVAL": ["Test sur tapis", "Test modifié à l'elliptique"]
     }
   }
 }

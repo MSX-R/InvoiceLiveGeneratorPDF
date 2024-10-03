@@ -19,6 +19,13 @@ import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
 // Importation de la page Tableau des Stats
 import TableauDesStats from "./pages/TableauDesStats"; // Assurez-vous que ce chemin est correct
 
+// Import the new components
+import CreationProfilClient from "./pages/CreationProfilClient"; // Path might vary based on folder structure
+import ListeClients from "./pages/ListeClients"; // Path might vary based on folder structure
+
+// Import the NotFound component
+import NotFound from "./pages/NotFound"; // Adjust the path if necessary
+
 function App() {
   const [invoice, setInvoice] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
@@ -66,17 +73,18 @@ function App() {
         <Route path="/compteur-seances" element={<SuiviClients />} />
         <Route path="/tabata-chrono" element={<TabataChrono />} />
         <Route path="/chrono/:id" element={<ChronoDetail />} />
-
         {/* Route pour le tableau des stats */}
         <Route path="/tableau-des-stats" element={<TableauDesStats />} />
-
         {/* Routes pour les offres coachings */}
         <Route path="/offres-coachings" element={<OffresCoachings />} />
         <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
         <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
         <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
-
-        <Route path="*" element={<div>404 Not Found</div>} />
+        {/* Routes for Création Profils Client and Liste de Clients */}
+        <Route path="/creation-profil-client" element={<CreationProfilClient />} />
+        <Route path="/liste-clients" element={<ListeClients />} />
+        {/* Catch-all route for 404 */}
+        <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
       </Routes>
     </Router>
   );
