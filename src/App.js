@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import PrivateRoute from './services/PrivateRoute';
@@ -13,9 +12,25 @@ import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
 import TestVmaTapis from "./pages/TestVmaTapis";
-import SuiviClients from "./pages/SuiviClients"; // Importation du suivi des clients
-import TabataChrono from "./pages/TabataChrono"; // Importation du nouveau composant TabataChrono
-import ChronoDetail from "./Components/ChronoDetail"; // Importation du nouveau composant ChronoDetail
+import SuiviClients from "./pages/SuiviClients";
+import TabataChrono from "./pages/TabataChrono";
+import ChronoDetail from "./Components/ChronoDetail";
+
+// Importation des pages tarifaires
+import OffresCoachings from "./pages/OffresCoachings";
+import SoloTarifs from "./pages/Tarifs/SoloTarifs";
+import DuoTarifs from "./pages/Tarifs/DuoTarifs";
+import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
+
+// Importation de la page Tableau des Stats
+import TableauDesStats from "./pages/TableauDesStats"; // Assurez-vous que ce chemin est correct
+
+// Import the new components
+import CreationProfilClient from "./pages/CreationProfilClient"; // Path might vary based on folder structure
+import ListeClients from "./pages/ListeClients"; // Path might vary based on folder structure
+
+// Import the NotFound component
+import NotFound from "./pages/NotFound"; // Adjust the path if necessary
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -72,11 +87,25 @@ function App() {
             <Route path="/compteur-seances" element={<PrivateRoute><SuiviClients /></PrivateRoute>} />
             <Route path="/tabata-chrono" element={<PrivateRoute><TabataChrono /></PrivateRoute>} />
             <Route path="/chrono/:id" element={<PrivateRoute><ChronoDetail /></PrivateRoute>} />
-            <Route path="*" element={<div>404 Not Found</div>} />
+
+        {/* Route pour le tableau des stats */}
+        <Route path="/tableau-des-stats" element={<TableauDesStats />} />
+        {/* Routes pour les offres coachings */}
+        <Route path="/offres-coachings" element={<OffresCoachings />} />
+        <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+        <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
+        <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
+        {/* Routes for Création Profils Client and Liste de Clients */}
+        <Route path="/creation-profil-client" element={<CreationProfilClient />} />
+        <Route path="/liste-clients" element={<ListeClients />} />
+        {/* Catch-all route for 404 */}
+        <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
+
           </Routes>
         </Router>
       </NotificationProvider>
     </AuthProvider>
+
   );
 }
 

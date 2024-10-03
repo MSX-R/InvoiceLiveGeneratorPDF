@@ -1,0 +1,23 @@
+{
+  "exercises": {
+    "avec_equipement": {
+      "pectoraux": ["Développé couché (barre ou haltères)", "Développé incliné (barre ou haltères)", "Pec Fly"],
+      "dos": ["Tirage horizontal (machine)", "Tirage vertical (poulie haute)", "Tirage buste penché (barre)", "Soulevé de terre (barre)"],
+      "épaules": ["Développé militaire (haltères)", "Élévations latérales (haltères)", "Machine à épaule"],
+      "jambes": ["Presse à cuisses", "Squats (barre)", "Leg curl machine", "Leg extension machine"],
+      "fessiers": ["Hip thrust (barre)", "Fentes (haltères)"],
+      "mollets": ["Extension de mollets (machine)"],
+      "abdominaux": ["Crunch à la poulie", "Obliques (haltères)"]
+    },
+    "sans_equipement": {
+      "pectoraux": ["Pompes", "Pompes déclinées", "Pompes inclinées"],
+      "dos": ["Tractions pronation", "Traction supination", "Mouvement d'Arlaud"],
+      "jambes": ["Squats", "Fentes avant", "Fentes latérales"],
+      "fessiers": ["Pont fessier", "Fentes bulgares"],
+      "abdominaux": ["Crunchs", "Planches", "Mountain climber", "Gainage latéral oblique"]
+    },
+    "tests_cardio": {
+      "VAMEVAL": ["Test sur tapis", "Test modifié à l'elliptique"]
+    }
+  }
+}
