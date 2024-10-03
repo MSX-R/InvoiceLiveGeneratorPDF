@@ -27,7 +27,32 @@ const hashPassword = (password) => {
 
 // Fonction pour créer un token
 const createToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id: user.id, email: user.email, role: user.role_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
+
+// Middleware pour vérifier le token et l'authentification
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Accès refusé. Aucun token fourni.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Ajouter les informations utilisateur à la requête
+    next(); // Continuer à la prochaine route
+  } catch (err) {
+    res.status(401).json({ message: 'Token invalide.' });
+  }
+};
+
+// Route pour les administrateurs (role_id = 1)
+const verifyAdmin = (req, res, next) => {
+  if (req.user.role !== 1) {
+    return res.status(403).json({ message: 'Accès refusé. Droits administrateur requis.' });
+  }
+  next();
 };
 
 // Route pour la racine ("/")
@@ -73,7 +98,7 @@ app.post('/api/users', async (req, res) => {
       user.getNaissance(), user.getContactUrgence(), user.getSexe(), user.getNbEnfant(),
       user.getRoleId(), user.getDateCreation()
     ]);
-    
+
     user.setId(results.insertId); // Assigner l'ID de l'utilisateur créé
     res.status(201).json(user); // Retourner l'utilisateur créé
   } catch (err) {
@@ -82,7 +107,8 @@ app.post('/api/users', async (req, res) => {
 });
 
 // Route pour récupérer tous les utilisateurs (simplifiée pour l'exemple)
-app.get('/api/users', async (req, res) => {
+// Protéger cette route pour que seuls les utilisateurs authentifiés puissent y accéder
+app.get('/api/users', verifyToken, async (req, res) => {
   const sql = 'SELECT nom, prenom FROM User';
   try {
     const [results] = await pool.query(sql);
@@ -111,6 +137,16 @@ app.post('/api/login', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
+});
+
+// Route protégée qui nécessite un utilisateur authentifié
+app.get('/api/protected', verifyToken, (req, res) => {
+  res.json({ message: 'Bienvenue dans la zone protégée !', user: req.user });
+});
+
+// Exemple de route réservée aux administrateurs
+app.get('/api/admin', verifyToken, verifyAdmin, (req, res) => {
+  res.json({ message: 'Bienvenue dans la section administrateur.' });
 });
 
 app.listen(PORT, () => {
