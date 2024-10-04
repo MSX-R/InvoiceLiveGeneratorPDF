@@ -1,10 +1,12 @@
 // Login.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from "../contexts/NotificationContext";
 
 const Login = () => {
+  const { notification } = useNotification();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -53,6 +55,12 @@ const Login = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Connexion</h1>
+        {/* Affichage de la notification */}
+        {notification && (
+          <div className="bg-green-200 text-green-800 p-4 rounded-md mb-4">
+            {notification}
+          </div>
+        )}
         <form onSubmit={handleLogin} className="flex flex-col space-y-4">
           <input
             type="email"
@@ -75,6 +83,16 @@ const Login = () => {
             Se connecter
           </button>
         </form>
+
+        {/* Ajoutez le lien vers la page d'inscription */}
+        <div className="text-center mt-4">
+          <p className="text-gray-600">
+            Pas encore de compte ?{" "}
+            <Link to="/signup" className="text-blue-600 hover:underline">
+              Inscrivez-vous
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
