@@ -4,9 +4,13 @@ import { useAuth } from "../contexts/AuthContext"; // Importez le contexte d'aut
 import { MdLogout } from "react-icons/md"; // Importez l'icône de déconnexion
 
 const Menu2 = () => {
-  const { isAuthenticated, userRole, refreshUserRole, logout } = useAuth();
+  const { isAuthenticated, userRole, refreshUserRole, logout, loggedUser } = useAuth();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    console.log("Contenu de loggedUser :", loggedUser.nom);
+  }, [loggedUser]);
 
   // Utilisez useEffect pour mettre à jour l'état local 'role' quand 'userRole' change
   useEffect(() => {
@@ -63,9 +67,13 @@ const Menu2 = () => {
           className="h-12 w-12 rounded-full mb-2" // Classe pour la taille et l'arrondi
         />
         <div className="flex flex-col items-start">
-          <p className="text-center bold">NOM Prénom</p>
-          <p className="text-center">Role - #id_User</p>
-          <p className="text-xs text-center">Inscris depuis le 00/00/00</p>
+          <p className="text-center bold">
+            {loggedUser.nom} {loggedUser.prenom}
+          </p>
+          <p className="text-center">
+            ROLE NAME #{role} - ID:{loggedUser.id}
+          </p>
+          <p className="text-xs text-center">Inscris depuis le {loggedUser.date_creation}</p>
         </div>
       </div>
 
