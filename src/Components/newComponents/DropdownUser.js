@@ -17,7 +17,7 @@ const DropdownUser = ({ user }) => {
   return (
     <div className="relative">
       <Link onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center gap-4" to="#">
-        <span className="hidden text-right lg:block">
+        <span className="hidden text-right lg:block flex flex-col justify-end">
           <span className="block text-sm font-medium text-black dark:text-white">{userName}</span>
           <span className="block text-xs">{userRole}</span>
         </span>

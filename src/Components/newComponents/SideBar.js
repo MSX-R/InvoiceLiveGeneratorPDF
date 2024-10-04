@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaUsers, FaDollarSign, FaRunning, FaUser, FaChartLine, FaCog, FaDumbbell, FaRegEye, FaStore, FaChevronDown, FaChevronUp } from "react-icons/fa"; // Importer les icônes souhaitées
+import { FaTachometerAlt, FaUsers, FaDollarSign, FaRunning, FaUser, FaChartLine, FaCog, FaRegEye, FaStore, FaChevronDown, FaChevronUp } from "react-icons/fa"; // Importer les icônes souhaitées
 import MenuBurger from "./MenuBurger";
 import Blanc from "../../assets/Blancsolo.png";
 
