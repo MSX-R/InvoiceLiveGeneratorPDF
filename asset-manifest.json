@@ -1,19 +1,22 @@
 {
   "files": {
-    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.d33cba8e.css",
-    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.7f197936.js",
+    "main.css": "/InvoiceLiveGeneratorPDF/static/css/main.bb63ff2d.css",
+    "main.js": "/InvoiceLiveGeneratorPDF/static/js/main.1b0c8ba4.js",
     "static/js/453.a376ded4.chunk.js": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js",
     "static/media/Noir.png": "/InvoiceLiveGeneratorPDF/static/media/Noir.7de718ad05ef497a3b76.png",
+    "static/media/small.jpg": "/InvoiceLiveGeneratorPDF/static/media/small.066b8d5b016d7af40356.jpg",
     "static/media/effort.mp3": "/InvoiceLiveGeneratorPDF/static/media/effort.17ad4410856736a3fd4e.mp3",
+    "static/media/duo.jpg": "/InvoiceLiveGeneratorPDF/static/media/duo.1e4be568e5a633cb9687.jpg",
+    "static/media/solo.jpg": "/InvoiceLiveGeneratorPDF/static/media/solo.d1c36214e382766b8126.jpg",
     "static/media/rest.mp3": "/InvoiceLiveGeneratorPDF/static/media/rest.6ab4d19d66ccea612336.mp3",
     "static/media/preparation.mp3": "/InvoiceLiveGeneratorPDF/static/media/preparation.0f3c4c708f02ca50d5b7.mp3",
     "index.html": "/InvoiceLiveGeneratorPDF/index.html",
-    "main.d33cba8e.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.d33cba8e.css.map",
-    "main.7f197936.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.7f197936.js.map",
+    "main.bb63ff2d.css.map": "/InvoiceLiveGeneratorPDF/static/css/main.bb63ff2d.css.map",
+    "main.1b0c8ba4.js.map": "/InvoiceLiveGeneratorPDF/static/js/main.1b0c8ba4.js.map",
     "453.a376ded4.chunk.js.map": "/InvoiceLiveGeneratorPDF/static/js/453.a376ded4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d33cba8e.css",
-    "static/js/main.7f197936.js"
+    "static/css/main.bb63ff2d.css",
+    "static/js/main.1b0c8ba4.js"
   ]
 }
