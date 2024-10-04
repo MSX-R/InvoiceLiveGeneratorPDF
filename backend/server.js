@@ -129,8 +129,9 @@ app.post('/api/login', async (req, res) => {
 
     if (Array.isArray(results) && results.length > 0) {
       const user = results[0];
+      delete user.password;
       const token = createToken(user); // Créer un jeton
-      res.json({ message: 'Connexion réussie !', token, role: user.role_id }); // Retourner également le rôle
+      res.json({ message: 'Connexion réussie !', token, role: user.role_id, user }); // Retourner également le rôle
     } else {
       res.status(401).json({ message: 'Identifiants incorrects' });
     }
