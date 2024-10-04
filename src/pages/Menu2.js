@@ -55,30 +55,26 @@ const Menu2 = () => {
   return (
     <div className="flex justify-between items-start">
       {/* Carte pour afficher la date et l'heure */}
-      <div className="flex justify-start space-x-5">
-        <div className="bg-transparent border border-2 border-slate-700 text-slate-700 p-4 rounded-lg shadow-md w-fit">
-          <p className="text-center bold text-3xl">{formatDate(currentDateTime)}</p>
-          <p className="text-center">{formatTime(currentDateTime)}</p>
-        </div>
-
-        {/* Carte pour Profil connecté */}
-        <div className="bg-transparent flex flex-row space-x-3 border border-2 border-slate-700 text-slate-700 p-4 rounded-lg shadow-md w-fit">
-          {/* Ajout d'une photo de profil */}
-          <img
-            src="url_de_votre_photo_de_profil" // Remplacez par l'URL de votre image
-            alt="Profil"
-            className="h-12 w-12 rounded-full mb-2" // Classe pour la taille et l'arrondi
-          />
-          <div className="flex flex-col items-start">
-            <p className="text-center bold">NOM Prénom</p>
-            <p className="text-center">Role - #id_User</p>
-            <p className="text-xs text-center">Inscris depuis le 00/00/00</p>
-          </div>
+      <div className="bg-transparent flex flex-row space-x-3 border border-2 border-slate-700 text-slate-700 p-4 rounded-lg shadow-md w-72">
+        {/* Ajout d'une photo de profil */}
+        <img
+          src="url_de_votre_photo_de_profil" // Remplacez par l'URL de votre image
+          alt="Profil"
+          className="h-12 w-12 rounded-full mb-2" // Classe pour la taille et l'arrondi
+        />
+        <div className="flex flex-col items-start">
+          <p className="text-center bold">NOM Prénom</p>
+          <p className="text-center">Role - #id_User</p>
+          <p className="text-xs text-center">Inscris depuis le 00/00/00</p>
         </div>
       </div>
 
+      <div className=" text-slate-700 w-72">
+        <p className="text-center  bold text-xl bold">{formatDate(currentDateTime)}</p>
+        <p className="text-center text-sm">{formatTime(currentDateTime)}</p>
+      </div>
       {/* Icône de déconnexion */}
-      <button onClick={handleLogout} className="flex items-center text-slate-700 hover:text-red-500">
+      <button onClick={handleLogout} className="flex items-center justify-end text-slate-700 hover:text-red-500 w-72">
         <MdLogout size={24} />
         <span className="ml-2">Déconnexion</span>
       </button>
