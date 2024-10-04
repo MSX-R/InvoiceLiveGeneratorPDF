@@ -1,34 +1,30 @@
-// Menu.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // Importez le contexte d'authentification
-import { MdLogout } from "react-icons/md"; // Importez l'icône de déconnexion
+import { useAuth } from "../contexts/AuthContext";
+import { MdLogout } from "react-icons/md";
 import Menu2 from "./Menu2";
 
 const Menu = () => {
   const navigate = useNavigate();
-  const { userRole, isAuthenticated, refreshUserRole, logout } = useAuth(); // Ajoutez la fonction logout
+  const { userRole, isAuthenticated, refreshUserRole, logout } = useAuth();
   const [role, setRole] = useState(null);
-  const [currentDateTime, setCurrentDateTime] = useState(new Date()); // État pour la date et l'heure
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
-  // Utilisez useEffect pour mettre à jour l'état local 'role' quand 'userRole' change
   useEffect(() => {
     if (isAuthenticated) {
-      refreshUserRole(); // Actualiser les informations de rôle
+      refreshUserRole();
       setRole(userRole);
     }
   }, [userRole, isAuthenticated, refreshUserRole]);
 
-  // Utilisez useEffect pour mettre à jour la date et l'heure toutes les secondes
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
-    }, 1000); // Met à jour chaque seconde
+    }, 1000);
 
-    return () => clearInterval(timer); // Nettoyage de l'intervalle à la désinitialisation du composant
+    return () => clearInterval(timer);
   }, []);
 
-  // Si l'utilisateur n'est pas encore prêt, afficher un chargement
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
@@ -39,7 +35,6 @@ const Menu = () => {
     );
   }
 
-  // Fonction pour formater la date et l'heure
   const formatDate = (date) => {
     const options = {
       year: "numeric",
@@ -54,27 +49,23 @@ const Menu = () => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // Utilise le format 24 heures
+      hour12: false,
     };
     return date.toLocaleTimeString("fr-FR", options);
   };
 
-  // Fonction de déconnexion
   const handleLogout = () => {
-    logout(); // Appelez la fonction de déconnexion du contexte
-    navigate("/login"); // Redirigez vers la page de connexion
+    logout();
+    navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <Menu2/>
+      <Menu2 />
 
-      {/* COMPOSANT MENU */}
       <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Menu</h1>
         <div className="flex flex-col space-y-4">
-          {/* Affichage des boutons en fonction du rôle */}
-          {/* Administrateur (1) */}
           {role === "1" && (
             <>
               <button className="bg-gray-600 text-white py-4 px-6 rounded-md hover:bg-gray-700" onClick={() => navigate("/creation-profil-client")}>
@@ -94,12 +85,10 @@ const Menu = () => {
             </>
           )}
 
-          {/* Offres Coachings - Accès à tous les utilisateurs */}
           <button className="bg-orange-600 text-white py-4 px-6 rounded-md hover:bg-orange-700" onClick={() => navigate("/offres-coachings")}>
             MES OFFRES COACHINGS
           </button>
 
-          {/* Données Corporelles et Stats - Rôle Admin (1) et Client (3) */}
           {(role === "1" || role === "3") && (
             <>
               <button className="bg-purple-600 text-white py-4 px-6 rounded-md hover:bg-purple-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>
@@ -112,7 +101,6 @@ const Menu = () => {
             </>
           )}
 
-          {/* Tableau de Berger, VMA et Tabata Chrono - Pour les utilisateurs connectés */}
           {role && (
             <>
               <button className="bg-green-600 text-white py-4 px-6 rounded-md hover:bg-green-700" onClick={() => navigate("/tableau-berger")}>
@@ -126,6 +114,11 @@ const Menu = () => {
               </button>
             </>
           )}
+
+          {/* Ajout du bouton pour la page TEST DE COMPOSANT */}
+          <button className="bg-pink-600 text-white py-4 px-6 rounded-md hover:bg-pink-700" onClick={() => navigate("/test-de-composant")}>
+            TEST DE COMPOSANT
+          </button>
         </div>
       </div>
     </div>
