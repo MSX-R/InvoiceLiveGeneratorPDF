@@ -126,6 +126,7 @@ const ListeClients = () => {
                   {client.nom} {client.prenom}
                 </h2>
               </div>
+              <p className="text-gray-600">ID: {client.id}</p>
               <p className="text-gray-600">Email: {client.email}</p>
               <p className="text-gray-600">Téléphone: {client.telephone}</p>
               <p className="text-gray-600">
