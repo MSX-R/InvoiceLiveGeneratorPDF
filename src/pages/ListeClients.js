@@ -1,14 +1,45 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import du hook useNavigate
-import { ClientsContext } from "../contexts/ClientsContext"; // Import du ClientContext
+import axios from "axios"; // Import de axios pour effectuer la requête API
 
 const ListeClients = () => {
-  const { clients, deleteClient } = useContext(ClientsContext); // Récupération des clients et de la fonction deleteClient du contexte
+  const [clients, setClients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate(); // Initialisation du hook useNavigate
 
+  // useEffect pour charger la liste des clients lors du montage du composant
+  useEffect(() => {
+    // Utilisation d'axios pour récupérer les utilisateurs
+    const fetchClients = async () => {
+      try {
+        const token = localStorage.getItem('token');
+          if (!token) {
+            console.error("Token manquant");
+            return;
+          }
+
+          const response = await axios.get('https://msxghost.boardy.fr/api/users/roles', {
+            headers: {
+              'Authorization': `Bearer ${token}`, // Envoyer le token sous le bon format
+              'Content-Type': 'application/json'
+            }
+          });
+
+          // Filtrer les utilisateurs ayant le rôle "Client" (3) ou "Entreprise" (2)
+          const filteredClients = response.data.filter(user => user.role_id === 2 || user.role_id === 3 || user.role_id === 4);
+          setClients(filteredClients);
+        } catch (err) {
+          console.error("Erreur lors de la récupération des clients :", err);
+        }
+      };
+
+    fetchClients();
+  }, []);
+
   // Filtrer les clients par prénom
-  const filteredClients = clients.filter((client) => client.firstName.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredClients = clients.filter((client) =>
+    client.nom.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Fonction pour naviguer vers la page de création de profil client
   const handleCreateClientClick = () => {
@@ -16,9 +47,18 @@ const ListeClients = () => {
   };
 
   // Fonction pour gérer la suppression d'un client
-  const handleDeleteClient = (clientId) => {
+  const handleDeleteClient = async (clientId) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
-      deleteClient(clientId); // Appeler la fonction deleteClient pour supprimer le client
+      try {
+        await axios.delete(`https://msxghost.boardy.fr/api/users/${clientId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setClients((prevClients) => prevClients.filter((client) => client.id !== clientId));
+      } catch (err) {
+        console.error("Erreur lors de la suppression du client :", err);
+      }
     }
   };
 
@@ -28,7 +68,13 @@ const ListeClients = () => {
 
       {/* Barre de recherche */}
       <div className="mb-8 w-full max-w-md">
-        <input type="text" placeholder="Rechercher par prénom..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
+        <input
+          type="text"
+          placeholder="Rechercher par nom..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        />
       </div>
 
       {/* Bouton pour ajouter un client */}
@@ -43,7 +89,10 @@ const ListeClients = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl">
         {filteredClients.length > 0 ? (
           filteredClients.map((client) => (
-            <div key={client.id} className="bg-white rounded-lg shadow-md p-6 transition-transform transform hover:scale-105 hover:shadow-lg border border-gray-200">
+            <div
+              key={client.id}
+              className="bg-white rounded-lg shadow-md p-6 transition-transform transform hover:scale-105 hover:shadow-lg border border-gray-200"
+            >
               {/* Ajout d'une image de profil dynamique */}
               <div className="flex items-center mb-4">
                 <img
@@ -52,20 +101,24 @@ const ListeClients = () => {
                   className="rounded-full mr-4 w-12 h-12" // Ajout d'une taille pour l'image
                 />
                 <h2 className="text-xl font-bold text-gray-800">
-                  {client.firstName} {client.lastName}
+                  {client.nom} {client.prenom}
                 </h2>
               </div>
               <p className="text-gray-600">Email: {client.email}</p>
-              <p className="text-gray-600">Téléphone: {client.phone}</p>
+              <p className="text-gray-600">Téléphone: {client.telephone}</p>
               <p className="text-gray-600">
-                Adresse: {client.address}, {client.city} {client.postalCode}
+                Adresse: {client.adresse1}, {client.ville} {client.cp}
               </p>
-              <p className="text-gray-600">Date de Naissance: {new Date(client.birthDate).toLocaleDateString()}</p>
-              <p className="text-gray-600">Sexe: {client.isMale ? "Homme" : "Femme"}</p>
+              <p className="text-gray-600">
+                Date de Naissance: {new Date(client.naissance).toLocaleDateString()}
+              </p>
+              <p className="text-gray-600">Sexe: {client.sexe === "Homme" ? "Homme" : "Femme"}</p>
 
               {/* Boutons d'action */}
               <div className="flex justify-between mt-4">
-                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300">Modifier</button>
+                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300">
+                  Modifier
+                </button>
                 <button
                   onClick={() => handleDeleteClient(client.id)} // Appeler handleDeleteClient avec l'ID du client
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300"

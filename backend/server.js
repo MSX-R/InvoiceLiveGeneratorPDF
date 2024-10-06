@@ -31,11 +31,19 @@ const createToken = (user) => {
 };
 
 // Middleware pour vérifier le token et l'authentification
+// Middleware pour vérifier le token et l'authentification
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
+  const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Accès refusé. Aucun token fourni.' });
+  }
+
+  // Récupérer le token à partir du format "Bearer <token>"
+  const token = authHeader.split(' ')[1]; // Sépare le mot "Bearer" du token
 
   if (!token) {
-    return res.status(401).json({ message: 'Accès refusé. Aucun token fourni.' });
+    return res.status(401).json({ message: 'Accès refusé. Token manquant.' });
   }
 
   try {
@@ -129,14 +137,29 @@ app.post('/api/login', async (req, res) => {
 
     if (Array.isArray(results) && results.length > 0) {
       const user = results[0];
-      delete user.password;
+      delete user.password; // Supprimer le mot de passe de l'objet utilisateur
       const token = createToken(user); // Créer un jeton
-      res.json({ message: 'Connexion réussie !', token, role: user.role_id, user }); // Retourner également le rôle
+
+      res.json({ message: 'Connexion réussie !', token, role: user.role_id, user }); // Retourner l'objet utilisateur sans le mot de passe
     } else {
       res.status(401).json({ message: 'Identifiants incorrects' });
     }
   } catch (err) {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
+  }
+});
+
+// Route pour récupérer les utilisateurs ayant un rôle spécifique (Entreprise = 2 ou Client = 3)
+// Cette route est protégée par un token pour vérifier l'authentification
+app.get('/api/users/roles', verifyToken, async (req, res) => {
+  // Définir le rôle 2 (Entreprise) et 3 (Client)
+  const sql = 'SELECT id, nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation FROM User WHERE role_id IN (2, 3, 4)';
+
+  try {
+    const [results] = await pool.query(sql);
+    res.json(results);
+  } catch (err) {
+    res.status(500).send('Erreur lors de la récupération des utilisateurs');
   }
 });
 
