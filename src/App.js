@@ -1,10 +1,36 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import PrivateRoute from './services/PrivateRoute';
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { AuthProvider } from './contexts/AuthContext';
+import Login from "./pages/Login";
+import Signup from './pages/Signup';
 import Menu from "./pages/Menu";
+import Header from './Components/Header';
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
-import TableauBerger from "./pages/TableauBerger"; // Nouveau composant pour le tableau de RM
-import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles"; // Nouveau composant pour les mensurations
+import TableauBerger from "./pages/TableauBerger";
+import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
+import TestVmaTapis from "./pages/TestVmaTapis";
+import SuiviClients from "./pages/SuiviClients";
+import TabataChrono from "./pages/TabataChrono";
+import ChronoDetail from "./Components/ChronoDetail";
+
+// Importation des pages tarifaires
+import OffresCoachings from "./pages/OffresCoachings";
+import SoloTarifs from "./pages/Tarifs/SoloTarifs";
+import DuoTarifs from "./pages/Tarifs/DuoTarifs";
+import SmallGroupTarifs from "./pages/Tarifs/SmallGroupTarifs";
+
+// Importation de la page Tableau des Stats
+import TableauDesStats from "./pages/TableauDesStats";
+
+// Import the new components
+import CreationProfilClient from "./pages/CreationProfilClient";
+import ListeClients from "./pages/ListeClients";
+
+// Import the NotFound component
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -42,15 +68,50 @@ function App() {
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Menu />} />
-        <Route path="/formulaire-devis" element={!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice.clientInfo} items={invoice.items} entrepriseInfo={invoice.entrepriseInfo} onEdit={handleEditInvoice} />} />
-        <Route path="/tableau-berger" element={<TableauBerger />} />
-        <Route path="/formulaire-donnees-corporelles" element={<FormulaireDonneesCorporelles />} />
-        <Route path="/invoice-preview" element={<InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={entrepriseInfo} onEdit={handleEditInvoice} />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <NotificationProvider>
+        <Router>
+          <Header />
+          <Routes>
+            {/*
+              Droits pour les routes (requiredRoles)
+              1 - Administrateur
+              2 - Entreprise
+              3 - Client
+              4 - Visiteur
+            */}
+            {/* Routes publiques */}
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+
+            {/* Routes privées pour tout utilisateur connecté */}
+            <Route path="/menu" element={<PrivateRoute><Menu /></PrivateRoute>} />
+            <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+            <Route path="/tableau-berger" element={<PrivateRoute><TableauBerger /></PrivateRoute>} />
+            <Route path="/formulaire-donnees-corporelles" element={<PrivateRoute><FormulaireDonneesCorporelles /></PrivateRoute>} />
+            <Route path="/vma-tapis" element={<PrivateRoute><TestVmaTapis /></PrivateRoute>} />
+            <Route path="/invoice-preview" element={<PrivateRoute><InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} /></PrivateRoute>} />
+            <Route path="/compteur-seances" element={<PrivateRoute><SuiviClients /></PrivateRoute>} />
+            <Route path="/tabata-chrono" element={<PrivateRoute><TabataChrono /></PrivateRoute>} />
+            <Route path="/chrono/:id" element={<PrivateRoute><ChronoDetail /></PrivateRoute>} />
+            <Route path="/tableau-des-stats" element={<PrivateRoute><TableauDesStats /></PrivateRoute>} />
+
+            {/* Routes pour les offres coachings */}
+            <Route path="/offres-coachings" element={<OffresCoachings />} />
+            <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+            <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
+            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
+
+            {/* Routes protégées selon le rôle */}
+            <Route path="/creation-profil-client" element={<PrivateRoute requiredRoles={[1]}><CreationProfilClient /></PrivateRoute>} />
+            <Route path="/liste-clients" element={<PrivateRoute requiredRoles={[1]}><ListeClients /></PrivateRoute>} />
+
+            {/* Catch-all route for 404 */}
+            <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
+          </Routes>
+        </Router>
+      </NotificationProvider>
+    </AuthProvider>
   );
 }
 
