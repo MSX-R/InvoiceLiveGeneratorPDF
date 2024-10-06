@@ -163,6 +163,26 @@ app.get('/api/users/roles', verifyToken, async (req, res) => {
   }
 });
 
+// Route pour supprimer un utilisateur spécifique
+app.delete('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Suppression de l'utilisateur de la base de données
+    const sql = 'DELETE FROM User WHERE id = ?';
+    const [results] = await pool.query(sql, [userId]);
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    res.status(200).json({ message: "Utilisateur supprimé avec succès." });
+  } catch (err) {
+    console.error("Erreur lors de la suppression de l'utilisateur:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur." });
+  }
+});
+
 // Route protégée qui nécessite un utilisateur authentifié
 app.get('/api/protected', verifyToken, (req, res) => {
   res.json({ message: 'Bienvenue dans la zone protégée !', user: req.user });
