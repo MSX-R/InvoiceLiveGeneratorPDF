@@ -183,6 +183,49 @@ app.delete('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
+// Route pour mettre à jour un utilisateur spécifique
+app.put('/api/users/:id', verifyToken, async (req, res) => {
+  const userId = req.params.id;
+  const { nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant, role_id } = req.body;
+
+  // Construire la requête SQL pour mettre à jour l'utilisateur
+  const sql = `
+    UPDATE User 
+    SET 
+      nom = ?, 
+      prenom = ?, 
+      email = ?, 
+      telephone = ?, 
+      adresse1 = ?, 
+      adresse2 = ?, 
+      cp = ?, 
+      ville = ?, 
+      pays = ?, 
+      naissance = ?, 
+      contact_urgence = ?, 
+      sexe = ?, 
+      nb_enfant = ?, 
+      role_id = ? 
+    WHERE id = ?
+  `;
+
+  try {
+    const [results] = await pool.query(sql, [
+      nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant, role_id, userId
+    ]);
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Retourner l'utilisateur mis à jour
+    res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de l'utilisateur:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
+  }
+});
+
 // Route protégée qui nécessite un utilisateur authentifié
 app.get('/api/protected', verifyToken, (req, res) => {
   res.json({ message: 'Bienvenue dans la zone protégée !', user: req.user });
