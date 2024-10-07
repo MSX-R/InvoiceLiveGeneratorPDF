@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { FaPlay, FaPause, FaStop, FaRedo, FaPlus, FaTrash, FaClock, FaDumbbell, FaEdit } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 import effortSound from "../assets/preparation.mp3";
 import restSound from "../assets/rest.mp3";
@@ -248,30 +249,38 @@ const AdvancedTabataTimer = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full max-w-6xl">{chronos.length > 0 ? chronos.map((chrono) => <ChronoCard key={chrono.id} chrono={chrono} startChrono={startChrono} deleteChrono={deleteChrono} startEditingChrono={startEditingChrono} />) : <p className="text-gray-600 col-span-full text-center">Aucun chrono trouvé.</p>}</div>
 
       {showModal && currentChrono && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
-            <h2 className="text-3xl sm:text-5xl font-bold mb-2 sm:mb-4">{currentChrono.name}</h2>
-            <p className="text-xl sm:text-2xl mb-6 sm:mb-12">{currentExercise === "prep" ? "Préparation" : currentExercise % 2 === 0 ? currentChrono.exercises[Math.floor(currentExercise / 2)].name : "Repos"}</p>
-            <div className="text-6xl sm:text-9xl font-bold mb-6 sm:mb-12">{time}</div>
-            <p className="text-base sm:text-lg mb-6 sm:mb-8">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ type: "spring", damping: 15 }} className="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
+            <motion.h2 initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="text-3xl sm:text-5xl font-bold mb-2 sm:mb-4">
+              {currentChrono.name}
+            </motion.h2>
+            <motion.p key={currentExercise} initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 50, opacity: 0 }} transition={{ type: "spring", stiffness: 100 }} className="text-xl sm:text-2xl mb-6 sm:mb-12">
+              {currentExercise === "prep" ? "Préparation" : currentExercise % 2 === 0 ? currentChrono.exercises[Math.floor(currentExercise / 2)].name : "Repos"}
+            </motion.p>
+            <AnimatePresence mode="wait">
+              <motion.div key={time} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 25 }} className="text-6xl sm:text-9xl font-bold mb-6 sm:mb-12">
+                {time}
+              </motion.div>
+            </AnimatePresence>
+            <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="text-base sm:text-lg mb-6 sm:mb-8">
               Round {currentRound} / {currentChrono.rounds}
-            </p>
+            </motion.p>
 
             <div className="flex justify-around">
-              <button onClick={toggleTimer} className={`p-3 sm:p-4 rounded-full ${isRunning ? "bg-yellow-500" : "bg-green-500"} text-white`}>
+              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} onClick={toggleTimer} className={`p-3 sm:p-4 rounded-full ${isRunning ? "bg-yellow-500" : "bg-green-500"} text-white`}>
                 {isRunning ? <FaPause /> : <FaPlay />}
-              </button>
+              </motion.button>
 
-              <button onClick={resetTimer} className="p-3 sm:p-4 rounded-full bg-blue-500 text-white">
+              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} onClick={resetTimer} className="p-3 sm:p-4 rounded-full bg-blue-500 text-white">
                 <FaRedo />
-              </button>
+              </motion.button>
 
-              <button onClick={stopTimer} className="p-3 sm:p-4 rounded-full bg-red-500 text-white">
+              <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} onClick={stopTimer} className="p-3 sm:p-4 rounded-full bg-red-500 text-white">
                 <FaStop />
-              </button>
+              </motion.button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
       {showSettings && (
