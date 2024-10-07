@@ -5,6 +5,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Logout from "./pages/Logout";
 import Menu from "./pages/Menu";
 import Header from "./Components/Header";
 import FormulaireDevis from "./Components/FormulaireDevis";
@@ -84,6 +85,7 @@ function App() {
             */}
             {/* Routes publiques */}
             <Route path="/" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/signup" element={<Signup />} />
             {/* Routes privées pour tout utilisateur connecté */}
             <Route
