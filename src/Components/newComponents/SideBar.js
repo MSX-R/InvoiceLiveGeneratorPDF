@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaTachometerAlt, FaUsers, FaDollarSign, FaRunning, FaUser, FaChartLine, FaCog, FaRegEye, FaStore, FaChevronDown, FaChevronUp } from "react-icons/fa"; // Importer les icônes souhaitées
+import { FaTachometerAlt, FaTools, FaClipboardList, FaUsers, FaDollarSign, FaRunning, FaUser, FaChartLine, FaCog, FaRegEye, FaStore, FaChevronDown, FaChevronUp } from "react-icons/fa"; // Importer les icônes souhaitées
 import MenuBurger from "./MenuBurger";
 import Blanc from "../../assets/Blancsolo.png";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, logoSrc }) => {
   const [isTrainingOpen, setIsTrainingOpen] = useState(false); // État pour gérer l'ouverture du sous-menu Entraînement
+  const [isOutilsOpen, setIsOutilsOpen] = useState(false); // État pour gérer l'ouverture du sous-menu Entraînement
 
   useEffect(() => {
     const handleKeyDownEvent = (event) => {
@@ -83,6 +84,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, logoSrc }) => {
                   <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
                     <p>Programmes</p>
                   </NavLink>
+
+                  <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                    <p>Tests physiques</p>
+                  </NavLink>
                 </div>
               )}
               {/* Fin Sous-menu d'Entrainement */}
@@ -92,13 +97,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, logoSrc }) => {
               {/* Bouton Formulaire avec flèche */}
               <div className="flex items-center justify-between cursor-pointer px-4 py-2 w-full font-medium text-bodydark1 duration-300 ease-in-out hover:bg-slate-500 hover:bg-opacity-45" onClick={() => setIsTrainingOpen(!isTrainingOpen)}>
                 <div className="flex items-center gap-2.5">
-                  <FaRunning className="text-bodydark1" /> {/* Icône Entrainement */}
+                  <FaClipboardList className="text-bodydark1" /> {/* Icône Entrainement */}
                   <p>Formulaires</p>
                 </div>
                 {isTrainingOpen ? <FaChevronUp className="text-bodydark1" /> : <FaChevronDown className="text-bodydark1" />}
               </div>
 
-              {/* Sous-menu d'Entraînement */}
+              {/* Sous-menu de Formulaire */}
               {isTrainingOpen && (
                 <div className="px-7">
                   <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
@@ -110,19 +115,55 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, logoSrc }) => {
                   </NavLink>
 
                   <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
-                    <p>Bilan Corporelle & Mensurations</p>
+                    <p>Bilan Composition Corporelle</p>
                   </NavLink>
 
                   <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
-                    <p>Bilan Test Effort </p>
+                    <p>Bilan Test Mobilité </p>
                   </NavLink>
 
                   <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
-                    <p>Repertoire RM - Exercice </p>
+                    <p>Test FORCE MAX - RM10</p>
                   </NavLink>
                 </div>
               )}
-              {/* Fin Sous-menu d'Formaulaire */}
+              {/* Fin Sous-menu de Formulaire */}
+
+              <hr className="my-2 border-gray-500" />
+              <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                <p>Calculateur RM</p>
+              </NavLink>
+
+              {/* Bouton Outils avec flèche */}
+              <div className="flex items-center justify-between cursor-pointer px-4 py-2 w-full font-medium text-bodydark1 duration-300 ease-in-out hover:bg-slate-500 hover:bg-opacity-45" onClick={() => setIsOutilsOpen(!isOutilsOpen)}>
+                <div className="flex items-center gap-2.5">
+                  <FaTools className="text-bodydark1" /> {/* Icône Outils */}
+                  <p>Tests</p>
+                </div>
+                {isOutilsOpen ? <FaChevronUp className="text-bodydark1" /> : <FaChevronDown className="text-bodydark1" />}
+              </div>
+
+              {/* Sous-menu de Outils */}
+              {isOutilsOpen && (
+                <div className="px-7">
+                  <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                    <p>Test Cardio - Vameval</p>
+                  </NavLink>
+
+                  <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                    <p>Test Cardio - Luc Leger</p>
+                  </NavLink>
+
+                  <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                    <p>Test Cardio - Cooper</p>
+                  </NavLink>
+
+                  <NavLink to="#" className="flex items-center gap-2.5 rounded-sm hover:bg-slate-500 hover:bg-opacity-45 hover:rounded-sm px-4 py-2 w-full font-medium text-gray-400 hover:text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
+                    <p>Test FORCE MAX - RM10</p>
+                  </NavLink>
+                </div>
+              )}
+              {/* Fin Sous-menu de Outils */}
 
               <hr className="my-2 border-gray-500" />
 
