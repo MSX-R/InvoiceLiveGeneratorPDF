@@ -29,6 +29,7 @@ import TableauDesStats from "./pages/TableauDesStats";
 // Import the new components
 import CreationProfilClient from "./pages/CreationProfilClient";
 import ListeClients from "./pages/ListeClients";
+import ModifierProfilClient from "./pages/ModifierProfilClient";
 
 // Import the NotFound component
 import NotFound from "./pages/NotFound";
@@ -165,10 +166,18 @@ function App() {
             <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
             {/* Routes protégées selon le rôle */}
             <Route
-              path="/creation-profil-client"
+              path="/creation-profil-client/:id?"
               element={
                 <PrivateRoute requiredRoles={[1]}>
                   <CreationProfilClient />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/modifier-profil-client/:id"
+              element={
+                <PrivateRoute requiredRoles={[1]}>
+                  <ModifierProfilClient />
                 </PrivateRoute>
               }
             />

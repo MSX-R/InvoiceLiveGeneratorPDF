@@ -115,7 +115,9 @@ const ListeClients = () => {
               <p className="text-gray-600">Sexe: {client.sexe === "Homme" ? "Homme" : "Femme"}</p>
 
               <div className="flex justify-between mt-4">
-                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300">Modifier</button>
+                <button onClick={() => navigate(`/modifier-profil-client/${client.id}`)} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300">
+                  Modifier
+                </button>
                 {(localStorage.getItem("userRole") === "1" || localStorage.getItem("userRole") === "2") && (
                   <button onClick={() => openModal(client.id)} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300">
                     Supprimer
