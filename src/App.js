@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import PrivateRoute from './services/PrivateRoute';
+import PrivateRoute from "./services/PrivateRoute";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
-import Signup from './pages/Signup';
+import Signup from "./pages/Signup";
 import Menu from "./pages/Menu";
-import Header from './Components/Header';
+import Header from "./Components/Header";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
@@ -15,6 +15,7 @@ import TestVmaTapis from "./pages/TestVmaTapis";
 import SuiviClients from "./pages/SuiviClients";
 import TabataChrono from "./pages/TabataChrono";
 import ChronoDetail from "./Components/ChronoDetail";
+import TestDeComposant from "./pages/TestDeComposant";
 
 // Importation des pages tarifaires
 import OffresCoachings from "./pages/OffresCoachings";
@@ -28,6 +29,7 @@ import TableauDesStats from "./pages/TableauDesStats";
 // Import the new components
 import CreationProfilClient from "./pages/CreationProfilClient";
 import ListeClients from "./pages/ListeClients";
+import ModifierProfilClient from "./pages/ModifierProfilClient";
 
 // Import the NotFound component
 import NotFound from "./pages/NotFound";
@@ -83,29 +85,111 @@ function App() {
             {/* Routes publiques */}
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-
             {/* Routes privées pour tout utilisateur connecté */}
-            <Route path="/menu" element={<PrivateRoute><Menu /></PrivateRoute>} />
+            <Route
+              path="/menu"
+              element={
+                <PrivateRoute>
+                  <Menu />
+                </PrivateRoute>
+              }
+            />
             <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
-            <Route path="/tableau-berger" element={<PrivateRoute><TableauBerger /></PrivateRoute>} />
-            <Route path="/formulaire-donnees-corporelles" element={<PrivateRoute><FormulaireDonneesCorporelles /></PrivateRoute>} />
-            <Route path="/vma-tapis" element={<PrivateRoute><TestVmaTapis /></PrivateRoute>} />
-            <Route path="/invoice-preview" element={<PrivateRoute><InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} /></PrivateRoute>} />
-            <Route path="/compteur-seances" element={<PrivateRoute><SuiviClients /></PrivateRoute>} />
-            <Route path="/tabata-chrono" element={<PrivateRoute><TabataChrono /></PrivateRoute>} />
-            <Route path="/chrono/:id" element={<PrivateRoute><ChronoDetail /></PrivateRoute>} />
-            <Route path="/tableau-des-stats" element={<PrivateRoute><TableauDesStats /></PrivateRoute>} />
-
+            <Route
+              path="/tableau-berger"
+              element={
+                <PrivateRoute>
+                  <TableauBerger />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/formulaire-donnees-corporelles"
+              element={
+                <PrivateRoute>
+                  <FormulaireDonneesCorporelles />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/vma-tapis"
+              element={
+                <PrivateRoute>
+                  <TestVmaTapis />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/invoice-preview"
+              element={
+                <PrivateRoute>
+                  <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/compteur-seances"
+              element={
+                <PrivateRoute>
+                  <SuiviClients />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tabata-chrono"
+              element={
+                <PrivateRoute>
+                  <TabataChrono />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/chrono/:id"
+              element={
+                <PrivateRoute>
+                  <ChronoDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tableau-des-stats"
+              element={
+                <PrivateRoute>
+                  <TableauDesStats />
+                </PrivateRoute>
+              }
+            />
             {/* Routes pour les offres coachings */}
             <Route path="/offres-coachings" element={<OffresCoachings />} />
             <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
             <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
             <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
-
             {/* Routes protégées selon le rôle */}
-            <Route path="/creation-profil-client" element={<PrivateRoute requiredRoles={[1]}><CreationProfilClient /></PrivateRoute>} />
-            <Route path="/liste-clients" element={<PrivateRoute requiredRoles={[1]}><ListeClients /></PrivateRoute>} />
-
+            <Route
+              path="/creation-profil-client/:id?"
+              element={
+                <PrivateRoute requiredRoles={[1]}>
+                  <CreationProfilClient />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/modifier-profil-client/:id"
+              element={
+                <PrivateRoute requiredRoles={[1]}>
+                  <ModifierProfilClient />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/liste-clients"
+              element={
+                <PrivateRoute requiredRoles={[1]}>
+                  <ListeClients />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/test-de-composant" element={<TestDeComposant />} />
             {/* Catch-all route for 404 */}
             <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
           </Routes>

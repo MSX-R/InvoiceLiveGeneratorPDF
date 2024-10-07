@@ -163,6 +163,31 @@ app.get('/api/users/roles', verifyToken, async (req, res) => {
   }
 });
 
+// Route pour récupérer un utilisateur spécifique par son ID, accès restreint
+app.get('/api/users/:id', verifyToken, async (req, res) => {
+  const userId = req.params.id;
+
+  // Restreindre l'accès : soit l'utilisateur est admin, soit il récupère ses propres infos
+  if (req.user.role !== 1 && req.user.id !== parseInt(userId)) {
+    return res.status(403).json({ message: "Accès refusé." });
+  }
+
+  const sql = 'SELECT id, nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation FROM User WHERE id = ?';
+
+  try {
+    const [results] = await pool.query(sql, [userId]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    res.status(200).json(results[0]); // Retourner l'utilisateur trouvé
+  } catch (err) {
+    console.error("Erreur lors de la récupération de l'utilisateur :", err);
+    res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur." });
+  }
+});
+
 // Route pour supprimer un utilisateur spécifique
 app.delete('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   const userId = req.params.id;
@@ -180,6 +205,48 @@ app.delete('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la suppression de l'utilisateur:", err);
     res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur." });
+  }
+});
+
+// Route pour mettre à jour un utilisateur spécifique
+app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+  const { nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant } = req.body;
+
+  // Construire la requête SQL pour mettre à jour l'utilisateur
+  const sql = `
+    UPDATE User 
+    SET 
+      nom = ?, 
+      prenom = ?, 
+      email = ?, 
+      telephone = ?, 
+      adresse1 = ?, 
+      adresse2 = ?, 
+      cp = ?, 
+      ville = ?, 
+      pays = ?, 
+      naissance = ?, 
+      contact_urgence = ?, 
+      sexe = ?, 
+      nb_enfant = ?
+    WHERE id = ?
+  `;
+
+  try {
+    const [results] = await pool.query(sql, [
+      nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant, userId
+    ]);
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    // Retourner l'utilisateur mis à jour
+    res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de l'utilisateur:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
   }
 });
 
