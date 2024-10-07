@@ -5,6 +5,43 @@ import { motion, AnimatePresence } from "framer-motion";
 import effortSound from "../assets/preparation.mp3";
 import restSound from "../assets/rest.mp3";
 
+const CircularProgressTimer = ({ time, totalTime, size = 200, strokeWidth = 15 }) => {
+  const center = size / 2;
+  const radius = center - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={center} cy={center} r={radius} fill="none" stroke="#e2e8f0" strokeWidth={strokeWidth} />
+        <motion.circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="#4299e1"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${center} ${center})`}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{
+            strokeDashoffset: circumference * (1 - time / totalTime),
+          }}
+          transition={{
+            duration: 1,
+            ease: "linear",
+          }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center text-8xl font-bold" style={{ color: "#2b6cb0" }}>
+        {time}
+      </div>
+    </div>
+  );
+};
+
 const ChronoCard = React.memo(({ chrono, startChrono, deleteChrono, startEditingChrono }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 transition-all duration-300 hover:shadow-xl border border-gray-200 flex flex-col justify-between h-full">
@@ -251,19 +288,20 @@ const AdvancedTabataTimer = () => {
       {showModal && currentChrono && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ type: "spring", damping: 15 }} className="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
-            <motion.h2 initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="text-3xl sm:text-5xl font-bold mb-2 sm:mb-4">
+            <motion.h2 initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="text-4xl sm:text-5xl font-bold mb-4 sm:mb-4">
               {currentChrono.name}
             </motion.h2>
-            <motion.p key={currentExercise} initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 50, opacity: 0 }} transition={{ type: "spring", stiffness: 100 }} className="text-xl sm:text-2xl mb-6 sm:mb-12">
+            <motion.p key={currentExercise} initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 50, opacity: 0 }} transition={{ type: "spring", stiffness: 100 }} className="text-xl sm:text-2xl mb-12 sm:mb-12">
               {currentExercise === "prep" ? "Préparation" : currentExercise % 2 === 0 ? currentChrono.exercises[Math.floor(currentExercise / 2)].name : "Repos"}
             </motion.p>
-            <AnimatePresence mode="wait">
-              <motion.div key={time} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -20, opacity: 0 }} transition={{ type: "spring", stiffness: 300, damping: 25 }} className="text-6xl sm:text-9xl font-bold mb-6 sm:mb-12">
-                {time}
-              </motion.div>
-            </AnimatePresence>
-            <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="text-base sm:text-lg mb-6 sm:mb-8">
-              Round {currentRound} / {currentChrono.rounds}
+            <div className="flex justify-center mb-12 ">
+              <CircularProgressTimer time={time} totalTime={currentExercise === "prep" ? currentChrono.prepTime : currentExercise % 2 === 0 ? currentChrono.exercises[Math.floor(currentExercise / 2)].effort : currentChrono.exercises[Math.floor(currentExercise / 2)].rest} size={250} strokeWidth={20} />
+            </div>
+            <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className=" flex flex-col text-base sm:text-lg mt-6 mb-12">
+              Round{" "}
+              <span className="font-bold text-4xl">
+                {currentRound} / {currentChrono.rounds}
+              </span>
             </motion.p>
 
             <div className="flex justify-around">
@@ -311,7 +349,7 @@ const AdvancedTabataTimer = () => {
                     <input type="text" value={exercise.name} onChange={(e) => updateExercise(index, "name", e.target.value)} placeholder={`Exercise ${exercise.effort}s`} className="w-full p-3 border border-gray-300 rounded-lg text-base" />
                   </div>
                   <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <div className="w-full sm:w-1/2">
+                    <div className="w-full sm:w-1-2">
                       <label className="block mb-2 text-gray-700 text-base">Temps d'effort (sec)</label>
                       <input type="number" value={exercise.effort} onChange={(e) => updateExercise(index, "effort", e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg text-base" />
                     </div>
