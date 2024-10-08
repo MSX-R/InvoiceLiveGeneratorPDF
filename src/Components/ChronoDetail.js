@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom"; // Impor
 
 // Importer les sons pour les alertes
 import preparationSound from "../assets/preparation.mp3";
-import effortSound from "../assets/effort.mp3";
+import effortSound from "../assets/rest.mp3";
 import restSound from "../assets/rest.mp3";
 
 const ChronoDetail = () => {

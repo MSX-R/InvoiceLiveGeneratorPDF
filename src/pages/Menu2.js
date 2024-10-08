@@ -6,7 +6,6 @@ import { MdLogout } from "react-icons/md"; // Importez l'icône de déconnexion
 const Menu2 = () => {
   const { isAuthenticated, userRole, refreshUserRole, logout, loggedUser } = useAuth();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [role, setRole] = useState(null);
 
   useEffect(() => {
     console.log("Contenu de loggedUser :", loggedUser.nom);
@@ -15,8 +14,7 @@ const Menu2 = () => {
   // Utilisez useEffect pour mettre à jour l'état local 'role' quand 'userRole' change
   useEffect(() => {
     if (isAuthenticated) {
-      refreshUserRole(); // Actualiser les informations de rôle
-      setRole(userRole);
+      refreshUserRole();
     }
   }, [userRole, isAuthenticated, refreshUserRole]);
 
@@ -31,8 +29,7 @@ const Menu2 = () => {
 
   // Fonction de déconnexion
   const handleLogout = () => {
-    logout(); // Appelez la fonction de déconnexion du contexte
-    // Optionnel : Redirection ou autres actions après la déconnexion
+    logout();
   };
 
   // Fonction pour formater la date
@@ -43,6 +40,15 @@ const Menu2 = () => {
       day: "numeric",
     };
     return date.toLocaleDateString("fr-FR", options);
+  };
+
+  const formatDate2 = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
   };
 
   // Fonction pour formater l'heure
@@ -71,9 +77,9 @@ const Menu2 = () => {
             {loggedUser.nom} {loggedUser.prenom}
           </p>
           <p className="text-center">
-            ROLE NAME #{role} - ID:{loggedUser.id}
+            {loggedUser.role_nom} - ID : {loggedUser.id}
           </p>
-          <p className="text-xs text-center">Inscris depuis le {loggedUser.date_creation}</p>
+          <p className="text-xs text-center">Inscris depuis le {formatDate2(loggedUser.date_creation)}</p>
         </div>
       </div>
 

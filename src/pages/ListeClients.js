@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import CustomModal from "../Components/CustomModal"; // Assurez-vous d'importer le composant Modal
+import CustomModal from "../Components/CustomModal";
 
 const ListeClients = () => {
   const [clients, setClients] = useState([]);

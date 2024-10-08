@@ -74,7 +74,8 @@ app.get('/api', (req, res) => {
 });
 
 // Route pour ajouter un utilisateur (inscription)
-app.post('/api/users', async (req, res) => {
+// Route pour la connexion (login)
+app.post('/api/users', verifyToken, verifyAdmin, async (req, res) => {
   const {
     nom, prenom, email, password, telephone, adresse1, adresse2,
     cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant
@@ -85,21 +86,29 @@ app.post('/api/users', async (req, res) => {
     return res.status(400).json({ message: "Tous les champs requis doivent être remplis." });
   }
 
-  // Hachage du mot de passe
-  const hashedPassword = hashPassword(password);
-
-  // Créer un nouvel utilisateur
-  const user = new User(
-    null, nom, prenom, email, hashedPassword, telephone, adresse1, adresse2,
-    cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant
-  );
-
-  const sql = `INSERT INTO User (
-    nom, prenom, email, password, telephone, adresse1, adresse2, cp, ville, pays,
-    naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
   try {
+    // Vérifier si l'email existe déjà
+    const checkEmailSql = 'SELECT id FROM User WHERE email = ?';
+    const [existingUsers] = await pool.query(checkEmailSql, [email]);
+
+    if (existingUsers.length > 0) {
+      return res.status(409).json({ message: "L'adresse email est déjà utilisée." }); // Conflit - l'email existe déjà
+    }
+
+    // Hachage du mot de passe
+    const hashedPassword = hashPassword(password);
+
+    // Créer un nouvel utilisateur
+    const user = new User(
+      null, nom, prenom, email, hashedPassword, telephone, adresse1, adresse2,
+      cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant
+    );
+
+    const sql = `INSERT INTO User (
+      nom, prenom, email, password, telephone, adresse1, adresse2, cp, ville, pays,
+      naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
     const [results] = await pool.query(sql, [
       user.getNom(), user.getPrenom(), user.getEmail(), user.getPassword(), user.getTelephone(),
       user.getAdresse1(), user.getAdresse2(), user.getCp(), user.getVille(), user.getPays(),
@@ -116,22 +125,39 @@ app.post('/api/users', async (req, res) => {
 
 // Route pour récupérer tous les utilisateurs (simplifiée pour l'exemple)
 // Protéger cette route pour que seuls les utilisateurs authentifiés puissent y accéder
-app.get('/api/users', verifyToken, async (req, res) => {
-  const sql = 'SELECT nom, prenom FROM User';
+app.get('/api/users', verifyToken, verifyAdmin, async (req, res) => {
+  const sql = `
+    SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.adresse1, u.adresse2, 
+           u.cp, u.ville, u.pays, u.naissance, u.contact_urgence, u.sexe, 
+           u.nb_enfant, u.role_id, r.nom AS role_nom, u.date_creation
+    FROM User u
+    JOIN Role r ON u.role_id = r.id
+  `;
+  
   try {
     const [results] = await pool.query(sql);
-    res.json(results);
+    res.json(results); // Retourner la liste des utilisateurs avec le nom du rôle
   } catch (err) {
+    console.error("Erreur lors de la récupération des utilisateurs :", err);
     res.status(500).send('Erreur lors de la récupération des utilisateurs');
   }
 });
+
 
 // Route pour la connexion (login)
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = hashPassword(password);
 
-  const sql = 'SELECT * FROM User WHERE email = ? AND password = ?';
+  const sql = `
+    SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.adresse1, u.adresse2, 
+           u.cp, u.ville, u.pays, u.naissance, u.contact_urgence, u.sexe, 
+           u.nb_enfant, u.role_id, r.nom AS role_nom, u.date_creation
+    FROM User u
+    JOIN Role r ON u.role_id = r.id
+    WHERE email = ? AND password = ?
+  `;
+  
   try {
     const [results] = await pool.query(sql, [email, hashedPassword]);
 
@@ -151,7 +177,7 @@ app.post('/api/login', async (req, res) => {
 
 // Route pour récupérer les utilisateurs ayant un rôle spécifique (Entreprise = 2 ou Client = 3)
 // Cette route est protégée par un token pour vérifier l'authentification
-app.get('/api/users/roles', verifyToken, async (req, res) => {
+app.get('/api/users/roles', verifyToken, verifyAdmin, async (req, res) => {
   // Définir le rôle 2 (Entreprise) et 3 (Client)
   const sql = 'SELECT id, nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation FROM User WHERE role_id IN (2, 3, 4)';
 
@@ -164,7 +190,7 @@ app.get('/api/users/roles', verifyToken, async (req, res) => {
 });
 
 // Route pour récupérer un utilisateur spécifique par son ID, accès restreint
-app.get('/api/users/:id', verifyToken, async (req, res) => {
+app.get('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   const userId = req.params.id;
 
   // Restreindre l'accès : soit l'utilisateur est admin, soit il récupère ses propres infos
@@ -172,7 +198,15 @@ app.get('/api/users/:id', verifyToken, async (req, res) => {
     return res.status(403).json({ message: "Accès refusé." });
   }
 
-  const sql = 'SELECT id, nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id, date_creation FROM User WHERE id = ?';
+  // Requête SQL pour récupérer l'utilisateur avec le nom du rôle via une jointure
+  const sql = `
+    SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.adresse1, u.adresse2, 
+           u.cp, u.ville, u.pays, u.naissance, u.contact_urgence, u.sexe, 
+           u.nb_enfant, u.role_id, r.nom AS role_nom, u.date_creation
+    FROM User u
+    JOIN Role r ON u.role_id = r.id
+    WHERE u.id = ?
+  `;
 
   try {
     const [results] = await pool.query(sql, [userId]);
@@ -181,7 +215,7 @@ app.get('/api/users/:id', verifyToken, async (req, res) => {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
     }
 
-    res.status(200).json(results[0]); // Retourner l'utilisateur trouvé
+    res.status(200).json(results[0]); // Retourner l'utilisateur trouvé avec le nom du rôle
   } catch (err) {
     console.error("Erreur lors de la récupération de l'utilisateur :", err);
     res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur." });
