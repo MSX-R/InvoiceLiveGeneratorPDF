@@ -24,16 +24,25 @@ const OffreCoaching = () => {
       icon: <FaDumbbell />,
       color: "from-blue-400 to-blue-600",
       price: {
-        single: { amount: 50, text: "1 SEANCE" },
+        single: {
+          amount: 50,
+          text: "1 SEANCE",
+          perSession: 50, // Prix par séance pour l'offre single
+          discount: 0, // Discount mis à zéro pour single
+        },
         pack: [
-          { sessions: 7, amount: 275, discount: "OFFRE SPECIALE" },
-          { sessions: 15, amount: 500, discount: "OFFRE SPECIALE" },
+          {
+            sessions: 15,
+            amount: 560,
+            perSession: (560 / 15).toFixed(2), // Prix par séance pour le pack de 15 séances
+            discount: 0, // Discount mis à zéro pour le pack
+          },
         ],
         followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 799.9, monthly: 267.0, perSession: 33.33 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1140.0, monthly: 380.0, perSession: 31.67 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 1440.0, monthly: 480.0, perSession: 30.0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 1800.0, monthly: 600.0, perSession: 30.0 },
+          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 799.9, monthly: 267.0, perSession: 33.33, discount: 0 },
+          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1140.0, monthly: 380.0, perSession: 31.67, discount: 0 },
+          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 1440.0, monthly: 480.0, perSession: 30.0, discount: 0 },
+          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 1800.0, monthly: 600.0, perSession: 30.0, discount: 0 },
         ],
       },
     },
@@ -44,19 +53,29 @@ const OffreCoaching = () => {
       icon: <FaClock />,
       color: "from-green-400 to-green-600",
       price: {
-        single: { amount: 70, text: "1 SEANCE" },
+        single: {
+          amount: 70,
+          text: "1 SEANCE",
+          perSession: 70, // Prix par séance pour l'offre single
+          discount: 0, // Discount mis à zéro pour single
+        },
         pack: [
-          { sessions: 5, amount: 275, discount: 50 },
-          { sessions: 10, amount: 500, discount: 100 },
+          {
+            sessions: 10,
+            amount: 550,
+            perSession: (550 / 10).toFixed(2), // Prix par séance pour le pack de 10 séances
+            discount: 0, // Discount mis à zéro pour le pack
+          },
         ],
         followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1140.0, monthly: 383.0, perSession: 47.5 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1620.0, monthly: 540.0, perSession: 45.0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 2040.0, monthly: 680.0, perSession: 42.5 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 2550.0, monthly: 850.0, perSession: 42.5 },
+          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1200.0, monthly: 400.0, perSession: 50.0, discount: 0 },
+          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1680.0, monthly: 560.0, perSession: 46.67, discount: 0 },
+          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 2160.0, monthly: 720.0, perSession: 45.0, discount: 0 },
+          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 2700.0, monthly: 900.0, perSession: 45.0, discount: 0 },
         ],
       },
     },
+
     {
       title: "DUO",
       duration: "60 MIN",
@@ -64,16 +83,73 @@ const OffreCoaching = () => {
       icon: <FaUsers />,
       color: "from-purple-400 to-purple-600",
       price: {
-        single: { amount: 100, text: "1 SEANCE" },
+        single: {
+          amount: 100,
+          text: "1 SEANCE",
+          discount: 0,
+          amountByOne: (100 / 2).toFixed(2), // Prix unitaire pour 1 séance en duo
+        },
         pack: [
-          { sessions: 5, amount: 425, discount: 50 },
-          { sessions: 10, amount: 850, discount: 50 },
+          {
+            sessions: 5,
+            amount: 450,
+            discount: 0,
+            amountByOne: (450 / 2).toFixed(2), // Prix unitaire pour le pack de 5 séances
+            perSession: (450 / 5 / 2).toFixed(2), // Prix par séance pour le pack de 5 séances
+          },
+          {
+            sessions: 10,
+            amount: 850,
+            discount: 0,
+            amountByOne: (850 / 2).toFixed(2), // Prix unitaire pour le pack de 10 séances
+            perSession: (850 / 10 / 2).toFixed(2), // Prix par séance pour le pack de 10 séances
+          },
         ],
         followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1824.0, monthly: 608.0, perSession: 38.0 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 2592.0, monthly: 864.0, perSession: 36.0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 3264.0, monthly: 1088.0, perSession: 34.0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 4080.0, monthly: 850.0, perSession: 34.0 },
+          {
+            sessions: 24,
+            duration: "3 mois",
+            perWeek: 2,
+            amount: 1824.0,
+            monthly: 608.0,
+            perSession: 38.0,
+            discount: 0,
+            amountByOne: (1824.0 / 48).toFixed(2), // Prix unitaire pour 24 séances (2 personnes)
+            monthlyByOne: (608.0 / 2).toFixed(2), // Prix unitaire par mois pour 24 séances (2 personnes)
+          },
+          {
+            sessions: 36,
+            duration: "3 mois",
+            perWeek: 3,
+            amount: 2592.0,
+            monthly: 864.0,
+            perSession: 36.0,
+            discount: 0,
+            amountByOne: (2592.0 / 72).toFixed(2), // Prix unitaire pour 36 séances (2 personnes)
+            monthlyByOne: (864.0 / 2).toFixed(2), // Prix unitaire par mois pour 36 séances (2 personnes)
+          },
+          {
+            sessions: 48,
+            duration: "3 mois",
+            perWeek: 4,
+            amount: 3264.0,
+            monthly: 1088.0,
+            perSession: 34.0,
+            discount: 0,
+            amountByOne: (3264.0 / 96).toFixed(2), // Prix unitaire pour 48 séances (2 personnes)
+            monthlyByOne: (1088.0 / 2).toFixed(2), // Prix unitaire par mois pour 48 séances (2 personnes)
+          },
+          {
+            sessions: 60,
+            duration: "3 mois",
+            perWeek: 5,
+            amount: 4080.0,
+            monthly: 1360.0,
+            perSession: 34.0,
+            discount: 0,
+            amountByOne: (4080.0 / 120).toFixed(2), // Prix unitaire pour 60 séances (2 personnes)
+            monthlyByOne: (1360.0 / 2).toFixed(2), // Prix unitaire par mois pour 60 séances (2 personnes)
+          },
         ],
       },
     },
@@ -151,7 +227,9 @@ const OffreCoaching = () => {
                   <p className="text-lg font-semibold text-gray-800">
                     {pack.sessions} séances : {pack.amount}€
                   </p>
-                  {pack.discount && <p className="text-green-500 font-semibold text-sm">Économisez {pack.discount}€</p>}
+                  <p className="text-sm text-green-600 font-semibold">{pack.perSession}€ / séance</p>
+
+                  {pack.discount > 0 && <p className="text-green-500 font-semibold text-sm">Économisez {pack.discount}€</p>}
                 </div>
                 <button onClick={() => addToCart({ title: `${offer.title} - Pack ${pack.sessions} séances`, price: pack.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
                   <FaShoppingCart className="inline-block mr-2" /> Choisir
