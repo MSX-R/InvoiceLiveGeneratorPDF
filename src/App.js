@@ -34,6 +34,7 @@ import ModifierProfilClient from "./pages/ModifierProfilClient";
 
 // Import the NotFound component
 import NotFound from "./pages/NotFound";
+import FicheClient from "./pages/FicheClient";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -163,15 +164,24 @@ function App() {
             />
             {/* Routes pour les offres coachings */}
             <Route path="/offres-coachings" element={<OffresCoachings />} />
-            <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+            {/* <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
             <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
-            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
+            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} /> */}
             {/* Routes protégées selon le rôle */}
             <Route
               path="/creation-profil-client/:id?"
               element={
                 <PrivateRoute requiredRoles={[1]}>
                   <CreationProfilClient />
+                </PrivateRoute>
+              }
+            />
+            {/* AJOUT FICHE CLIENT ID ici */}
+            <Route
+              path="/fiche-client/:id?"
+              element={
+                <PrivateRoute requiredRoles={[1]}>
+                  <FicheClient />
                 </PrivateRoute>
               }
             />
