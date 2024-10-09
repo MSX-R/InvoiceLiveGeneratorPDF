@@ -31,7 +31,6 @@ const createToken = (user) => {
 };
 
 // Middleware pour vérifier le token et l'authentification
-// Middleware pour vérifier le token et l'authentification
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
@@ -74,8 +73,7 @@ app.get('/api', (req, res) => {
 });
 
 // Route pour ajouter un utilisateur (inscription)
-// Route pour la connexion (login)
-app.post('/api/users', verifyToken, verifyAdmin, async (req, res) => {
+app.post('/api/users', async (req, res) => {
   const {
     nom, prenom, email, password, telephone, adresse1, adresse2,
     cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant
