@@ -88,7 +88,7 @@ const OffreCoaching = () => {
     price: {
       single: { amount: 70, text: "PROGRAMME COMPLET" },
       description: "Programme d'entraînement personnalisable sur 9 semaines, livré en format PDF",
-      features: ["Document PDF", "Introduction et guide d'utilisation détaillés", "Outil de calcul des RM (Répétitions Maximales)", "Planification d'entraînement sur 12 semaines", "Séances de rattrapage flexibles", "Conseils nutritionnels adaptés à vos objectifs", "Exercices illustrés avec instructions", "Espaces pour noter vos performances et suivre vos progrès", "Conseils pour adapter les charges de travail à vos RM", "Bonus : Techniques de récupération et de prévention des blessures"],
+      features: ["Document PDF", "Introduction et guide d'utilisation détaillés", "Outil de calcul des RM (Répétitions Maximales)", "Planification d'entraînement sur 9 semaines", "Séances de rattrapage flexibles", "Conseils nutritionnels adaptés à vos objectifs", "Exercices illustrés avec instructions", "Espaces pour noter vos performances et suivre vos progrès", "Conseils pour adapter les charges de travail à vos RM", "Bonus : Techniques de récupération et de prévention des blessures"],
     },
   };
 
