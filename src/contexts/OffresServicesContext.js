@@ -10,7 +10,6 @@ export const OffresServicesProvider = ({ children }) => {
   const offerOptions = [
     { value: "unit", label: "A LA SEANCE" },
     { value: "pack", label: "AU PACK" },
-    { value: "weekly", label: "A LA SEMAINE" },
     { value: "12weeks", label: "SUR 12 SEMAINES" },
   ];
 

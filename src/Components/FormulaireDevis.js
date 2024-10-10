@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { Dialog } from "@headlessui/react";
 import Select from "react-select";
+import axios from "axios";
 import { usePrix } from "../contexts/PrixContext";
 
 const offerOptions = [
   { value: "", label: "Choisir un type d'offre" },
   { value: "unit", label: "OFFRE UNE SEANCE" },
   { value: "pack", label: "OFFRE PACK" },
-  { value: "weekly", label: "OFFRE 1 SEMAINE" },
   { value: "12weeks", label: "OFFRE 12 SEMAINES" },
 ];
 
@@ -28,21 +28,50 @@ const customStyles = {
 
 const FormulaireDevis = ({ onGenerateInvoice }) => {
   const { prixFixe, services, updatePrixFixe } = usePrix();
+  const [clients, setClients] = useState([]);
   const [items, setItems] = useState([{ typeOffre: "", service: null }]);
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
-    adresse: "",
-    codePostal: "",
+    adresse1: "",
+    cp: "",
     ville: "",
     telephone: "",
   });
+  const [selectedClient, setSelectedClient] = useState(null);
   const [prixInputError, setPrixInputError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [selectedTypeOffre, setSelectedTypeOffre] = useState("");
   const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setFormError("Erreur : Aucun token disponible");
+          return;
+        }
+
+        const response = await axios.get("https://msxghost.boardy.fr/api/users/roles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const filteredClients = response.data.filter((user) => user.role_id === 2 || user.role_id === 3 || user.role_id === 4);
+        setClients(filteredClients);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des clients :", err);
+        setFormError("Erreur lors de la récupération des clients.");
+      }
+    };
+
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     const allFieldsFilled = Object.values(clientInfo).every((value) => value) && items[0].service;
@@ -64,8 +93,6 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
 
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
-
-    // Vérifiez si la valeur est un nombre positif ou zéro
     if (value === "" || (Number(value) >= 0 && !isNaN(Number(value)))) {
       updatePrixFixe(value);
       setPrixInputError(false);
@@ -81,12 +108,10 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
 
   const handleItemChange = (index, selectedOption) => {
     const selectedService = services.find((service) => service.id === selectedOption.value);
-    // Assurez-vous que la quantité est correctement définie ici
     const updatedService = {
       ...selectedService,
-      quantity: selectedService?.quantity || 1, // Valeur par défaut
+      quantity: selectedService?.quantity || 1,
     };
-
     setItems([{ typeOffre: selectedTypeOffre, service: updatedService }]);
   };
 
@@ -94,15 +119,41 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
     setClientInfo((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleClientSelection = (selectedOption) => {
+    if (selectedOption) {
+      const client = clients.find((c) => c.id === selectedOption.value);
+      setClientInfo({
+        nom: client.nom,
+        prenom: client.prenom,
+        adresse1: client.adresse1,
+        cp: client.cp,
+        ville: client.ville,
+        telephone: client.telephone,
+      });
+      setSelectedClient(selectedOption);
+    } else {
+      setClientInfo({
+        nom: "",
+        prenom: "",
+        adresse1: "",
+        cp: "",
+        ville: "",
+        telephone: "",
+      });
+      setSelectedClient(null);
+    }
+  };
+
   const fillDefaultClientInfo = () => {
     setClientInfo({
       nom: "Lanteri",
       prenom: "Yannick",
-      adresse: "145 boulevard Fenelon",
-      codePostal: "06400",
+      adresse1: "145 boulevard Fenelon",
+      cp: "06400",
       ville: "Cannes",
       telephone: "0708090708",
     });
+    setSelectedClient(null);
   };
 
   const clearClientField = (field) => {
@@ -160,6 +211,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {/* Informations Client */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Informations Client</h2>
+            <Select options={clients.map((client) => ({ value: client.id, label: `${client.nom} ${client.prenom}` }))} value={selectedClient} onChange={handleClientSelection} isClearable placeholder="Sélectionner un client existant" className="mb-4" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {Object.keys(clientInfo).map((field) => (
                 <div key={field} className="relative">
@@ -197,13 +249,12 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
                       <strong>Remise sur prix initial :</strong> {items[0].service.remise}%
                     </p>
                   )}
-                  <p className=" ml-4 mt-2">
+                  <p className="ml-4 mt-2">
                     <strong>Prix Unitaire :</strong> {items[0].service.prix} €
                   </p>
-                  <p className=" ml-4">
+                  <p className="ml-4">
                     <strong>Prix Total :</strong> {totalPrice} €
                   </p>
-
                   {monthlyCost && (
                     <p className="flex items-center gap-2 ml-4">
                       <strong>Cout mensuel :</strong> {monthlyCost} €
@@ -234,12 +285,9 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           </div>
 
           {/* Modal de Confirmation */}
-          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center z-50 p-6 ">
-            {/* Backdrop */}
-            <div className="fixed inset-0 bg-black opacity-50" onClick={cancelGeneration} /> {/* This creates the transparent black background */}
+          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center z-50 p-6">
+            <div className="fixed inset-0 bg-black opacity-50" onClick={cancelGeneration} />
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10">
-              {" "}
-              {/* Ensure modal content is above the backdrop */}
               <Dialog.Title className="text-xl font-bold">Confirmer la génération</Dialog.Title>
               <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer cette facture ?</Dialog.Description>
               <div className="mt-4 flex justify-end space-x-2">

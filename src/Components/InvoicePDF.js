@@ -141,7 +141,7 @@ const InvoicePDF = ({ clientInfo, items, entrepriseInfo, fileName, validityDate 
               {clientInfo.nom} {clientInfo.prenom}
             </Text>
             <Text style={styles.infoText}>
-              {clientInfo.adresse}, {clientInfo.codePostal} {clientInfo.ville}
+              {clientInfo.adresse1}, {clientInfo.cp} {clientInfo.ville}
             </Text>
             <Text style={styles.infoText}>{clientInfo.telephone}</Text>
           </View>
