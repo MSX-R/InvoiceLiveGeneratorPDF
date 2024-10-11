@@ -109,6 +109,8 @@ const SuiviClients = () => {
   const ajouterClient = () => {
     if (nouveauClient.client && nouveauClient.typeOffre && nouveauClient.offre) {
       const offreDetails = getOffreDetails(nouveauClient.offre);
+
+      // Ajouter le client avec les détails de l'offre et des séances
       setClientsWithSessions((prevClients) => [
         ...prevClients,
         {
@@ -121,9 +123,21 @@ const SuiviClients = () => {
           seancesConsommees: 0,
         },
       ]);
-      setNouveauClient({ client: null, prenom: "", nom: "", typeOffre: "", offre: "", seancesAchetees: 0, seancesConsommees: 0 });
-      setSelectedTypeOffre("");
-      setSelectedOffre(null);
+
+      // Réinitialiser les champs après l'ajout du client
+      setNouveauClient({
+        client: null,
+        prenom: "",
+        nom: "",
+        typeOffre: "",
+        offre: "",
+        seancesAchetees: 0,
+        seancesConsommees: 0,
+      });
+
+      // Réinitialiser les listes déroulantes
+      setSelectedTypeOffre(""); // Réinitialise le type d'offre
+      setSelectedOffre(null); // Réinitialise l'offre sélectionnée
     }
   };
 
@@ -252,8 +266,11 @@ const SuiviClients = () => {
             <Select options={clients.map((client) => ({ value: client.id, label: `${client.prenom} ${client.nom}` }))} value={nouveauClient.client} onChange={handleClientSelect} placeholder="Sélectionner un client" className="w-full" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-            <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleTypeOffreChange} placeholder="Sélectionner un type d'offre" className="w-full" />
-            <Select options={getServiceOptions()} value={getServiceOptions().find((option) => option.value === selectedOffre)} onChange={handleOffreChange} placeholder="Sélectionner une offre" className="w-full" isDisabled={!selectedTypeOffre} />
+            {/* Sélecteur pour le type d'offre */}
+            <Select options={offerOptions} value={selectedTypeOffre ? offerOptions.find((option) => option.value === selectedTypeOffre) : null} onChange={handleTypeOffreChange} placeholder="Sélectionner un type d'offre" className="w-full" />
+
+            {/* Sélecteur pour l'offre */}
+            <Select options={getServiceOptions()} value={selectedOffre ? getServiceOptions().find((option) => option.value === selectedOffre) : null} onChange={handleOffreChange} placeholder="Sélectionner une offre" className="w-full" isDisabled={!selectedTypeOffre} />
           </div>
           <div className="mb-4 border border-gray-300 rounded-md bg-gray-200 p-4 text-left w-full h-16 flex items-center">
             <div className="text-gray-600 pr-2">{nouveauClient.seancesAchetees}</div>
