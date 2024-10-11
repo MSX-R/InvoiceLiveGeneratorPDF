@@ -258,7 +258,7 @@ const SuiviClients = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Suivi des Clients | Compteur de Séances</h1>
+        <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Suivi Client | Compteur de Séances</h1>
 
         <div className="bg-gray-50 p-6 rounded-lg mb-6 shadow-md">
           <h2 className="text-2xl font-semibold mb-6 text-gray-700">Attribution d'une offre au client</h2>
@@ -312,27 +312,43 @@ const SuiviClients = () => {
         <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" overlayClassName="fixed inset-0 bg-black bg-opacity-50">
           <div className="bg-white p-8 rounded-lg shadow-lg transition-transform transform scale-100 w-full max-w-lg">
             <h2 className="text-3xl font-bold mb-4 text-gray-800 text-center tracking-tight">Modifier les séances pour</h2>
-            <p className="text-xl text-gray-600 mb-6 text-center">
+            <p className="text-xl text-gray-600 mb-8 text-center">
               {selectedClient?.prenom} {selectedClient?.nom}
             </p>
-            <hr className="border-gray-300 mb-6" />
+            <hr className="border-gray-300 " />
 
-            <div className="flex flex-col items-center mb-6">
-              <p className="text-lg mb-4">
-                Séances achetées : {selectedClient?.seancesAchetees} | Séances consommées : {selectedClient?.seancesConsommees}
-              </p>
-              <div className="flex justify-center gap-4 w-full">
-                <button onClick={() => handleSave("effectuee")} className="mt-4 bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300 w-full">
+            <div className="flex flex-col items-center ">
+              {/* MOBILE */}
+              <div className="text-lg my-6 flex  flex-col items-center ">
+                <p className="">Séances achetées</p>
+                <p className="font-bold text-4xl">{selectedClient?.seancesAchetees}</p>
+                <hr className="my-2" />
+                <p className="">Séances consommées</p>
+                <p className="font-bold text-4xl">{selectedClient?.seancesConsommees}</p>
+              </div>
+
+              {/* PC */}
+              {/* <div className="text-lg mb-4">
+                <p className="">
+                  Séances achetées : <span className="">{selectedClient?.seancesAchetees}</span>
+                </p>
+                <span className="hidden md:block"> | </span>
+                <p className="">Séances consommées : {selectedClient?.seancesConsommees}</p>
+              </div> */}
+
+              <div className="flex justify-center gap-4 w-full ">
+                <button onClick={() => handleSave("effectuee")} className="mt-4 hover:font-bold bg-green-500 text-white py-2 px-6 rounded-md hover:bg-green-600 transition duration-300 w-full">
                   Séance effectuée
                 </button>
-                <button onClick={() => handleSave("corriger")} className="mt-4 bg-yellow-500 text-white py-2 px-6 rounded-md hover:bg-yellow-600 transition duration-300 w-full">
-                  Corriger x1
+                <button onClick={() => handleSave("corriger")} className="mt-4 hover:font-bold bg-yellow-500 text-white py-2 px-6 rounded-md hover:bg-yellow-600 transition duration-300 w-full">
+                  Corriger -1
                 </button>
-                <button onClick={() => handleSave("offrir")} className="mt-4 bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition duration-300 w-full">
+                <button onClick={() => handleSave("offrir")} className="mt-4  bg-blue-500 text-white py-2 px-6 rounded-md hover:bg-blue-600 transition duration-300 w-full">
                   Offrir une séance
                 </button>
               </div>
-              <button onClick={closeModal} className="mt-4 bg-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-400 transition duration-300 w-full">
+
+              <button onClick={closeModal} className="mt-6 bg-gray-300 hover:font-bold text-gray-700 py-2 px-6 rounded-md hover:bg-gray-400 transition duration-300 w-full">
                 Annuler
               </button>
             </div>
