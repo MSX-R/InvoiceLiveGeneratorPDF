@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaDumbbell, FaUsers, FaClock, FaTimes, FaFilePdf, FaShoppingCart } from "react-icons/fa";
+import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 
 const OffreCoaching = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [notification, setNotification] = useState(null);
+  const { offres, programme } = useOffresCoaching();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -15,158 +17,6 @@ const OffreCoaching = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const offres = [
-    {
-      title: "ESSENTIEL",
-      duration: "40 MIN",
-      type: "SOLO",
-      icon: <FaDumbbell />,
-      color: "from-blue-400 to-blue-600",
-      price: {
-        single: {
-          amount: 50,
-          text: "1 SEANCE",
-          perSession: 50, // Prix par séance pour l'offre single
-          discount: 0, // Discount mis à zéro pour single
-        },
-        pack: [
-          {
-            sessions: 15,
-            amount: 560,
-            perSession: (560 / 15).toFixed(2), // Prix par séance pour le pack de 15 séances
-            discount: 0, // Discount mis à zéro pour le pack
-          },
-        ],
-        followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 799.9, monthly: 267.0, perSession: 33.33, discount: 0 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1140.0, monthly: 380.0, perSession: 31.67, discount: 0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 1440.0, monthly: 480.0, perSession: 30.0, discount: 0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 1800.0, monthly: 600.0, perSession: 30.0, discount: 0 },
-        ],
-      },
-    },
-    {
-      title: "FULL",
-      duration: "60 MIN",
-      type: "SOLO",
-      icon: <FaClock />,
-      color: "from-green-400 to-green-600",
-      price: {
-        single: {
-          amount: 70,
-          text: "1 SEANCE",
-          perSession: 70, // Prix par séance pour l'offre single
-          discount: 0, // Discount mis à zéro pour single
-        },
-        pack: [
-          {
-            sessions: 10,
-            amount: 550,
-            perSession: (550 / 10).toFixed(2), // Prix par séance pour le pack de 10 séances
-            discount: 0, // Discount mis à zéro pour le pack
-          },
-        ],
-        followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1200.0, monthly: 400.0, perSession: 50.0, discount: 0 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1680.0, monthly: 560.0, perSession: 46.67, discount: 0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 2160.0, monthly: 720.0, perSession: 45.0, discount: 0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 2700.0, monthly: 900.0, perSession: 45.0, discount: 0 },
-        ],
-      },
-    },
-
-    {
-      title: "DUO",
-      duration: "60 MIN",
-      type: "DUO",
-      icon: <FaUsers />,
-      color: "from-purple-400 to-purple-600",
-      price: {
-        single: {
-          amount: 100,
-          text: "1 SEANCE",
-          discount: 0,
-          amountByOne: (100 / 2).toFixed(2), // Prix unitaire pour 1 séance en duo
-        },
-        pack: [
-          {
-            sessions: 5,
-            amount: 450,
-            discount: 0,
-            amountByOne: (450 / 2).toFixed(2), // Prix unitaire pour le pack de 5 séances
-            perSession: (450 / 5 / 2).toFixed(2), // Prix par séance pour le pack de 5 séances
-          },
-          {
-            sessions: 10,
-            amount: 850,
-            discount: 0,
-            amountByOne: (850 / 2).toFixed(2), // Prix unitaire pour le pack de 10 séances
-            perSession: (850 / 10 / 2).toFixed(2), // Prix par séance pour le pack de 10 séances
-          },
-        ],
-        followUp: [
-          {
-            sessions: 24,
-            duration: "3 mois",
-            perWeek: 2,
-            amount: 1824.0,
-            monthly: 608.0,
-            perSession: 38.0,
-            discount: 0,
-            amountByOne: (1824.0 / 48).toFixed(2), // Prix unitaire pour 24 séances (2 personnes)
-            monthlyByOne: (608.0 / 2).toFixed(2), // Prix unitaire par mois pour 24 séances (2 personnes)
-          },
-          {
-            sessions: 36,
-            duration: "3 mois",
-            perWeek: 3,
-            amount: 2592.0,
-            monthly: 864.0,
-            perSession: 36.0,
-            discount: 0,
-            amountByOne: (2592.0 / 72).toFixed(2), // Prix unitaire pour 36 séances (2 personnes)
-            monthlyByOne: (864.0 / 2).toFixed(2), // Prix unitaire par mois pour 36 séances (2 personnes)
-          },
-          {
-            sessions: 48,
-            duration: "3 mois",
-            perWeek: 4,
-            amount: 3264.0,
-            monthly: 1088.0,
-            perSession: 34.0,
-            discount: 0,
-            amountByOne: (3264.0 / 96).toFixed(2), // Prix unitaire pour 48 séances (2 personnes)
-            monthlyByOne: (1088.0 / 2).toFixed(2), // Prix unitaire par mois pour 48 séances (2 personnes)
-          },
-          {
-            sessions: 60,
-            duration: "3 mois",
-            perWeek: 5,
-            amount: 4080.0,
-            monthly: 1360.0,
-            perSession: 34.0,
-            discount: 0,
-            amountByOne: (4080.0 / 120).toFixed(2), // Prix unitaire pour 60 séances (2 personnes)
-            monthlyByOne: (1360.0 / 2).toFixed(2), // Prix unitaire par mois pour 60 séances (2 personnes)
-          },
-        ],
-      },
-    },
-  ];
-
-  const programme = {
-    title: "PROGRAMME PERSONNALISÉ",
-    duration: "9 SEMAINES",
-    type: "À DISTANCE",
-    icon: <FaFilePdf />,
-    color: "from-red-400 to-red-600",
-    price: {
-      single: { amount: 70, text: "PROGRAMME COMPLET" },
-      description: "Programme d'entraînement personnalisable sur 9 semaines, livré en format PDF",
-      features: ["Document PDF", "Introduction et guide d'utilisation détaillés", "Outil de calcul des RM (Répétitions Maximales)", "Planification d'entraînement sur 9 semaines", "Séances de rattrapage flexibles", "Conseils nutritionnels adaptés à vos objectifs", "Exercices illustrés avec instructions", "Espaces pour noter vos performances et suivre vos progrès", "Conseils pour adapter les charges de travail à vos RM", "Bonus : Techniques de récupération et de prévention des blessures"],
-    },
-  };
 
   const addToCart = (item) => {
     console.log("Ajouté au panier:", item);
@@ -207,12 +57,12 @@ const OffreCoaching = () => {
 
       <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
         <div>
-          <h3 className="text-xl font-semibold mb-3 text-gray-700">Séance unique</h3>
+          {offer.title === "PROGRAMME D'ENTRAINEMENT" ? "" : <h3 className="text-xl font-semibold mb-3 text-gray-700">Séance unique</h3>}
           <div className="flex justify-between items-center">
             <p className="text-2xl font-bold text-gray-900 mb-4">
               {offer.price.single.amount}€ <span className="text-base text-gray-600">/ {offer.price.single.text}</span>
             </p>
-            <button onClick={() => addToCart({ title: `${offer.title} - Séance unique`, price: offer.price.single.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+            <button onClick={() => addToCart({ title: `${offer.title} - Séance unique`, price: offer.price.single.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 ">
               <FaShoppingCart className="inline-block mr-2" /> Choisir
             </button>
           </div>
@@ -339,5 +189,3 @@ const OffreCoaching = () => {
 };
 
 export default OffreCoaching;
-
-//AVANT CHANEMENT

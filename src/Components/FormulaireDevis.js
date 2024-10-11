@@ -4,13 +4,7 @@ import { Dialog } from "@headlessui/react";
 import Select from "react-select";
 import axios from "axios";
 import { usePrix } from "../contexts/PrixContext";
-
-const offerOptions = [
-  { value: "", label: "Choisir un type d'offre" },
-  { value: "unit", label: "OFFRE UNE SEANCE" },
-  { value: "pack", label: "OFFRE PACK" },
-  { value: "12weeks", label: "OFFRE 12 SEMAINES" },
-];
+import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 
 const customStyles = {
   option: (provided, state) => ({
@@ -27,7 +21,8 @@ const customStyles = {
 };
 
 const FormulaireDevis = ({ onGenerateInvoice }) => {
-  const { prixFixe, services, updatePrixFixe } = usePrix();
+  const { prixFixe, updatePrixFixe } = usePrix();
+  const { offres, programme, loading: offresLoading, error: offresError } = useOffresCoaching();
   const [clients, setClients] = useState([]);
   const [items, setItems] = useState([{ typeOffre: "", service: null }]);
   const [clientInfo, setClientInfo] = useState({
@@ -44,6 +39,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   const [showModal, setShowModal] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [selectedTypeOffre, setSelectedTypeOffre] = useState("");
+  const [selectedOffre, setSelectedOffre] = useState(null);
   const [formError, setFormError] = useState("");
 
   useEffect(() => {
@@ -78,19 +74,6 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
     setIsFormComplete(allFieldsFilled);
   }, [clientInfo, items]);
 
-  useEffect(() => {
-    if (items[0].service) {
-      const updatedItems = items.map((item) => ({
-        ...item,
-        service: {
-          ...item.service,
-          prix: services.find((service) => service.id === item.service.id)?.prix || 0,
-        },
-      }));
-      setItems(updatedItems);
-    }
-  }, [items, prixFixe, services]);
-
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
     if (value === "" || (Number(value) >= 0 && !isNaN(Number(value)))) {
@@ -102,16 +85,30 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   };
 
   const handleOfferChange = (selectedOption) => {
-    setSelectedTypeOffre(selectedOption?.value || "");
-    setItems([{ typeOffre: selectedOption?.value || "", service: null }]);
+    const selectedOffreTitle = selectedOption?.value || "";
+    setSelectedTypeOffre(selectedOffreTitle);
+    setSelectedOffre(offres.find((offre) => offre.title === selectedOffreTitle));
+    setItems([{ typeOffre: selectedOffreTitle, service: null }]);
   };
 
   const handleItemChange = (index, selectedOption) => {
-    const selectedService = services.find((service) => service.id === selectedOption.value);
-    const updatedService = {
-      ...selectedService,
-      quantity: selectedService?.quantity || 1,
-    };
+    let updatedService;
+
+    if (selectedOption.type === "single") {
+      updatedService = {
+        ...selectedOffre.price.single,
+        quantity: 1,
+        type: "single",
+      };
+    } else {
+      const selectedService = selectedOffre.price[selectedOption.type].find((service) => service.sessions === selectedOption.value);
+      updatedService = {
+        ...selectedService,
+        quantity: selectedService?.sessions || 1,
+        type: selectedOption.type,
+      };
+    }
+
     setItems([{ typeOffre: selectedTypeOffre, service: updatedService }]);
   };
 
@@ -195,13 +192,57 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
 
   const getTotalPrice = () => {
     if (items[0].service) {
-      return items[0].service.prix * items[0].service.quantity;
+      return items[0].service.amount;
     }
     return 0;
   };
 
   const totalPrice = getTotalPrice();
   const monthlyCost = selectedTypeOffre === "12weeks" ? (totalPrice / 3).toFixed(2) : null;
+
+  if (offresLoading) {
+    return <div>Chargement des offres...</div>;
+  }
+
+  if (offresError) {
+    return <div>Erreur : {offresError}</div>;
+  }
+
+  const offerOptions = offres.map((offre) => ({
+    value: offre.title,
+    label: `${offre.title} | ${offre.duration}`,
+  }));
+  const getServiceOptions = () => {
+    if (!selectedOffre) return [];
+
+    const options = [];
+    if (selectedOffre.price.single) {
+      options.push({
+        value: 1,
+        label: `${selectedOffre.price.single.name} - ${selectedOffre.price.single.amount > 0 ? selectedOffre.price.single.amount + "€" : "offerte"}`,
+        type: "single",
+      });
+    }
+    if (selectedOffre.price.pack) {
+      selectedOffre.price.pack.forEach((pack) => {
+        options.push({
+          value: pack.sessions,
+          label: `${pack.name} - ${pack.amount}€`,
+          type: "pack",
+        });
+      });
+    }
+    if (selectedOffre.price.followUp) {
+      selectedOffre.price.followUp.forEach((followUp) => {
+        options.push({
+          value: followUp.sessions,
+          label: `${followUp.name} - ${followUp.amount}€`,
+          type: "followUp",
+        });
+      });
+    }
+    return options;
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -228,8 +269,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {/* Sélection des Offres */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Sélection des Offres</h2>
-            <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleOfferChange} styles={customStyles} />
-            {selectedTypeOffre && <Select options={services.filter((service) => service.type === selectedTypeOffre).map((service) => ({ value: service.id, label: service.name }))} value={items[0].service ? { value: items[0].service.id, label: items[0].service.name } : null} onChange={(selectedOption) => handleItemChange(0, selectedOption)} styles={customStyles} className="mt-4" />}
+            <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleOfferChange} styles={customStyles} placeholder="Sélectionner une offre" /> {selectedTypeOffre && <Select options={getServiceOptions()} value={items[0].service ? { value: items[0].service.name, label: `${items[0].service.name}`, type: items[0].service.type } : null} onChange={(selectedOption) => handleItemChange(0, selectedOption)} styles={customStyles} className="mt-4" />}
           </div>
 
           {/* Détails de l'Offre */}
@@ -239,25 +279,33 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
               {items[0].service ? (
                 <>
                   <p>
-                    <strong>Nom :</strong> {items[0].service.name}
+                    <strong>Nom :</strong> {selectedOffre.title}
                   </p>
                   <p>
-                    <strong>Quantité :</strong> {items[0].service.quantity}
+                    <strong>Type :</strong> {items[0].service.type === "single" ? "Séance unique" : items[0].service.type === "pack" ? "Pack" : "Suivi"}
                   </p>
-                  {items[0].service.remise > 0 && (
+                  <p>
+                    <strong>Quantité :</strong> {items[0].service.sessions} séance(s)
+                  </p>
+                  {items[0].service.discount > 0 && (
                     <p>
-                      <strong>Remise sur prix initial :</strong> {items[0].service.remise}%
+                      <strong>Remise sur prix initial :</strong> {items[0].service.discount}%
                     </p>
                   )}
                   <p className="ml-4 mt-2">
-                    <strong>Prix Unitaire :</strong> {items[0].service.prix} €
+                    <strong>Prix Unitaire :</strong> {items[0].service.perSession} €
                   </p>
                   <p className="ml-4">
-                    <strong>Prix Total :</strong> {totalPrice} €
+                    <strong>Prix Total :</strong> {items[0].service.amount} €
                   </p>
-                  {monthlyCost && (
+                  {items[0].service.monthly && (
                     <p className="flex items-center gap-2 ml-4">
-                      <strong>Cout mensuel :</strong> {monthlyCost} €
+                      <strong>Coût mensuel :</strong> {items[0].service.monthly} €
+                    </p>
+                  )}
+                  {selectedOffre.description && (
+                    <p className="mt-4">
+                      <strong>Description :</strong> {selectedOffre.description}
                     </p>
                   )}
                 </>
