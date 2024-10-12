@@ -25,8 +25,8 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
   const [formData, setFormData] = useState({
     clientName: clientInfo.nom || "",
     clientPrenom: clientInfo.prenom || "",
-    clientAdresse: clientInfo.adresse || "",
-    clientCodePostal: clientInfo.codePostal || "",
+    clientAdresse: clientInfo.adresse1 || "",
+    clientCodePostal: clientInfo.cp || "",
     clientVille: clientInfo.ville || "",
     clientTelephone: clientInfo.telephone || "",
     clientEmail: clientInfo.email || "",
@@ -111,8 +111,8 @@ const EditModal = ({ isOpen, onClose, clientInfo, items, onSave }) => {
     const updatedClientInfo = {
       nom: formData.clientName,
       prenom: formData.clientPrenom,
-      adresse: formData.clientAdresse,
-      codePostal: formData.clientCodePostal,
+      adresse1: formData.clientAdresse,
+      cp: formData.clientCodePostal,
       ville: formData.clientVille,
       telephone: formData.clientTelephone,
       email: formData.clientEmail,

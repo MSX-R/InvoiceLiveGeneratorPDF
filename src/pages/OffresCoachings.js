@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaDumbbell, FaUsers, FaClock, FaTimes, FaFilePdf, FaShoppingCart } from "react-icons/fa";
+import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 
 const OffreCoaching = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [notification, setNotification] = useState(null);
+  const { offres, programme } = useOffresCoaching();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -15,82 +17,6 @@ const OffreCoaching = () => {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
-
-  const offres = [
-    {
-      title: "ESSENTIEL",
-      duration: "40 MIN",
-      type: "SOLO",
-      icon: <FaDumbbell />,
-      color: "from-blue-400 to-blue-600",
-      price: {
-        single: { amount: 50, text: "1 SEANCE" },
-        pack: [
-          { sessions: 7, amount: 275, discount: "OFFRE SPECIALE" },
-          { sessions: 15, amount: 500, discount: "OFFRE SPECIALE" },
-        ],
-        followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 799.9, monthly: 267.0, perSession: 33.33 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1140.0, monthly: 380.0, perSession: 31.67 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 1440.0, monthly: 480.0, perSession: 30.0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 1800.0, monthly: 600.0, perSession: 30.0 },
-        ],
-      },
-    },
-    {
-      title: "FULL",
-      duration: "60 MIN",
-      type: "SOLO",
-      icon: <FaClock />,
-      color: "from-green-400 to-green-600",
-      price: {
-        single: { amount: 70, text: "1 SEANCE" },
-        pack: [
-          { sessions: 5, amount: 275, discount: 50 },
-          { sessions: 10, amount: 500, discount: 100 },
-        ],
-        followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1140.0, monthly: 383.0, perSession: 47.5 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 1620.0, monthly: 540.0, perSession: 45.0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 2040.0, monthly: 680.0, perSession: 42.5 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 2550.0, monthly: 850.0, perSession: 42.5 },
-        ],
-      },
-    },
-    {
-      title: "DUO",
-      duration: "60 MIN",
-      type: "DUO",
-      icon: <FaUsers />,
-      color: "from-purple-400 to-purple-600",
-      price: {
-        single: { amount: 100, text: "1 SEANCE" },
-        pack: [
-          { sessions: 5, amount: 425, discount: 50 },
-          { sessions: 10, amount: 850, discount: 50 },
-        ],
-        followUp: [
-          { sessions: 24, duration: "3 mois", perWeek: 2, amount: 1824.0, monthly: 608.0, perSession: 38.0 },
-          { sessions: 36, duration: "3 mois", perWeek: 3, amount: 2592.0, monthly: 864.0, perSession: 36.0 },
-          { sessions: 48, duration: "3 mois", perWeek: 4, amount: 3264.0, monthly: 1088.0, perSession: 34.0 },
-          { sessions: 60, duration: "3 mois", perWeek: 5, amount: 4080.0, monthly: 850.0, perSession: 34.0 },
-        ],
-      },
-    },
-  ];
-
-  const programme = {
-    title: "PROGRAMME PERSONNALISÉ",
-    duration: "9 SEMAINES",
-    type: "À DISTANCE",
-    icon: <FaFilePdf />,
-    color: "from-red-400 to-red-600",
-    price: {
-      single: { amount: 70, text: "PROGRAMME COMPLET" },
-      description: "Programme d'entraînement personnalisable sur 9 semaines, livré en format PDF",
-      features: ["Document PDF", "Introduction et guide d'utilisation détaillés", "Outil de calcul des RM (Répétitions Maximales)", "Planification d'entraînement sur 12 semaines", "Séances de rattrapage flexibles", "Conseils nutritionnels adaptés à vos objectifs", "Exercices illustrés avec instructions", "Espaces pour noter vos performances et suivre vos progrès", "Conseils pour adapter les charges de travail à vos RM", "Bonus : Techniques de récupération et de prévention des blessures"],
-    },
-  };
 
   const addToCart = (item) => {
     console.log("Ajouté au panier:", item);
@@ -131,12 +57,12 @@ const OffreCoaching = () => {
 
       <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
         <div>
-          <h3 className="text-xl font-semibold mb-3 text-gray-700">Séance unique</h3>
+          {offer.title === "PROGRAMME D'ENTRAINEMENT" ? "" : <h3 className="text-xl font-semibold mb-3 text-gray-700">Séance unique</h3>}
           <div className="flex justify-between items-center">
             <p className="text-2xl font-bold text-gray-900 mb-4">
               {offer.price.single.amount}€ <span className="text-base text-gray-600">/ {offer.price.single.text}</span>
             </p>
-            <button onClick={() => addToCart({ title: `${offer.title} - Séance unique`, price: offer.price.single.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+            <button onClick={() => addToCart({ title: `${offer.title} - Séance unique`, price: offer.price.single.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 ">
               <FaShoppingCart className="inline-block mr-2" /> Choisir
             </button>
           </div>
@@ -151,7 +77,9 @@ const OffreCoaching = () => {
                   <p className="text-lg font-semibold text-gray-800">
                     {pack.sessions} séances : {pack.amount}€
                   </p>
-                  {pack.discount && <p className="text-green-500 font-semibold text-sm">Économisez {pack.discount}€</p>}
+                  <p className="text-sm text-green-600 font-semibold">{pack.perSession}€ / séance</p>
+
+                  {pack.discount > 0 && <p className="text-green-500 font-semibold text-sm">Économisez {pack.discount}€</p>}
                 </div>
                 <button onClick={() => addToCart({ title: `${offer.title} - Pack ${pack.sessions} séances`, price: pack.amount })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
                   <FaShoppingCart className="inline-block mr-2" /> Choisir

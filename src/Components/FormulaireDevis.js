@@ -2,15 +2,9 @@ import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { Dialog } from "@headlessui/react";
 import Select from "react-select";
+import axios from "axios";
 import { usePrix } from "../contexts/PrixContext";
-
-const offerOptions = [
-  { value: "", label: "Choisir un type d'offre" },
-  { value: "unit", label: "OFFRE UNE SEANCE" },
-  { value: "pack", label: "OFFRE PACK" },
-  { value: "weekly", label: "OFFRE 1 SEMAINE" },
-  { value: "12weeks", label: "OFFRE 12 SEMAINES" },
-];
+import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 
 const customStyles = {
   option: (provided, state) => ({
@@ -27,45 +21,61 @@ const customStyles = {
 };
 
 const FormulaireDevis = ({ onGenerateInvoice }) => {
-  const { prixFixe, services, updatePrixFixe } = usePrix();
+  const { prixFixe, updatePrixFixe } = usePrix();
+  const { offres, programme, loading: offresLoading, error: offresError } = useOffresCoaching();
+  const [clients, setClients] = useState([]);
   const [items, setItems] = useState([{ typeOffre: "", service: null }]);
   const [clientInfo, setClientInfo] = useState({
     nom: "",
     prenom: "",
-    adresse: "",
-    codePostal: "",
+    adresse1: "",
+    cp: "",
     ville: "",
     telephone: "",
   });
+  const [selectedClient, setSelectedClient] = useState(null);
   const [prixInputError, setPrixInputError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [selectedTypeOffre, setSelectedTypeOffre] = useState("");
+  const [selectedOffre, setSelectedOffre] = useState(null);
   const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setFormError("Erreur : Aucun token disponible");
+          return;
+        }
+
+        const response = await axios.get("https://msxghost.boardy.fr/api/users/roles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const filteredClients = response.data.filter((user) => user.role_id === 2 || user.role_id === 3 || user.role_id === 4);
+        setClients(filteredClients);
+      } catch (err) {
+        console.error("Erreur lors de la récupération des clients :", err);
+        setFormError("Erreur lors de la récupération des clients.");
+      }
+    };
+
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     const allFieldsFilled = Object.values(clientInfo).every((value) => value) && items[0].service;
     setIsFormComplete(allFieldsFilled);
   }, [clientInfo, items]);
 
-  useEffect(() => {
-    if (items[0].service) {
-      const updatedItems = items.map((item) => ({
-        ...item,
-        service: {
-          ...item.service,
-          prix: services.find((service) => service.id === item.service.id)?.prix || 0,
-        },
-      }));
-      setItems(updatedItems);
-    }
-  }, [items, prixFixe, services]);
-
   const handlePrixFixeChange = (event) => {
     const value = event.target.value;
-
-    // Vérifiez si la valeur est un nombre positif ou zéro
     if (value === "" || (Number(value) >= 0 && !isNaN(Number(value)))) {
       updatePrixFixe(value);
       setPrixInputError(false);
@@ -75,17 +85,29 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   };
 
   const handleOfferChange = (selectedOption) => {
-    setSelectedTypeOffre(selectedOption?.value || "");
-    setItems([{ typeOffre: selectedOption?.value || "", service: null }]);
+    const selectedOffreTitle = selectedOption?.value || "";
+    setSelectedTypeOffre(selectedOffreTitle);
+    setSelectedOffre(offres.find((offre) => offre.title === selectedOffreTitle));
+    setItems([{ typeOffre: selectedOffreTitle, service: null }]);
   };
 
   const handleItemChange = (index, selectedOption) => {
-    const selectedService = services.find((service) => service.id === selectedOption.value);
-    // Assurez-vous que la quantité est correctement définie ici
-    const updatedService = {
-      ...selectedService,
-      quantity: selectedService?.quantity || 1, // Valeur par défaut
-    };
+    let updatedService;
+
+    if (selectedOption.type === "single") {
+      updatedService = {
+        ...selectedOffre.price.single,
+        quantity: 1,
+        type: "single",
+      };
+    } else {
+      const selectedService = selectedOffre.price[selectedOption.type].find((service) => service.sessions === selectedOption.value);
+      updatedService = {
+        ...selectedService,
+        quantity: selectedService?.sessions || 1,
+        type: selectedOption.type,
+      };
+    }
 
     setItems([{ typeOffre: selectedTypeOffre, service: updatedService }]);
   };
@@ -94,15 +116,41 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
     setClientInfo((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleClientSelection = (selectedOption) => {
+    if (selectedOption) {
+      const client = clients.find((c) => c.id === selectedOption.value);
+      setClientInfo({
+        nom: client.nom,
+        prenom: client.prenom,
+        adresse1: client.adresse1,
+        cp: client.cp,
+        ville: client.ville,
+        telephone: client.telephone,
+      });
+      setSelectedClient(selectedOption);
+    } else {
+      setClientInfo({
+        nom: "",
+        prenom: "",
+        adresse1: "",
+        cp: "",
+        ville: "",
+        telephone: "",
+      });
+      setSelectedClient(null);
+    }
+  };
+
   const fillDefaultClientInfo = () => {
     setClientInfo({
       nom: "Lanteri",
       prenom: "Yannick",
-      adresse: "145 boulevard Fenelon",
-      codePostal: "06400",
+      adresse1: "145 boulevard Fenelon",
+      cp: "06400",
       ville: "Cannes",
       telephone: "0708090708",
     });
+    setSelectedClient(null);
   };
 
   const clearClientField = (field) => {
@@ -144,13 +192,57 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
 
   const getTotalPrice = () => {
     if (items[0].service) {
-      return items[0].service.prix * items[0].service.quantity;
+      return items[0].service.amount;
     }
     return 0;
   };
 
   const totalPrice = getTotalPrice();
   const monthlyCost = selectedTypeOffre === "12weeks" ? (totalPrice / 3).toFixed(2) : null;
+
+  if (offresLoading) {
+    return <div>Chargement des offres...</div>;
+  }
+
+  if (offresError) {
+    return <div>Erreur : {offresError}</div>;
+  }
+
+  const offerOptions = offres.map((offre) => ({
+    value: offre.title,
+    label: `${offre.title} | ${offre.duration}`,
+  }));
+  const getServiceOptions = () => {
+    if (!selectedOffre) return [];
+
+    const options = [];
+    if (selectedOffre.price.single) {
+      options.push({
+        value: 1,
+        label: `${selectedOffre.price.single.name} - ${selectedOffre.price.single.amount > 0 ? selectedOffre.price.single.amount + "€" : "offerte"}`,
+        type: "single",
+      });
+    }
+    if (selectedOffre.price.pack) {
+      selectedOffre.price.pack.forEach((pack) => {
+        options.push({
+          value: pack.sessions,
+          label: `${pack.name} - ${pack.amount}€`,
+          type: "pack",
+        });
+      });
+    }
+    if (selectedOffre.price.followUp) {
+      selectedOffre.price.followUp.forEach((followUp) => {
+        options.push({
+          value: followUp.sessions,
+          label: `${followUp.name} - ${followUp.amount}€`,
+          type: "followUp",
+        });
+      });
+    }
+    return options;
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -160,6 +252,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {/* Informations Client */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Informations Client</h2>
+            <Select options={clients.map((client) => ({ value: client.id, label: `${client.nom} ${client.prenom}` }))} value={selectedClient} onChange={handleClientSelection} isClearable placeholder="Sélectionner un client existant" className="mb-4" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {Object.keys(clientInfo).map((field) => (
                 <div key={field} className="relative">
@@ -176,8 +269,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {/* Sélection des Offres */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Sélection des Offres</h2>
-            <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleOfferChange} styles={customStyles} />
-            {selectedTypeOffre && <Select options={services.filter((service) => service.type === selectedTypeOffre).map((service) => ({ value: service.id, label: service.name }))} value={items[0].service ? { value: items[0].service.id, label: items[0].service.name } : null} onChange={(selectedOption) => handleItemChange(0, selectedOption)} styles={customStyles} className="mt-4" />}
+            <Select options={offerOptions} value={offerOptions.find((option) => option.value === selectedTypeOffre)} onChange={handleOfferChange} styles={customStyles} placeholder="Sélectionner une offre" /> {selectedTypeOffre && <Select options={getServiceOptions()} value={items[0].service ? { value: items[0].service.name, label: `${items[0].service.name}`, type: items[0].service.type } : null} onChange={(selectedOption) => handleItemChange(0, selectedOption)} styles={customStyles} className="mt-4" />}
           </div>
 
           {/* Détails de l'Offre */}
@@ -187,26 +279,33 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
               {items[0].service ? (
                 <>
                   <p>
-                    <strong>Nom :</strong> {items[0].service.name}
+                    <strong>Nom :</strong> {selectedOffre.title}
                   </p>
                   <p>
-                    <strong>Quantité :</strong> {items[0].service.quantity}
+                    <strong>Type :</strong> {items[0].service.type === "single" ? "Séance unique" : items[0].service.type === "pack" ? "Pack" : "Suivi"}
                   </p>
-                  {items[0].service.remise > 0 && (
+                  <p>
+                    <strong>Quantité :</strong> {items[0].service.sessions} séance(s)
+                  </p>
+                  {items[0].service.discount > 0 && (
                     <p>
-                      <strong>Remise sur prix initial :</strong> {items[0].service.remise}%
+                      <strong>Remise sur prix initial :</strong> {items[0].service.discount}%
                     </p>
                   )}
-                  <p className=" ml-4 mt-2">
-                    <strong>Prix Unitaire :</strong> {items[0].service.prix} €
+                  <p className="ml-4 mt-2">
+                    <strong>Prix Unitaire :</strong> {items[0].service.perSession} €
                   </p>
-                  <p className=" ml-4">
-                    <strong>Prix Total :</strong> {totalPrice} €
+                  <p className="ml-4">
+                    <strong>Prix Total :</strong> {items[0].service.amount} €
                   </p>
-
-                  {monthlyCost && (
+                  {items[0].service.monthly && (
                     <p className="flex items-center gap-2 ml-4">
-                      <strong>Cout mensuel :</strong> {monthlyCost} €
+                      <strong>Coût mensuel :</strong> {items[0].service.monthly} €
+                    </p>
+                  )}
+                  {selectedOffre.description && (
+                    <p className="mt-4">
+                      <strong>Description :</strong> {selectedOffre.description}
                     </p>
                   )}
                 </>
@@ -234,12 +333,9 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           </div>
 
           {/* Modal de Confirmation */}
-          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center z-50 p-6 ">
-            {/* Backdrop */}
-            <div className="fixed inset-0 bg-black opacity-50" onClick={cancelGeneration} /> {/* This creates the transparent black background */}
+          <Dialog open={showModal} onClose={cancelGeneration} className="fixed inset-0 flex items-center justify-center z-50 p-6">
+            <div className="fixed inset-0 bg-black opacity-50" onClick={cancelGeneration} />
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10">
-              {" "}
-              {/* Ensure modal content is above the backdrop */}
               <Dialog.Title className="text-xl font-bold">Confirmer la génération</Dialog.Title>
               <Dialog.Description className="mt-2">Êtes-vous sûr de vouloir générer cette facture ?</Dialog.Description>
               <div className="mt-4 flex justify-end space-x-2">

@@ -17,6 +17,7 @@ import SuiviClients from "./pages/SuiviClients";
 import TabataChrono from "./pages/TabataChrono";
 import ChronoDetail from "./Components/ChronoDetail";
 import TestDeComposant from "./pages/TestDeComposant";
+import { OffresCoachingProvider } from "./contexts/OffresCoachingContext";
 
 // Importation des pages tarifaires
 import OffresCoachings from "./pages/OffresCoachings";
@@ -34,6 +35,7 @@ import ModifierProfilClient from "./pages/ModifierProfilClient";
 
 // Import the NotFound component
 import NotFound from "./pages/NotFound";
+import FicheClient from "./pages/FicheClient";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -73,129 +75,140 @@ function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
-        <Router>
-          <Header />
-          <Routes>
-            {/*
+        <OffresCoachingProvider>
+          <Router>
+            <Header />
+            <Routes>
+              {/*
               Droits pour les routes (requiredRoles)
               1 - Administrateur
               2 - Entreprise
               3 - Client
               4 - Visiteur
             */}
-            {/* Routes publiques */}
-            <Route path="/" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
-            <Route path="/signup" element={<Signup />} />
-            {/* Routes privées pour tout utilisateur connecté */}
-            <Route
-              path="/menu"
-              element={
-                <PrivateRoute>
-                  <Menu />
-                </PrivateRoute>
-              }
-            />
-            <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
-            <Route
-              path="/tableau-berger"
-              element={
-                <PrivateRoute>
-                  <TableauBerger />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/formulaire-donnees-corporelles"
-              element={
-                <PrivateRoute>
-                  <FormulaireDonneesCorporelles />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/vma-tapis"
-              element={
-                <PrivateRoute>
-                  <TestVmaTapis />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/invoice-preview"
-              element={
-                <PrivateRoute>
-                  <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/compteur-seances"
-              element={
-                <PrivateRoute>
-                  <SuiviClients />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/tabata-chrono"
-              element={
-                <PrivateRoute>
-                  <TabataChrono />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/chrono/:id"
-              element={
-                <PrivateRoute>
-                  <ChronoDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/tableau-des-stats"
-              element={
-                <PrivateRoute>
-                  <TableauDesStats />
-                </PrivateRoute>
-              }
-            />
-            {/* Routes pour les offres coachings */}
-            <Route path="/offres-coachings" element={<OffresCoachings />} />
-            <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
+              {/* Routes publiques */}
+              <Route path="/" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route path="/signup" element={<Signup />} />
+              {/* Routes privées pour tout utilisateur connecté */}
+              <Route
+                path="/menu"
+                element={
+                  <PrivateRoute>
+                    <Menu />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+              <Route
+                path="/tableau-berger"
+                element={
+                  <PrivateRoute>
+                    <TableauBerger />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/formulaire-donnees-corporelles"
+                element={
+                  <PrivateRoute>
+                    <FormulaireDonneesCorporelles />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/vma-tapis"
+                element={
+                  <PrivateRoute>
+                    <TestVmaTapis />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/invoice-preview"
+                element={
+                  <PrivateRoute>
+                    <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/compteur-seances"
+                element={
+                  <PrivateRoute>
+                    <SuiviClients />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/tabata-chrono"
+                element={
+                  <PrivateRoute>
+                    <TabataChrono />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/chrono/:id"
+                element={
+                  <PrivateRoute>
+                    <ChronoDetail />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/tableau-des-stats"
+                element={
+                  <PrivateRoute>
+                    <TableauDesStats />
+                  </PrivateRoute>
+                }
+              />
+              {/* Routes pour les offres coachings */}
+              <Route path="/offres-coachings" element={<OffresCoachings />} />
+              {/* <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
             <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
-            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} />
-            {/* Routes protégées selon le rôle */}
-            <Route
-              path="/creation-profil-client/:id?"
-              element={
-                <PrivateRoute requiredRoles={[1]}>
-                  <CreationProfilClient />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/modifier-profil-client/:id"
-              element={
-                <PrivateRoute requiredRoles={[1]}>
-                  <ModifierProfilClient />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/liste-clients"
-              element={
-                <PrivateRoute requiredRoles={[1]}>
-                  <ListeClients />
-                </PrivateRoute>
-              }
-            />
-            <Route path="/test-de-composant" element={<TestDeComposant />} />
-            {/* Catch-all route for 404 */}
-            <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
-          </Routes>
-        </Router>
+            <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} /> */}
+              {/* Routes protégées selon le rôle */}
+              <Route
+                path="/creation-profil-client/:id?"
+                element={
+                  <PrivateRoute requiredRoles={[1]}>
+                    <CreationProfilClient />
+                  </PrivateRoute>
+                }
+              />
+              {/* AJOUT FICHE CLIENT ID ici */}
+              <Route
+                path="/fiche-client/:id?"
+                element={
+                  <PrivateRoute requiredRoles={[1]}>
+                    <FicheClient />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/modifier-profil-client/:id"
+                element={
+                  <PrivateRoute requiredRoles={[1]}>
+                    <ModifierProfilClient />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/liste-clients"
+                element={
+                  <PrivateRoute requiredRoles={[1]}>
+                    <ListeClients />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/test-de-composant" element={<TestDeComposant />} />
+              {/* Catch-all route for 404 */}
+              <Route path="*" element={<NotFound />} /> {/* Cette route doit être à la fin */}
+            </Routes>
+          </Router>
+        </OffresCoachingProvider>
       </NotificationProvider>
     </AuthProvider>
   );
