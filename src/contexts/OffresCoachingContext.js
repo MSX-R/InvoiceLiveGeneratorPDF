@@ -27,7 +27,7 @@ export const OffresCoachingProvider = ({ children }) => {
         const offresData = [
           {
             title: "ESSAI",
-            duration: "45-60 MIN",
+            duration: "40 MIN",
             type: "SOLO",
             icon: <FaLightbulb />,
             color: "from-yellow-400 to-yellow-600",
@@ -97,7 +97,6 @@ export const OffresCoachingProvider = ({ children }) => {
                 {
                   sessions: 10,
                   name: "Pack - 10 séances",
-
                   amount: 550,
                   perSession: (550 / 10).toFixed(2),
                   discount: 0,

@@ -4,6 +4,11 @@ import axios from "axios";
 import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa";
 import CustomModal from "../Components/CustomModal";
 import Chip from "../Components/Chip";
+import { useOffresCoaching } from "../contexts/OffresCoachingContext";
+import ClientDetails from "../Components/ClientDetails";
+import AddOfferModal from "../Components/AddOfferModal";
+
+import PaymentStatusModal from "../Components/PaymentStatusModal";
 
 const FicheClient = () => {
   const { id } = useParams();
@@ -11,6 +16,23 @@ const FicheClient = () => {
   const [client, setClient] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isAddOfferModalOpen, setIsAddOfferModalOpen] = useState(false);
+  const { offres } = useOffresCoaching();
+
+  // Nouveau état pour stocker les détails de l'offre choisie
+  const [offreChoisie, setOffreChoisie] = useState(null);
+
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const formatDate3 = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} à ${hours}:${minutes}`;
+  };
 
   useEffect(() => {
     const fetchClient = async () => {
@@ -20,37 +42,87 @@ const FicheClient = () => {
           setErrorMessage("Erreur : Aucun token disponible");
           return;
         }
-
         const response = await axios.get(`https://msxghost.boardy.fr/api/users/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-
         setClient(response.data);
       } catch (err) {
         console.error("Erreur lors de la récupération du client :", err);
         setErrorMessage("Erreur lors de la récupération du client.");
       }
     };
-
     fetchClient();
   }, [id]);
 
   const handleDelete = async () => {
-    // ... (le code de suppression reste inchangé)
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setErrorMessage("Erreur : Aucun token disponible");
+        return;
+      }
+
+      await axios.delete(`https://msxghost.boardy.fr/api/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Fermer la modal de confirmation
+      setIsModalOpen(false);
+
+      // Rediriger vers la liste des clients après la suppression
+      navigate("/liste-clients");
+    } catch (err) {
+      console.error("Erreur lors de la suppression du client :", err);
+      setErrorMessage("Erreur lors de la suppression du client.");
+    }
+  };
+
+  const handleUpdatePaymentStatus = (newStatus, amount) => {
+    setClient((prevClient) => ({
+      ...prevClient,
+      etatPaiement: newStatus,
+      montantRegle: amount,
+    }));
+    // Ici, vous devriez également envoyer ces informations à votre API
+    // pour mettre à jour les données du client sur le serveur
+  };
+
+  const handleAddOffer = (offerData) => {
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 3); // Supposons que le contrat dure 3 mois // VOIR PR DETCTION CMENSUEL 3 , PACK 2 MOIS
+
+    const updatedClient = {
+      ...client,
+      offreChoisie: offerData.offre,
+      typeOffre: offerData.typeOffre,
+      dateDebutContrat: startDate,
+      dateFinContrat: endDate,
+      offreDetails: offerData.offreDetails,
+      seancesConsommees: 0, // Réinitialiser à 0 lors de l'ajout d'une nouvelle offre
+    };
+
+    setClient(updatedClient);
+    setIsAddOfferModalOpen(false);
+
+    // Ici, vous devriez également envoyer ces informations à votre API
+    // pour mettre à jour les données du client sur le serveur
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("fr-FR");
   };
 
   if (!client) {
     return <div>Chargement...</div>;
   }
-
-  // INFOS TEST PR AFFICHAGE CONSO
-  const infoSeanceTest = {
-    seancesObtenues: 24,
-    seancesConsommees: 20,
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -71,7 +143,7 @@ const FicheClient = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="flex justify-center md:justify-between">
               <div className="flex flex-col items-center sm:flex-row sm:items-start">
-                <img className="h-24 w-24 rounded-full border-4 object-cover  border-gray-300 mb-4 sm:mb-0 sm:mr-4" src={client.profilePicture || require("../assets/coach.jpg")} alt={`${client.prenom} ${client.nom} 's profile`} />
+                <img className="h-24 w-24 rounded-full border-4 object-cover border-gray-300 mb-4 sm:mb-0 sm:mr-4" src={client.profilePicture || require("../assets/coach.jpg")} alt={`${client.prenom} ${client.nom}'s profile`} />
                 <div className="text-center sm:text-left">
                   <h1 className="text-2xl font-bold text-gray-800">
                     {client.prenom} {client.nom}
@@ -80,70 +152,56 @@ const FicheClient = () => {
                 </div>
               </div>
               <div className="text-xs font-normal hidden md:block">
-                Profil crée le <i>01/10/2024</i>
+                <i>Profil crée le {formatDate3(client.date_creation)}</i>
               </div>
             </div>
 
             <hr className="mt-8" />
             <div className="flex flex-col gap-4 my-8">
-              <div className=" grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-sm text-gray-600">Contrat choisi</p>
-                  <p className="text-xl font-semibold text-gray-800">{client.offreChoisie || "Offre test 2 séances"}</p>
+                  <p className="text-xl font-semibold text-gray-800">{client.offreChoisie || "Aucune offre choisie"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Début contrat</p>
-                  <p className="text-xl font-semibold text-gray-800">01/10/2024</p>
+                  <p className="text-xl font-semibold text-gray-800">{formatDate(client.dateDebutContrat) || "-"}</p>
                 </div>
-
                 <div>
                   <p className="text-sm text-gray-600">Fin contrat</p>
-                  <p className="text-xl font-semibold text-gray-800">01/11/2024</p>
+                  <p className="text-xl font-semibold text-gray-800">{formatDate(client.dateFinContrat) || "-"}</p>
                 </div>
               </div>
 
-              <div className=" grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
                   <p className="text-sm text-gray-600">Tarif</p>
-                  <p className="text-xl font-semibold text-gray-800">287,00 €</p>
+                  <p className="text-xl font-semibold text-gray-800">{client.offreDetails ? `${client.offreDetails.amount} €` : "-"}</p>
                 </div>
-
                 <div>
-                  <p className="text-sm text-gray-600">Séances éffectuées</p>
-                  <p className="text-xl font-semibold text-gray-800">{client.offreChoisie ? client.seancesConsommees : "20 / 24"}</p>
+                  <p className="text-sm text-gray-600">Réglement effectué</p>
+                  <p className="text-xl font-semibold text-gray-800">{client.offreDetails ? (client.etatPaiement === "Partiel" ? `${client.montantRegle} / ${client.offreDetails.amount} €` : client.etatPaiement === "Réglé intégralement" ? `${client.offreDetails.amount} / ${client.offreDetails.amount} €` : `0 / ${client.offreDetails.amount} €`) : "-"}</p>
                 </div>
-
                 <div className="text-center">
                   <p className="text-sm text-gray-600">État de paiement</p>
-                  {/* BONNE LOGIQUE MASQUEE */}
-                  {/* {client.offreChoisie ? <Chip label={client.etatPaiement} status={client.etatPaiement} /> : <p className="text-xl font-semibold text-gray-800">-</p>} */}
-                  {/* FIN LOGIQUE */}
-                  <Chip label="En attente de paiement" status="En attente de paiement" />
-                  {/* EN DUR! */}
+                  <Chip label={client.etatPaiement || "Non défini"} status={client.etatPaiement || "Non défini"} />
                 </div>
               </div>
+
+              <button onClick={() => setIsAddOfferModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300">
+                {client.offreChoisie ? "Modifier l'offre" : "Ajouter une offre"}
+              </button>
+
+              {client.offreChoisie && (
+                <button onClick={() => setIsPaymentModalOpen(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+                  Modifier l'état de paiement
+                </button>
+              )}
             </div>
+
             <hr className="mt-8" />
 
-            <div className="flex flex-col md:flex-row">
-              <div className="mt-6 md:w-full">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2 ">Détails du client</h2>
-                <div className=" h-full w-full text-gray-600">
-                  <p className="text-gray-600">Email: {client.email}</p>
-                  <p className="text-gray-600">Téléphone: {client.telephone}</p>
-                  <p className="text-gray-600">
-                    Adresse: {client.adresse1}, {client.ville} {client.cp}
-                  </p>
-                  <p className="text-gray-600">Date de Naissance: {new Date(client.naissance).toLocaleDateString()}</p>
-                  <p className="text-gray-600">Sexe: {client.sexe}</p>
-                </div>
-              </div>
-
-              <div className="mt-6 md:w-full">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">À propos de moi</h2>
-                <p className="text-gray-600  h-full w-full">{client.aPropos || "Aucune information disponible."}</p>
-              </div>
-            </div>
+            <ClientDetails client={client} />
 
             <div className="mt-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-2">Suivez-moi sur</h2>
@@ -181,8 +239,8 @@ const FicheClient = () => {
           </div>
         </div>
       </div>
-
       <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleDelete} title="Confirmer la Suppression" message="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible." />
+      <AddOfferModal isOpen={isAddOfferModalOpen} closeModal={() => setIsAddOfferModalOpen(false)} client={client} offres={offres} handleAddOffer={handleAddOffer} /> <PaymentStatusModal isOpen={isPaymentModalOpen} closeModal={() => setIsPaymentModalOpen(false)} currentStatus={client.etatPaiement} currentAmount={client.montantRegle} totalAmount={client.offreDetails?.amount} onUpdatePaymentStatus={handleUpdatePaymentStatus} />
     </div>
   );
 };
