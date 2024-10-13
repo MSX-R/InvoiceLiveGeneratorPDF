@@ -1,17 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 
-// Create a custom axios instance to include the Authorization header
-const createAxiosInstance = (token) => {
-  return axios.create({
-    baseURL: "https://msxghost.boardy.fr/api",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-};
-
 const OffresCoachingContext = createContext();
 
 export const useOffresCoaching = () => {
@@ -31,6 +20,16 @@ export const OffresCoachingProvider = ({ children }) => {
   // Simulate getting the token (in practice, this might come from auth context or local storage)
   const token = localStorage.getItem("token") || "your-auth-token"; // Replace with real token handling
 
+  // Create a custom axios instance to include the Authorization header
+  const createAxiosInstance = (token) => {
+    return axios.create({
+      baseURL: "https://msxghost.boardy.fr/api",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  };
   // Create Axios instance with the token
   const axiosInstance = createAxiosInstance(token);
 
