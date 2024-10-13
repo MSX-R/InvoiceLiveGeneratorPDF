@@ -3,10 +3,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Select from "react-select";
 import { X } from "lucide-react";
+import axios from 'axios';
 
 const AddOfferModal = ({ isOpen, closeModal, client, categories, offres, handleAddOffer }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOffre, setSelectedOffre] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCategoryChange = (selectedOption) => {
     setSelectedCategory(selectedOption);
@@ -33,19 +35,54 @@ const AddOfferModal = ({ isOpen, closeModal, client, categories, offres, handleA
       }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!selectedCategory || !selectedOffre) return;
-
+  
+    // Trouver les détails de l'offre sélectionnée
     const selectedOffreDetails = offres.find((offre) => offre.id === selectedOffre.value);
+  
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setErrorMessage("Erreur : Aucun token disponible");
+        return;
+      }
 
-    handleAddOffer({
-      clientId: client.id,
-      categorieId: selectedCategory.value,
-      offreId: selectedOffre.value,
-      offreDetails: selectedOffreDetails,
-    });
-    closeModal();
+      const response = await axios.post(
+        'https://msxghost.boardy.fr/api/user-offres',
+        {
+          user_id: client.id,
+          categorie_offre_id: selectedCategory.value,
+          offre_id: selectedOffre.value,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status !== 201) {
+        throw new Error('Erreur lors de la création de la relation utilisateur-offre');
+      }
+  
+      // Appeler la fonction handleAddOffer pour mettre à jour le contexte local ou l'état local
+      handleAddOffer({
+        clientId: client.id,
+        categorieId: selectedCategory.value,
+        offreId: selectedOffre.value,
+        offreDetails: selectedOffreDetails,
+      });
+  
+      // Fermer la modal après la soumission
+      closeModal();
+    } catch (error) {
+      console.error('Erreur lors de la soumission de l\'offre:', error);
+      // Optionnel : Vous pouvez afficher une notification à l'utilisateur ici
+    }
   };
 
   return (
