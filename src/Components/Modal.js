@@ -1,5 +1,5 @@
 // components/Modal.js
-import React from 'react';
+import React from "react";
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -10,10 +10,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         <h2 className="text-2xl font-semibold mb-4">{title}</h2>
         <div>{children}</div>
         <div className="flex justify-end mt-4">
-          <button
-            onClick={onClose}
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-          >
+          <button onClick={onClose} className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
             Fermer
           </button>
         </div>
