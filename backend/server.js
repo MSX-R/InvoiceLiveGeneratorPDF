@@ -307,8 +307,41 @@ app.get('/api/categories/:id', async (req, res) => {
   }
 });
 
+// Route pour mettre à jour une catégorie d'offre
+app.put('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const categorieId = req.params.id;
+  const { nom, type, duree, description, couleur, icone } = req.body;
+  try {
+    const updated = await CategorieOffre.updateById(categorieId, nom, type, duree, description, couleur, icone);
+    if (updated) {
+      res.status(200).json({ message: "Catégorie d'offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Catégorie d'offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de la catégorie d'offre." });
+  }
+});
+
+// Route pour supprimer une catégorie d'offre
+app.delete('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const categorieId = req.params.id;
+  try {
+    const deleted = await CategorieOffre.deleteById(categorieId);
+    if (deleted) {
+      res.status(200).json({ message: "Catégorie d'offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Catégorie d'offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre." });
+  }
+});
+
 // Route pour créer une nouvelle catégorie d'offre
-app.post('/api/categories', async (req, res) => {
+app.post('/api/categories', verifyToken, verifyAdmin, async (req, res) => {
   const { nom, type, duree, description, couleur, icone } = req.body;
   try {
     const insertId = await CategorieOffre.create(nom, type, duree, description, couleur, icone);
@@ -343,7 +376,7 @@ app.get('/api/offres/:id', async (req, res) => {
 });
 
 // Route pour créer une nouvelle offre
-app.post('/api/offres', async (req, res) => {
+app.post('/api/offres', verifyToken, verifyAdmin, async (req, res) => {
   const { categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle } = req.body;
   try {
     const insertId = await Offre.create(categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle);
@@ -351,6 +384,39 @@ app.post('/api/offres', async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la création de l'offre:", err);
     res.status(500).json({ message: "Erreur lors de la création de l'offre." });
+  }
+});
+
+// Route pour mettre à jour une offre
+app.put('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const offreId = req.params.id;
+  const { categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle } = req.body;
+  try {
+    const updated = await Offre.updateById(offreId, categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle);
+    if (updated) {
+      res.status(200).json({ message: "Offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'offre." });
+  }
+});
+
+// Route pour supprimer une offre
+app.delete('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const offreId = req.params.id;
+  try {
+    const deleted = await Offre.deleteById(offreId);
+    if (deleted) {
+      res.status(200).json({ message: "Offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de l'offre." });
   }
 });
 
