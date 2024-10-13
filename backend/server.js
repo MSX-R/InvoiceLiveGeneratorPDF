@@ -30,7 +30,7 @@ const hashPassword = (password) => {
 
 // Fonction pour créer un token
 const createToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id: user.id, email: user.email, role: user.role_id }, process.env.JWT_SECRET, { expiresIn: '2h' });
 };
 
 // Middleware pour vérifier le token et l'authentification
