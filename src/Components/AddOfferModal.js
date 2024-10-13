@@ -1,76 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Select from "react-select";
 import { X } from "lucide-react";
 
-const AddOfferModal = ({ isOpen, closeModal, client, offres, handleAddOffer }) => {
-  const [selectedTypeOffre, setSelectedTypeOffre] = useState("");
+const AddOfferModal = ({ isOpen, closeModal, client, categories, offres, handleAddOffer }) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOffre, setSelectedOffre] = useState(null);
 
-  const handleTypeOffreChange = (selectedOption) => {
-    setSelectedTypeOffre(selectedOption.value);
+  const handleCategoryChange = (selectedOption) => {
+    setSelectedCategory(selectedOption);
     setSelectedOffre(null);
   };
 
   const handleOffreChange = (selectedOption) => {
-    setSelectedOffre(selectedOption.value);
+    setSelectedOffre(selectedOption);
   };
 
-  const offerOptions = offres.map((offre) => ({
-    value: offre.title,
-    label: `${offre.title} | ${offre.duration}`,
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.nom,
   }));
 
-  const getServiceOptions = () => {
-    if (!selectedTypeOffre) return [];
+  const getOffreOptions = () => {
+    if (!selectedCategory) return [];
 
-    const selectedOffreType = offres.find((offre) => offre.title === selectedTypeOffre);
-    if (!selectedOffreType) return [];
-
-    const options = [];
-    if (selectedOffreType.price.single) {
-      options.push({
-        value: selectedOffreType.price.single.name,
-        label: `${selectedOffreType.price.single.name} - ${selectedOffreType.price.single.amount}€`,
-      });
-    }
-    if (selectedOffreType.price.pack) {
-      selectedOffreType.price.pack.forEach((pack) => {
-        options.push({
-          value: pack.name,
-          label: `${pack.name} - ${pack.amount}€`,
-        });
-      });
-    }
-    if (selectedOffreType.price.followUp) {
-      selectedOffreType.price.followUp.forEach((followUp) => {
-        options.push({
-          value: followUp.name,
-          label: `${followUp.name} - ${followUp.amount}€`,
-        });
-      });
-    }
-    return options;
+    return offres
+      .filter((offre) => offre.categorie_offre_id === selectedCategory.value)
+      .map((offre) => ({
+        value: offre.id,
+        label: `${offre.nom} | ${offre.prix_total}€`,
+      }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const selectedOffreType = offres.find((offre) => offre.title === selectedTypeOffre);
-    let selectedOffreDetails;
-  
-    if (selectedOffreType.price.single && selectedOffreType.price.single.name === selectedOffre) {
-      selectedOffreDetails = selectedOffreType.price.single;
-    } else if (selectedOffreType.price.pack) {
-      selectedOffreDetails = selectedOffreType.price.pack.find(pack => pack.name === selectedOffre);
-    } else if (selectedOffreType.price.followUp) {
-      selectedOffreDetails = selectedOffreType.price.followUp.find(followUp => followUp.name === selectedOffre);
-    }
-  
+    if (!selectedCategory || !selectedOffre) return;
+
+    const selectedOffreDetails = offres.find((offre) => offre.id === selectedOffre.value);
+
     handleAddOffer({
       clientId: client.id,
-      typeOffre: selectedTypeOffre,
-      offre: selectedOffre,
+      categorieId: selectedCategory.value,
+      offreId: selectedOffre.value,
       offreDetails: selectedOffreDetails,
     });
     closeModal();
@@ -98,10 +70,10 @@ const AddOfferModal = ({ isOpen, closeModal, client, offres, handleAddOffer }) =
                 <form onSubmit={handleSubmit} className="mt-4">
                   <div className="mb-4">
                     <Select
-                      options={offerOptions}
-                      value={selectedTypeOffre ? offerOptions.find((option) => option.value === selectedTypeOffre) : null}
-                      onChange={handleTypeOffreChange}
-                      placeholder="Sélectionner un type d'offre"
+                      options={categoryOptions}
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      placeholder="Sélectionner une catégorie"
                       className="w-full"
                       styles={{
                         menu: (provided) => ({ ...provided, zIndex: 9999 }),
@@ -110,19 +82,19 @@ const AddOfferModal = ({ isOpen, closeModal, client, offres, handleAddOffer }) =
                   </div>
                   <div className="mb-4">
                     <Select
-                      options={getServiceOptions()}
-                      value={selectedOffre ? getServiceOptions().find((option) => option.value === selectedOffre) : null}
+                      options={getOffreOptions()}
+                      value={selectedOffre}
                       onChange={handleOffreChange}
                       placeholder="Sélectionner une offre"
                       className="w-full"
-                      isDisabled={!selectedTypeOffre}
+                      isDisabled={!selectedCategory}
                       styles={{
                         menu: (provided) => ({ ...provided, zIndex: 9999 }),
                       }}
                     />
                   </div>
                   <div className="mt-4">
-                    <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                    <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" disabled={!selectedCategory || !selectedOffre}>
                       Ajouter l'offre
                     </button>
                   </div>

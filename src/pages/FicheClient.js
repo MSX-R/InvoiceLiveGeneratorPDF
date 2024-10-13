@@ -17,7 +17,7 @@ const FicheClient = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isAddOfferModalOpen, setIsAddOfferModalOpen] = useState(false);
-  const { offres } = useOffresCoaching();
+  const { categories, offres } = useOffresCoaching();
 
   // Nouveau état pour stocker les détails de l'offre choisie
   const [offreChoisie, setOffreChoisie] = useState(null);
@@ -107,6 +107,8 @@ const FicheClient = () => {
       offreDetails: offerData.offreDetails,
       seancesConsommees: 0, // Réinitialiser à 0 lors de l'ajout d'une nouvelle offre
     };
+
+    console.log("Nouvelle offre ajoutée ou mise à jour pour le client :", updatedClient);
 
     setClient(updatedClient);
     setIsAddOfferModalOpen(false);
@@ -257,7 +259,7 @@ const FicheClient = () => {
         </div>
       </div>
       <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleDelete} title="Confirmer la Suppression" message="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible." />
-      <AddOfferModal isOpen={isAddOfferModalOpen} closeModal={() => setIsAddOfferModalOpen(false)} client={client} offres={offres} handleAddOffer={handleAddOffer} /> <PaymentStatusModal isOpen={isPaymentModalOpen} closeModal={() => setIsPaymentModalOpen(false)} currentStatus={client.etatPaiement} currentAmount={client.montantRegle} totalAmount={client.offreDetails?.amount} onUpdatePaymentStatus={handleUpdatePaymentStatus} />
+      <AddOfferModal isOpen={isAddOfferModalOpen} closeModal={() => setIsAddOfferModalOpen(false)} client={client} categories={categories} offres={offres} handleAddOffer={handleAddOffer} /> <PaymentStatusModal isOpen={isPaymentModalOpen} closeModal={() => setIsPaymentModalOpen(false)} currentStatus={client.etatPaiement} currentAmount={client.montantRegle} totalAmount={client.offreDetails?.amount} onUpdatePaymentStatus={handleUpdatePaymentStatus} />
     </div>
   );
 };
