@@ -336,7 +336,7 @@ app.delete('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => 
     }
   } catch (err) {
     console.error("Erreur lors de la suppression de la catégorie d'offre:", err);
-    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre : "+err });
+    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre" });
   }
 });
 
@@ -383,7 +383,7 @@ app.post('/api/offres', verifyToken, verifyAdmin, async (req, res) => {
     res.status(201).json({ message: 'Offre créée avec succès', id: insertId });
   } catch (err) {
     console.error("Erreur lors de la création de l'offre:", err);
-    res.status(500).json({ message: "Erreur lors de la création de l'offre : "+err });
+    res.status(500).json({ message: "Erreur lors de la création de l'offre" });
   }
 });
 
