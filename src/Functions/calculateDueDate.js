@@ -25,3 +25,5 @@ const calculateDueDate = (items) => {
 
   return dueDate.toLocaleDateString("fr-FR"); // Format JJ/MM/AAAA
 };
+
+

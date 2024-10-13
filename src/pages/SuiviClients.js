@@ -291,7 +291,7 @@ const SuiviClients = () => {
                     {header}
                   </th>
                 ))}
-              </tr>
+            </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light">
               {clientsWithSessions.map((client) => (

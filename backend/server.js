@@ -4,6 +4,9 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const pool = require('./db');
 const User = require('./models/User');
+const Offre = require('./models/Offre');
+const CategorieOffre = require('./models/Categorie_Offre');
+const UserOffres = require('./models/User_Offre');
 
 const fs = require('fs');
 const logStream = fs.createWriteStream('msxghostlogs.txt', { flags: 'a' });
@@ -279,6 +282,191 @@ app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'utilisateur:", err);
     res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
+  }
+});
+
+// Route pour récupérer toutes les catégories d'offres
+app.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await CategorieOffre.getAll();
+    res.status(200).json(categories);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des catégories d'offres:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des catégories d'offres." });
+  }
+});
+
+// Route pour récupérer une catégorie spécifique par son ID
+app.get('/api/categories/:id', async (req, res) => {
+  const categorieId = req.params.id;
+  try {
+    const categorie = await CategorieOffre.getById(categorieId);
+    res.status(200).json(categorie);
+  } catch (err) {
+    console.error("Erreur lors de la récupération de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération de la catégorie d'offre." });
+  }
+});
+
+// Route pour mettre à jour une catégorie d'offre
+app.put('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const categorieId = req.params.id;
+  const { nom, type, duree, description, couleur, icone } = req.body;
+  try {
+    const updated = await CategorieOffre.updateById(categorieId, nom, type, duree, description, couleur, icone);
+    if (updated) {
+      res.status(200).json({ message: "Catégorie d'offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Catégorie d'offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de la catégorie d'offre." });
+  }
+});
+
+// Route pour supprimer une catégorie d'offre
+app.delete('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const categorieId = req.params.id;
+  try {
+    const deleted = await CategorieOffre.deleteById(categorieId);
+    if (deleted) {
+      res.status(200).json({ message: "Catégorie d'offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Catégorie d'offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre" });
+  }
+});
+
+// Route pour créer une nouvelle catégorie d'offre
+app.post('/api/categories', verifyToken, verifyAdmin, async (req, res) => {
+  const { nom, type, duree, description, couleur, icone } = req.body;
+  try {
+    const insertId = await CategorieOffre.create(nom, type, duree, description, couleur, icone);
+    res.status(201).json({ message: 'Catégorie d\'offre créée avec succès', id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de la catégorie d'offre." });
+  }
+});
+
+// Route pour récupérer toutes les offres
+app.get('/api/offres', async (req, res) => {
+  try {
+    const offres = await Offre.getAll();
+    res.status(200).json(offres);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des offres:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des offres." });
+  }
+});
+
+// Route pour récupérer une offre spécifique par son ID
+app.get('/api/offres/:id', async (req, res) => {
+  const offreId = req.params.id;
+  try {
+    const offre = await Offre.getById(offreId);
+    res.status(200).json(offre);
+  } catch (err) {
+    console.error("Erreur lors de la récupération de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération de l'offre." });
+  }
+});
+
+// Route pour créer une nouvelle offre
+app.post('/api/offres', verifyToken, verifyAdmin, async (req, res) => {
+  const { categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle } = req.body;
+  try {
+    const insertId = await Offre.create(categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle);
+    res.status(201).json({ message: 'Offre créée avec succès', id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de l'offre" });
+  }
+});
+
+// Route pour mettre à jour une offre
+app.put('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const offreId = req.params.id;
+  const { categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle } = req.body;
+  try {
+    const updated = await Offre.updateById(offreId, categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle);
+    if (updated) {
+      res.status(200).json({ message: "Offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'offre." });
+  }
+});
+
+// Route pour supprimer une offre
+app.delete('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const offreId = req.params.id;
+  try {
+    const deleted = await Offre.deleteById(offreId);
+    if (deleted) {
+      res.status(200).json({ message: "Offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de l'offre : " });
+  }
+});
+
+// Route pour créer une nouvelle relation entre un utilisateur, une catégorie d'offre et une offre
+app.post('/api/user-offres', verifyToken, verifyAdmin, async (req, res) => {
+  const { user_id, categorie_offre_id, offre_id } = req.body;
+
+  // Valider que tous les champs requis sont présents
+  if (!user_id || !categorie_offre_id || !offre_id) {
+    return res.status(400).json({ message: "Tous les champs (user_id, categorie_offre_id, offre_id) sont requis." });
+  }
+
+  try {
+    const insertId = await UserOffres.create(user_id, categorie_offre_id, offre_id);
+    res.status(201).json({ message: "Relation utilisateur-offre créée avec succès", id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de la relation utilisateur-offre." });
+  }
+});
+
+// Route pour récupérer toutes les relations entre un utilisateur et ses offres
+app.get('/api/user-offres/:user_id', verifyToken, verifyAdmin, async (req, res) => {
+  const userId = req.params.user_id;
+
+  try {
+    // Récupérer toutes les offres de l'utilisateur spécifié
+    const userOffres = await UserOffres.getByUserId(userId);
+    res.status(200).json(userOffres);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des offres de l'utilisateur:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur." });
+  }
+});
+
+// Route pour supprimer une relation entre un utilisateur et une offre
+app.delete('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userOffreId = req.params.id;
+
+  try {
+    const deleted = await UserOffres.deleteById(userOffreId);
+    if (deleted) {
+      res.status(200).json({ message: "Relation utilisateur-offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Relation utilisateur-offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de la relation utilisateur-offre." });
   }
 });
 
