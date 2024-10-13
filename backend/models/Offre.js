@@ -43,6 +43,26 @@ class Offre {
       throw new Error('Erreur lors de la création de l\'offre: ' + err.message);
     }
   }
+
+  static async updateById(id, categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle) {
+    try {
+      const sql = `UPDATE Offre SET categorie_offre_id = ?, nom = ?, type = ?, duree_contrat = ?, nb_seances = ?, prix_total = ?, prix_mensuel = ?, prix_semaine = ?, prix_seance = ?, offre_promotionnelle = ? WHERE id = ?`;
+      const [result] = await pool.query(sql, [categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle, id]);
+      return result.affectedRows > 0;
+    } catch (err) {
+      throw new Error('Erreur lors de la mise à jour de l\'offre: ' + err.message);
+    }
+  }
+
+  static async deleteById(id) {
+    try {
+      const sql = 'DELETE FROM Offre WHERE id = ?';
+      const [result] = await pool.query(sql, [id]);
+      return result.affectedRows > 0;
+    } catch (err) {
+      throw new Error('Erreur lors de la suppression de l\'offre: ' + err.message);
+    }
+  }
 }
 
 module.exports = Offre;

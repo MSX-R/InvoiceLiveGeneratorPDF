@@ -336,7 +336,7 @@ app.delete('/api/categories/:id', verifyToken, verifyAdmin, async (req, res) => 
     }
   } catch (err) {
     console.error("Erreur lors de la suppression de la catégorie d'offre:", err);
-    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre." });
+    res.status(500).json({ message: "Erreur lors de la suppression de la catégorie d'offre : "+err });
   }
 });
 
@@ -377,22 +377,22 @@ app.get('/api/offres/:id', async (req, res) => {
 
 // Route pour créer une nouvelle offre
 app.post('/api/offres', verifyToken, verifyAdmin, async (req, res) => {
-  const { categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle } = req.body;
+  const { categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle } = req.body;
   try {
-    const insertId = await Offre.create(categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle);
+    const insertId = await Offre.create(categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle);
     res.status(201).json({ message: 'Offre créée avec succès', id: insertId });
   } catch (err) {
     console.error("Erreur lors de la création de l'offre:", err);
-    res.status(500).json({ message: "Erreur lors de la création de l'offre." });
+    res.status(500).json({ message: "Erreur lors de la création de l'offre : "+err });
   }
 });
 
 // Route pour mettre à jour une offre
 app.put('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
   const offreId = req.params.id;
-  const { categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle } = req.body;
+  const { categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle } = req.body;
   try {
-    const updated = await Offre.updateById(offreId, categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle);
+    const updated = await Offre.updateById(offreId, categorie_offre_id, nom, type, duree_contrat, nb_seances, prix_total, prix_mensuel, prix_semaine, prix_seance, offre_promotionnelle);
     if (updated) {
       res.status(200).json({ message: "Offre mise à jour avec succès." });
     } else {
@@ -416,7 +416,7 @@ app.delete('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
     }
   } catch (err) {
     console.error("Erreur lors de la suppression de l'offre:", err);
-    res.status(500).json({ message: "Erreur lors de la suppression de l'offre." });
+    res.status(500).json({ message: "Erreur lors de la suppression de l'offre : " });
   }
 });
 
