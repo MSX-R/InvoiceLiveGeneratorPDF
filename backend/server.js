@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const pool = require('./db');
 const User = require('./models/User');
+const Offre = require('./models/Offre');
+const CategorieOffre = require('./models/Categorie_Offre');
 
 const fs = require('fs');
 const logStream = fs.createWriteStream('msxghostlogs.txt', { flags: 'a' });
@@ -279,6 +281,76 @@ app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'utilisateur:", err);
     res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
+  }
+});
+
+// Route pour récupérer toutes les catégories d'offres
+app.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await CategorieOffre.getAll();
+    res.status(200).json(categories);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des catégories d'offres:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des catégories d'offres." });
+  }
+});
+
+// Route pour récupérer une catégorie spécifique par son ID
+app.get('/api/categories/:id', async (req, res) => {
+  const categorieId = req.params.id;
+  try {
+    const categorie = await CategorieOffre.getById(categorieId);
+    res.status(200).json(categorie);
+  } catch (err) {
+    console.error("Erreur lors de la récupération de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération de la catégorie d'offre." });
+  }
+});
+
+// Route pour créer une nouvelle catégorie d'offre
+app.post('/api/categories', async (req, res) => {
+  const { nom, type, duree, description, couleur, icone } = req.body;
+  try {
+    const insertId = await CategorieOffre.create(nom, type, duree, description, couleur, icone);
+    res.status(201).json({ message: 'Catégorie d\'offre créée avec succès', id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de la catégorie d'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de la catégorie d'offre." });
+  }
+});
+
+// Route pour récupérer toutes les offres
+app.get('/api/offres', async (req, res) => {
+  try {
+    const offres = await Offre.getAll();
+    res.status(200).json(offres);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des offres:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des offres." });
+  }
+});
+
+// Route pour récupérer une offre spécifique par son ID
+app.get('/api/offres/:id', async (req, res) => {
+  const offreId = req.params.id;
+  try {
+    const offre = await Offre.getById(offreId);
+    res.status(200).json(offre);
+  } catch (err) {
+    console.error("Erreur lors de la récupération de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération de l'offre." });
+  }
+});
+
+// Route pour créer une nouvelle offre
+app.post('/api/offres', async (req, res) => {
+  const { categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle } = req.body;
+  try {
+    const insertId = await Offre.create(categorieOffreId, nom, type, dureeContrat, nbSeances, prixTotal, prixMensuel, prixSemaine, prixSeance, offrePromotionnelle);
+    res.status(201).json({ message: 'Offre créée avec succès', id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de l'offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de l'offre." });
   }
 });
 
