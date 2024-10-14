@@ -77,7 +77,7 @@ function App() {
       <NotificationProvider>
         <OffresCoachingProvider>
           <Router>
-            <Header />
+            {/* <Header /> */}
             <Routes>
               {/*
               Droits pour les routes (requiredRoles)
@@ -165,7 +165,14 @@ function App() {
                 }
               />
               {/* Routes pour les offres coachings */}
-              <Route path="/offres-coachings" element={<PrivateRoute><OffresCoachings /></PrivateRoute>} />
+              <Route
+                path="/offres-coachings"
+                element={
+                  <PrivateRoute>
+                    <OffresCoachings />
+                  </PrivateRoute>
+                }
+              />
               {/* <Route path="/offres-coachings/solo" element={<SoloTarifs />} />
             <Route path="/offres-coachings/duo" element={<DuoTarifs />} />
             <Route path="/offres-coachings/small-group" element={<SmallGroupTarifs />} /> */}

@@ -1,8 +1,8 @@
 // Header.js
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Importez useNavigate
-import LogoutButton from './LogoutButton';
-import { useAuth } from '../contexts/AuthContext';
+import React from "react";
+import { useNavigate } from "react-router-dom"; // Importez useNavigate
+import LogoutButton from "./LogoutButton";
+import { useAuth } from "../contexts/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate(); // Créez une instance de navigate
@@ -11,15 +11,15 @@ const Header = () => {
   // Fonction pour gérer le clic sur le logo
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      navigate('/menu'); // Redirige vers /menu si authentifié
+      navigate("/menu"); // Redirige vers /menu si authentifié
     } else {
-      navigate('/'); // Redirige vers / si non authentifié
+      navigate("/"); // Redirige vers / si non authentifié
     }
   };
 
   return (
-    <header className="flex justify-between items-center p-4 text-black">
-      <h1 
+    <header className="flex justify-between items-center p-4 text-black shadow-lg">
+      <h1
         className="text-xl font-bold cursor-pointer" // Ajoutez le curseur pointer
         onClick={handleLogoClick} // Ajoutez le gestionnaire de clic
       >

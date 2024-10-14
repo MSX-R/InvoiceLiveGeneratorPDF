@@ -55,8 +55,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div className="relative min-h-screen bg-gray-100 p-6">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-lg w-10/12 md:max-w-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Connexion</h1>
         {/* Affichage de la notification */}
         {notification && <div className="bg-green-200 text-green-800 p-4 rounded-md mb-4">{notification}</div>}

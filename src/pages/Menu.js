@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { MdLogout, MdMenu, MdHome, MdPerson, MdBarChart, MdAssignment, MdFitnessCenter, MdShowChart, MdTimer } from "react-icons/md";
 import "tailwindcss/tailwind.css";
+import Header from "../Components/Header";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -51,38 +52,38 @@ const Dashboard = () => {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/home")}>            
+            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/home")}>
               <MdHome className="mr-2" /> Accueil
             </button>
             {role === "1" && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/creation-profil-client")}>              
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/creation-profil-client")}>
                   <MdAssignment className="mr-2" /> Créer un nouveau client
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/liste-clients")}>              
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/liste-clients")}>
                   <MdPerson className="mr-2" /> Liste des clients
                 </button>
                 <hr className="border-gray-600" />
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/formulaire-devis")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/formulaire-devis")}>
                   <MdAssignment className="mr-2" /> Créer un devis
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/compteur-seances")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/compteur-seances")}>
                   <MdFitnessCenter className="mr-2" /> Suivi des séances
                 </button>
                 <hr className="border-gray-600" />
               </>
             )}
 
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/offres-coachings")}>            
+            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/offres-coachings")}>
               <MdFitnessCenter className="mr-2" /> Mes offres de coaching
             </button>
 
             {(role === "1" || role === "3") && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/formulaire-donnees-corporelles")}>
                   <MdShowChart className="mr-2" /> Bilan corporel
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tableau-des-stats")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tableau-des-stats")}>
                   <MdShowChart className="mr-2" /> Statistiques et performances
                 </button>
                 <hr className="border-gray-600" />
@@ -91,19 +92,19 @@ const Dashboard = () => {
 
             {role && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tableau-berger")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tableau-berger")}>
                   <MdShowChart className="mr-2" /> Calculer sa RM
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/vma-tapis")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/vma-tapis")}>
                   <MdShowChart className="mr-2" /> Calculer sa VMA
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tabata-chrono")}>                
+                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/tabata-chrono")}>
                   <MdTimer className="mr-2" /> Tabata Chronomètre
                 </button>
               </>
             )}
 
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/test-de-composant")}>            
+            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/test-de-composant")}>
               <MdAssignment className="mr-2" /> Test du composant
             </button>
           </div>
@@ -116,10 +117,7 @@ const Dashboard = () => {
       </div>
 
       {/* Burger Menu Button for Mobile */}
-      <button
-        className="md:hidden fixed top-4 left-4 z-30 p-2 bg-gray-800 text-white rounded-md mt-2"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
+      <button className="md:hidden fixed top-4 left-4 z-30 p-2 bg-gray-800 text-white rounded-md mt-2" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
         <MdMenu size={24} />
       </button>
 
@@ -127,11 +125,16 @@ const Dashboard = () => {
       {isSidebarOpen && <div className="fixed inset-0 bg-black opacity-50 z-10 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       {/* Dynamic Page Area */}
-      <div className="flex-grow p-8 bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-lg">
-          <h1 className="text-4xl font-bold mb-8">Bienvenue dans votre espace de gestion</h1>
-          <p className="text-xl mb-4">Date et heure actuelles : {currentDateTime.toLocaleDateString("fr-FR")} - {currentDateTime.toLocaleTimeString("fr-FR")}</p>
-          <p className="text-lg">Sélectionnez une option à gauche pour commencer.</p>
+      <div className="flex-grow">
+        <Header className="shadow-lg" />
+        <div className="flex-grow h-full p-8 bg-gray-100">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h1 className="text-4xl font-bold mb-8">Bienvenue dans votre espace de gestion</h1>
+            <p className="text-xl mb-4">
+              Date et heure actuelles : {currentDateTime.toLocaleDateString("fr-FR")} - {currentDateTime.toLocaleTimeString("fr-FR")}
+            </p>
+            <p className="text-lg">Sélectionnez une option à gauche pour commencer.</p>
+          </div>
         </div>
       </div>
     </div>
