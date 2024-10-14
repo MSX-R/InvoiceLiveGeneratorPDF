@@ -6,6 +6,7 @@ const pool = require('./db');
 const User = require('./models/User');
 const Offre = require('./models/Offre');
 const CategorieOffre = require('./models/Categorie_Offre');
+const UserOffres = require('./models/User_Offre');
 
 const fs = require('fs');
 const logStream = fs.createWriteStream('msxghostlogs.txt', { flags: 'a' });
@@ -29,7 +30,7 @@ const hashPassword = (password) => {
 
 // Fonction pour créer un token
 const createToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id: user.id, email: user.email, role: user.role_id }, process.env.JWT_SECRET, { expiresIn: '2h' });
 };
 
 // Middleware pour vérifier le token et l'authentification
@@ -417,6 +418,55 @@ app.delete('/api/offres/:id', verifyToken, verifyAdmin, async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la suppression de l'offre:", err);
     res.status(500).json({ message: "Erreur lors de la suppression de l'offre : " });
+  }
+});
+
+// Route pour créer une nouvelle relation entre un utilisateur, une catégorie d'offre et une offre
+app.post('/api/user-offres', verifyToken, verifyAdmin, async (req, res) => {
+  const { user_id, categorie_offre_id, offre_id } = req.body;
+
+  // Valider que tous les champs requis sont présents
+  if (!user_id || !categorie_offre_id || !offre_id) {
+    return res.status(400).json({ message: "Tous les champs (user_id, categorie_offre_id, offre_id) sont requis." });
+  }
+
+  try {
+    const insertId = await UserOffres.create(user_id, categorie_offre_id, offre_id);
+    res.status(201).json({ message: "Relation utilisateur-offre créée avec succès", id: insertId });
+  } catch (err) {
+    console.error("Erreur lors de la création de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la création de la relation utilisateur-offre." });
+  }
+});
+
+// Route pour récupérer toutes les relations entre un utilisateur et ses offres
+app.get('/api/user-offres/:user_id', verifyToken, verifyAdmin, async (req, res) => {
+  const userId = req.params.user_id;
+
+  try {
+    // Récupérer toutes les offres de l'utilisateur spécifié
+    const userOffres = await UserOffres.getByUserId(userId);
+    res.status(200).json(userOffres);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des offres de l'utilisateur:", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur." });
+  }
+});
+
+// Route pour supprimer une relation entre un utilisateur et une offre
+app.delete('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userOffreId = req.params.id;
+
+  try {
+    const deleted = await UserOffres.deleteById(userOffreId);
+    if (deleted) {
+      res.status(200).json({ message: "Relation utilisateur-offre supprimée avec succès." });
+    } else {
+      res.status(404).json({ message: "Relation utilisateur-offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la suppression de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la suppression de la relation utilisateur-offre." });
   }
 });
 
