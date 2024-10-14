@@ -4,11 +4,13 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useNotification } from "../contexts/NotificationContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import icons
 
 const Login = () => {
   const { notification } = useNotification();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -60,7 +62,21 @@ const Login = () => {
         {notification && <div className="bg-green-200 text-green-800 p-4 rounded-md mb-4">{notification}</div>}
         <form onSubmit={handleLogin} className="flex flex-col space-y-4">
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border border-gray-300 p-3 rounded-md focus:outline-none focus:border-blue-600" />
-          <input type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required className="border border-gray-300 p-3 rounded-md focus:outline-none focus:border-blue-600" />
+
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"} // Toggle between text and password
+              placeholder="Mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:border-blue-600 w-full"
+            />
+            <div className="absolute inset-y-0 right-3 flex items-center cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle icon */}
+            </div>
+          </div>
+
           {error && <p className="text-red-600 text-center">{error}</p>}
           <button type="submit" className="bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700">
             Se connecter
