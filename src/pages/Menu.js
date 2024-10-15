@@ -65,7 +65,7 @@ const Menu = () => {
           </div>
 
           <div className="flex flex-col space-y-4">
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu")}>
+            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/landing-page")}>
               <MdHome className="mr-2" /> Accueil
             </button>
             {role === "1" && (
@@ -143,6 +143,7 @@ const Menu = () => {
         <Header className="shadow-lg" /> {/* RESTE EN HAUT de la div */}
         <div className="h-fit p-8 md:p-16 bg-gray-100 ">
           {/* PREND LE RESTE DE LA DIV en H-fit*/}
+          {/* //! Essaye de creer quelque chose de sympa avec les memes espacements entre tous. */}
           <Outlet />
         </div>
       </div>

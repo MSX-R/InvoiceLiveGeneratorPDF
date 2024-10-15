@@ -24,6 +24,7 @@ import ListeClients from "./pages/ListeClients";
 import ModifierProfilClient from "./pages/ModifierProfilClient";
 import NotFound from "./pages/NotFound";
 import FicheClient from "./pages/FicheClient";
+import LandingP from "./pages/LandingP";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -81,85 +82,80 @@ function App() {
                 }
               >
                 <Route index element={<div>Contenu par défaut du dashboard</div>} />
-                <Route 
-                  path="formulaire-devis" 
+                <Route path="formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+
+                {/* //! NE PAS METTRE LA LANDING PAGE EN PRIVATE, la mettre direct accesible sur le site ! */}
+                <Route
+                  path="landing-page"
                   element={
                     <PrivateRoute>
-                      {!showPreview ? 
-                        <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : 
-                        <InvoiceFormPreview 
-                          clientInfo={invoice?.clientInfo} 
-                          items={invoice?.items} 
-                          entrepriseInfo={invoice?.entrepriseInfo} 
-                          onEdit={handleEditInvoice} 
-                        />
-                      }
+                      <LandingP />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="tableau-berger" 
+                <Route
+                  path="tableau-berger"
                   element={
                     <PrivateRoute>
                       <TableauBerger />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="formulaire-donnees-corporelles" 
+                <Route
+                  path="formulaire-donnees-corporelles"
                   element={
                     <PrivateRoute>
                       <FormulaireDonneesCorporelles />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="vma-tapis" 
+                <Route
+                  path="vma-tapis"
                   element={
                     <PrivateRoute>
                       <TestVmaTapis />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="compteur-seances" 
+                <Route
+                  path="compteur-seances"
                   element={
                     <PrivateRoute>
                       <SuiviClients />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="tabata-chrono" 
+                <Route
+                  path="tabata-chrono"
                   element={
                     <PrivateRoute>
                       <TabataChrono />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="chrono/:id" 
+                <Route
+                  path="chrono/:id"
                   element={
                     <PrivateRoute>
                       <ChronoDetail />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="tableau-des-stats" 
+                <Route
+                  path="tableau-des-stats"
                   element={
                     <PrivateRoute>
                       <TableauDesStats />
                     </PrivateRoute>
-                  } 
+                  }
                 />
-                <Route 
-                  path="offres-coachings" 
+                <Route
+                  path="offres-coachings"
                   element={
                     <PrivateRoute>
                       <OffresCoachings />
                     </PrivateRoute>
-                  } 
+                  }
                 />
                 <Route
                   path="creation-profil-client/:id?"
@@ -193,13 +189,13 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route 
-                  path="test-de-composant" 
+                <Route
+                  path="test-de-composant"
                   element={
                     <PrivateRoute>
                       <TestDeComposant />
                     </PrivateRoute>
-                  } 
+                  }
                 />
               </Route>
 
