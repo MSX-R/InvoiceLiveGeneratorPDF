@@ -54,6 +54,8 @@ function SideBarEcranDynamique() {
 
         <DropdownUser user={user} />
       </div>
+      {/* Fin du header
+       */}
 
       {/* PAGE DYNAMIQUE LIE AU SIDE BAR MENU*/}
       <div className="flex flex-col p-8 gap-8 ">
