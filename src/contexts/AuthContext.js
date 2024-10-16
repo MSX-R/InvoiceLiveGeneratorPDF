@@ -17,18 +17,8 @@ export const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Si un token existe, restaurer les informations de l'utilisateur
-    if (localStorage.getItem("token")) {
-      setIsAuthenticated(true);
-      setUserRole(localStorage.getItem("userRole"));
-      const storedUser = localStorage.getItem("loggedUser");
-      if (storedUser) {
-        setloggedUser(JSON.parse(storedUser));
-      }
-    }
-
-    // Définir un intervalle pour vérifier la validité du token
-    const interval = setInterval(async () => {
+    // Fonction pour vérifier la validité du token
+    const checkTokenValidity = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -42,13 +32,25 @@ export const AuthProvider = ({ children }) => {
             "Content-Type": "application/json",
           },
         });
+
+        // Si la requête réussit, nous considérons que le token est valide
+        setIsAuthenticated(true);
       } catch (err) {
         console.error("Token invalide ou expiré :", err);
         logout(); // Déconnecter l'utilisateur si le token est invalide
       }
-    }, 300000); // Vérification toutes les 5 minutes
+    };
 
-    return () => clearInterval(interval); // Nettoyer l'intervalle lors du démontage
+    // Vérification initiale lors du chargement de la page
+    checkTokenValidity();
+
+    // Définir un intervalle pour vérifier la validité du token toutes les 5 minutes
+    const interval = setInterval(() => {
+      checkTokenValidity();
+    }, 300000); // Vérification toutes les 5 minutes (300000 ms)
+
+    // Nettoyer l'intervalle lors du démontage
+    return () => clearInterval(interval);
   }, []);
 
   const login = (token, role, loggedUser) => {
@@ -77,5 +79,9 @@ export const AuthProvider = ({ children }) => {
     setUserRole(localStorage.getItem("userRole"));
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
