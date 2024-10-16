@@ -18,7 +18,12 @@ const LandingP = () => {
   useEffect(() => {
     const handleScroll = () => {
       const pageTop = window.pageYOffset;
-      const newSection = sectionRefs.current.findIndex((ref, index) => pageTop >= ref.offsetTop - window.innerHeight / 2 && (index === sectionRefs.current.length - 1 || pageTop < sectionRefs.current[index + 1].offsetTop - window.innerHeight / 2));
+
+      // Filter out null refs (elements that are not mounted yet)
+      const validRefs = sectionRefs.current.filter((ref) => ref !== null);
+
+      const newSection = validRefs.findIndex((ref, index) => pageTop >= ref.offsetTop - window.innerHeight / 2 && (index === validRefs.length - 1 || pageTop < validRefs[index + 1].offsetTop - window.innerHeight / 2));
+
       if (newSection !== -1) {
         setCurrentSection(newSection);
       }
@@ -28,7 +33,7 @@ const LandingP = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const menuItems = ["MSXFIT", "A propos", "Services", "Contact", "Testimonials", `${isAuthenticated ? "Dashboard" : ""}`];
+  const menuItems = ["MSXFIT", "A propos", "Services", "Testimonials", "Contact", `${isAuthenticated ? "Dashboard" : ""}`];
 
   const handleLoginClick = () => {
     if (isAuthenticated) {
@@ -58,8 +63,8 @@ const LandingP = () => {
         <Hero ref={(el) => (sectionRefs.current[0] = el)} />
         <About ref={(el) => (sectionRefs.current[1] = el)} />
         <Services ref={(el) => (sectionRefs.current[2] = el)} />
-        <Contact ref={(el) => (sectionRefs.current[3] = el)} />
-        <Testimonials ref={(el) => (sectionRefs.current[4] = el)} />
+        <Testimonials ref={(el) => (sectionRefs.current[3] = el)} />
+        <Contact ref={(el) => (sectionRefs.current[4] = el)} />
       </main>
     </div>
   );
@@ -189,7 +194,7 @@ const About = React.forwardRef((props, ref) => (
       }}
     />
 
-    <div className="container mx-auto px-6 py-20 relative z-10">
+    <div className="container mx-auto  px-6 py-20 relative z-10">
       <motion.img src={require("../assets/profil.jpg")} alt="Coach" className="w-48 h-48 rounded-full mx-auto mb-8 object-cover border-4 border-gray-100 shadow-lg" initial={{ y: -100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.5 }} />
 
       <motion.h2 className="text-5xl font-bold mb-8 text-center text-white" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.7 }}>
@@ -292,7 +297,7 @@ const Testimonials = React.forwardRef((props, ref) => {
       <div className="flex items-center mb-4">
         <img src={testimonial.image} alt={testimonial.name} className="w-16 h-16 rounded-full mr-4 object-cover" />
         <div>
-          <h4 className="font-semibold text-lg">{testimonial.name}</h4>
+          <h4 className="font-semibold text-gray-700 text-lg">{testimonial.name}</h4>
           <p className="text-sm text-gray-500">{testimonial.date}</p>
         </div>
       </div>
@@ -302,7 +307,7 @@ const Testimonials = React.forwardRef((props, ref) => {
   );
 
   return (
-    <section ref={ref} className="py-20 bg-white">
+    <section ref={ref} className="py-20 bg-gray-900 text-white">
       <div className="container mx-auto px-4">
         <motion.h2 className="text-4xl font-bold mb-12 text-center" initial={{ opacity: 0, y: -50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           Ce que disent nos clients
@@ -321,7 +326,7 @@ const Testimonials = React.forwardRef((props, ref) => {
 });
 
 const Contact = React.forwardRef((props, ref) => (
-  <section ref={ref} className="min-h-screen flex items-center justify-center bg-gray-900 text-white py-20">
+  <section ref={ref} className="min-h-screen flex items-center justify-center bg-white text-gray-900 py-20">
     <div className="container mx-auto px-6 text-center">
       <motion.h2 className="text-4xl font-bold mb-8" initial={{ opacity: 0, y: -50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         Prêt à Commencer Votre Transformation ?
@@ -331,16 +336,16 @@ const Contact = React.forwardRef((props, ref) => (
       </motion.p>
 
       <div className="flex flex-col gap-8 mb-8 md:w-fit md:flex-row md:justify-center md:mx-auto md:mt-16">
-        <motion.a href="mailto:romain@marsaleix-training.com" className="bg-white text-gray-900 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
+        <motion.a href="mailto:romain@marsaleix-training.com" className="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
           Contactez-moi par email
         </motion.a>
 
-        <motion.a href="tel:0789619164" className="bg-white text-gray-900 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
+        <motion.a href="tel:0789619164" className="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
           Contactez-moi par téléphone
         </motion.a>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
+      <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-lg text-gray-900">
         <h3 className="text-2xl font-bold mb-6">Ou remplissez le formulaire ci-dessous :</h3>
         <form>
           <div className="mb-4">
@@ -361,8 +366,8 @@ const Contact = React.forwardRef((props, ref) => (
             </label>
             <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="message" placeholder="Votre message" />
           </div>
-          <div className="flex items-center justify-between">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          <div className="flex items-center justify-end">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded focus:outline-none focus:shadow-outline" type="button">
               Envoyer
             </button>
           </div>
