@@ -76,7 +76,7 @@ const FicheClient = () => {
       setIsModalOpen(false);
 
       // Rediriger vers la liste des clients après la suppression
-      navigate("/liste-clients");
+      navigate("/dashboard/liste-clients");
     } catch (err) {
       console.error("Erreur lors de la suppression du client :", err);
       setErrorMessage("Erreur lors de la suppression du client.");
@@ -130,10 +130,10 @@ const FicheClient = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
         <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600">
-          <button onClick={() => navigate("/liste-clients")} className="absolute top-4 left-4 text-white hover:text-gray-200">
+          <button onClick={() => navigate("/dashboard/liste-clients")} className="absolute top-4 left-4 text-white hover:text-gray-200">
             <FaArrowLeft size={24} />
           </button>
-          <button onClick={() => navigate(`/modifier-profil-client/${id}`)} className="absolute top-4 right-16 text-white hover:text-gray-200">
+          <button onClick={() => navigate(`/dashboard/modifier-profil-client/${id}`)} className="absolute top-4 right-16 text-white hover:text-gray-200">
             <FaEdit size={24} />
           </button>
           <button onClick={() => setIsModalOpen(true)} className="absolute top-4 right-4 text-white hover:text-gray-200">

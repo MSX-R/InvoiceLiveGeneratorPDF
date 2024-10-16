@@ -144,7 +144,7 @@ const TestVmaTapis = () => {
   const progressBarWidthTest = Math.min((elapsedTime / calculateTotalTestDuration(ciblePalier)) * 100, 100); // Limiter à 100%
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 ">
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Test VMA sur Tapis de Course</h1>
 

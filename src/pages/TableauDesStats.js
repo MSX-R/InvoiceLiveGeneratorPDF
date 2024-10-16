@@ -115,7 +115,7 @@ const TableauDesStats = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center ">
       <div className="max-w-lg w-full flex flex-col mx-auto bg-white p-8 rounded-3xl shadow-2xl transition-transform duration-300">
         <h1 className="text-4xl font-extrabold text-center mb-4 text-gray-800">TABLEAU DES STATS RM10</h1>
         <p className="text-center mb-8 text-lg">{bilanFormValue.date}</p>

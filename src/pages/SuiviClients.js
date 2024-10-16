@@ -256,7 +256,7 @@ const SuiviClients = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 ">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">Suivi Client | Compteur de Séances</h1>
 
@@ -291,7 +291,7 @@ const SuiviClients = () => {
                     {header}
                   </th>
                 ))}
-            </tr>
+              </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light">
               {clientsWithSessions.map((client) => (

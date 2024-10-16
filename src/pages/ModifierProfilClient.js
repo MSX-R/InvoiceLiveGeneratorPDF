@@ -128,7 +128,7 @@ const ModifierProfilClient = () => {
 
       if (response.status === 200) {
         updateClient(id, formData);
-        navigate("/liste-clients");
+        navigate("/dashboard/liste-clients");
       }
     } catch (err) {
       setErrors({ general: "Erreur lors de la modification du profil." });

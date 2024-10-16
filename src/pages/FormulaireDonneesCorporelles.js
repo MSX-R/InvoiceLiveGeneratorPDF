@@ -156,7 +156,7 @@ const FormulaireDonneesCorporelles = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 w-full">
       <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">ANALYSE DES DONNEES CORPORELLES</h1>
 

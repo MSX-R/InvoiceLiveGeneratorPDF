@@ -192,7 +192,7 @@ const CreationProfilClient = () => {
           sexe,
           nbEnfant,
         });
-        navigate("/liste-clients");
+        navigate("/dashboard/liste-clients");
       }
     } catch (err) {
       setErrors({ general: "Erreur lors de l'inscription." });
@@ -221,81 +221,113 @@ const CreationProfilClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gray-100 border-blue-500">
+      <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg border-blue-900">
         <h1 className="text-4xl font-bold text-center mb-8">Création de Profil Client</h1>
 
         <button onClick={fillWithMockData} className="mb-4 bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
           Test (Remplir avec les données de Zidane)
         </button>
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-          <label className="text-gray-700">Nom</label>
-          <input type="text" value={nom} onChange={(e) => handleInputChange("nom", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.nom && <p className="text-red-600">{errors.nom}</p>}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-gray-700">Nom</label>
+            <input type="text" value={nom} onChange={(e) => handleInputChange("nom", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.nom && <p className="text-red-600">{errors.nom}</p>}
+          </div>
 
-          <label className="text-gray-700">Prénom</label>
-          <input type="text" value={prenom} onChange={(e) => handleInputChange("prenom", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.prenom && <p className="text-red-600">{errors.prenom}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Prénom</label>
+            <input type="text" value={prenom} onChange={(e) => handleInputChange("prenom", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.prenom && <p className="text-red-600">{errors.prenom}</p>}
+          </div>
 
-          <label className="text-gray-700">Email</label>
-          <input type="email" value={email} onChange={(e) => handleInputChange("email", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.email && <p className="text-red-600">{errors.email}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Email</label>
+            <input type="email" value={email} onChange={(e) => handleInputChange("email", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.email && <p className="text-red-600">{errors.email}</p>}
+          </div>
 
-          <label className="text-gray-700">Mot de passe</label>
-          <input type="password" value={password} onChange={(e) => handleInputChange("password", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.password && <p className="text-red-600">{errors.password}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Téléphone</label>
+            <input type="tel" value={telephone} onChange={(e) => handleInputChange("telephone", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.telephone && <p className="text-red-600">{errors.telephone}</p>}
+          </div>
 
-          <label className="text-gray-700">Confirmer le mot de passe</label>
-          <input type="password" value={confirmPassword} onChange={(e) => handleInputChange("confirmPassword", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.confirmPassword && <p className="text-red-600">{errors.confirmPassword}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Mot de passe</label>
+            <input type="password" value={password} onChange={(e) => handleInputChange("password", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.password && <p className="text-red-600">{errors.password}</p>}
+          </div>
 
-          <label className="text-gray-700">Téléphone</label>
-          <input type="tel" value={telephone} onChange={(e) => handleInputChange("telephone", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.telephone && <p className="text-red-600">{errors.telephone}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Confirmer le mot de passe</label>
+            <input type="password" value={confirmPassword} onChange={(e) => handleInputChange("confirmPassword", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.confirmPassword && <p className="text-red-600">{errors.confirmPassword}</p>}
+          </div>
 
-          <label className="text-gray-700">Adresse 1</label>
-          <input type="text" value={adresse1} onChange={(e) => handleInputChange("adresse1", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.adresse1 && <p className="text-red-600">{errors.adresse1}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Adresse 1</label>
+            <input type="text" value={adresse1} onChange={(e) => handleInputChange("adresse1", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.adresse1 && <p className="text-red-600">{errors.adresse1}</p>}
+          </div>
 
-          <label className="text-gray-700">Adresse 2</label>
-          <input type="text" value={adresse2} onChange={(e) => handleInputChange("adresse2", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
+          <div className="space-y-2">
+            <label className="text-gray-700">Adresse 2</label>
+            <input type="text" value={adresse2} onChange={(e) => handleInputChange("adresse2", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+          </div>
 
-          <label className="text-gray-700">Code Postal</label>
-          <input type="text" value={cp} onChange={(e) => handleInputChange("cp", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.cp && <p className="text-red-600">{errors.cp}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Code Postal</label>
+            <input type="text" value={cp} onChange={(e) => handleInputChange("cp", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.cp && <p className="text-red-600">{errors.cp}</p>}
+          </div>
 
-          <label className="text-gray-700">Ville</label>
-          <input type="text" value={ville} onChange={(e) => handleInputChange("ville", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.ville && <p className="text-red-600">{errors.ville}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Ville</label>
+            <input type="text" value={ville} onChange={(e) => handleInputChange("ville", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.ville && <p className="text-red-600">{errors.ville}</p>}
+          </div>
 
-          <label className="text-gray-700">Pays</label>
-          <input type="text" value={pays} onChange={(e) => handleInputChange("pays", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.pays && <p className="text-red-600">{errors.pays}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Pays</label>
+            <input type="text" value={pays} onChange={(e) => handleInputChange("pays", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.pays && <p className="text-red-600">{errors.pays}</p>}
+          </div>
 
-          <label className="text-gray-700">Date de Naissance</label>
-          <input type="date" value={naissance} onChange={(e) => handleInputChange("naissance", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.naissance && <p className="text-red-600">{errors.naissance}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Date de Naissance</label>
+            <input type="date" value={naissance} onChange={(e) => handleInputChange("naissance", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.naissance && <p className="text-red-600">{errors.naissance}</p>}
+          </div>
 
-          <label className="text-gray-700">Contact d'Urgence</label>
-          <input type="text" value={contactUrgence} onChange={(e) => handleInputChange("contactUrgence", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
-          {errors.contactUrgence && <p className="text-red-600">{errors.contactUrgence}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Contact d'Urgence</label>
+            <input type="text" value={contactUrgence} onChange={(e) => handleInputChange("contactUrgence", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+            {errors.contactUrgence && <p className="text-red-600">{errors.contactUrgence}</p>}
+          </div>
 
-          <label className="text-gray-700">Sexe</label>
-          <select value={sexe} onChange={(e) => handleInputChange("sexe", e.target.value)} className="border border-gray-300 p-3 rounded-md">
-            <option value="">Sélectionnez un sexe</option>
-            <option value="Homme">Homme</option>
-            <option value="Femme">Femme</option>
-          </select>
-          {errors.sexe && <p className="text-red-600">{errors.sexe}</p>}
+          <div className="space-y-2">
+            <label className="text-gray-700">Sexe</label>
+            <select value={sexe} onChange={(e) => handleInputChange("sexe", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md">
+              <option value="">Sélectionnez un sexe</option>
+              <option value="Homme">Homme</option>
+              <option value="Femme">Femme</option>
+            </select>
+            {errors.sexe && <p className="text-red-600">{errors.sexe}</p>}
+          </div>
 
-          <label className="text-gray-700">Nombre d'Enfants</label>
-          <input type="number" value={nbEnfant} onChange={(e) => handleInputChange("nbEnfant", e.target.value)} className="border border-gray-300 p-3 rounded-md" />
+          <div className="space-y-2">
+            <label className="text-gray-700">Nombre d'Enfants</label>
+            <input type="number" value={nbEnfant} onChange={(e) => handleInputChange("nbEnfant", e.target.value)} className="w-full border border-gray-300 p-3 rounded-md" />
+          </div>
 
-          <button type="submit" className="bg-blue-600 text-white p-3 rounded-md">
-            Créer le Profil
-          </button>
-          {errors.general && <p className="text-red-600">{errors.general}</p>}
+          <div className="md:col-span-2 mt-6">
+            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">
+              Créer le Profil
+            </button>
+            {errors.general && <p className="text-red-600 mt-2">{errors.general}</p>}
+          </div>
         </form>
       </div>
     </div>
