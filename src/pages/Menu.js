@@ -3,6 +3,7 @@ import { useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { MdLogout, MdMenu, MdHome, MdPerson, MdBarChart, MdAssignment, MdFitnessCenter, MdShowChart, MdTimer } from "react-icons/md";
 import "tailwindcss/tailwind.css";
+import logo from "../assets/Blancsolo.png";
 import Header from "../Components/Header";
 
 const Menu = () => {
@@ -11,6 +12,7 @@ const Menu = () => {
   const [role, setRole] = useState(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // État pour la largeur de la fenêtre
 
   const handleLogoClick = () => {
     if (isAuthenticated) {
@@ -19,7 +21,9 @@ const Menu = () => {
       navigate("/"); // Redirige vers / si non authentifié
     }
   };
-
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
   useEffect(() => {
     if (isAuthenticated) {
       refreshUserRole();
@@ -35,6 +39,17 @@ const Menu = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Mettre à jour la largeur de la fenêtre lors des changements de taille
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    // Nettoyage de l'écouteur d'événements
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
@@ -47,56 +62,102 @@ const Menu = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
+    // A REMPLACER PAR UN RETOUR SUR LA LANDING PAGE d'arriver en public
   };
 
   return (
     <div className="flex min-h-screen ">
       {/* Sidebar */}
-      <div className={`fixed md:static inset-0 md:w-64 md:min-w-[200px] bg-gray-800 text-white flex flex-col p-4 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen`}>
-        <div className="flex-grow">
-          <div className="flex items-center justify-between mb-8 md:mt-8 md:mb-16">
-            <h2
-              className="text-2xl font-bold mx-auto cursor-pointer"
-              onClick={handleLogoClick} // Ajoutez le gestionnaire de clic
-            >
-              MSX Fitness App
-            </h2>
-          </div>
+      <div className={`fixed md:static inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col p-4 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen`}>
+        <div className="flex md:flex-grow flex-col justify-between h-full ">
+          <div
+            className="flex items-center justify-end gap-2 md:justify-center  md:mt-8 md:mb-16"
+            onClick={handleLogoClick} // Ajoutez le gestionnaire de clic
+          >
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-10 cursor-pointer" // Ajustez la taille selon vos besoins
+            />
 
-          <div className="flex flex-col space-y-4">
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/landing-page")}>
-              <MdHome className="mr-2" /> Accueil
+            <h2 className="text-2xl font-bold text-left cursor-pointer">DASHBOARD</h2>
+          </div>
+          <div className="flex flex-col space-y-2 md:space-y-4 md:h-full">
+            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/")}>
+              <MdHome className="mr-2" /> Site Public
             </button>
             {role === "1" && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/creation-profil-client")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/creation-profil-client");
+                    closeSidebar();
+                  }}
+                >
                   <MdAssignment className="mr-2" /> Créer un nouveau client
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/liste-clients")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/liste-clients");
+                    closeSidebar();
+                  }}
+                >
                   <MdPerson className="mr-2" /> Liste des clients
                 </button>
                 <hr className="border-gray-600" />
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/formulaire-devis")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/formulaire-devis");
+                    closeSidebar();
+                  }}
+                >
                   <MdAssignment className="mr-2" /> Créer un devis
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/compteur-seances")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/compteur-seances");
+                    closeSidebar();
+                  }}
+                >
                   <MdFitnessCenter className="mr-2" /> Suivi des séances
                 </button>
                 <hr className="border-gray-600" />
               </>
             )}
 
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/offres-coachings")}>
+            <button
+              className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+              onClick={() => {
+                navigate("/menu/offres-coachings");
+                closeSidebar();
+              }}
+            >
               <MdFitnessCenter className="mr-2" /> Mes offres de coaching
             </button>
 
             {(role === "1" || role === "3") && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/formulaire-donnees-corporelles")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/formulaire-donnees-corporelles");
+                    closeSidebar();
+                  }}
+                >
                   <MdShowChart className="mr-2" /> Bilan corporel
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/tableau-des-stats")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/tableau-des-stats");
+                    closeSidebar();
+                  }}
+                >
                   <MdShowChart className="mr-2" /> Statistiques et performances
                 </button>
                 <hr className="border-gray-600" />
@@ -105,27 +166,51 @@ const Menu = () => {
 
             {role && (
               <>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/tableau-berger")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/tableau-berger");
+                    closeSidebar();
+                  }}
+                >
                   <MdShowChart className="mr-2" /> Calculer sa RM
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/vma-tapis")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/vma-tapis");
+                    closeSidebar();
+                  }}
+                >
                   <MdShowChart className="mr-2" /> Calculer sa VMA
                 </button>
-                <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/tabata-chrono")}>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
+                    navigate("/menu/tabata-chrono");
+                    closeSidebar();
+                  }}
+                >
                   <MdTimer className="mr-2" /> Tabata Chronomètre
                 </button>
               </>
             )}
 
-            <button className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700" onClick={() => navigate("/menu/test-de-composant")}>
+            <button
+              className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+              onClick={() => {
+                navigate("/menu/test-de-composant");
+                closeSidebar();
+              }}
+            >
               <MdAssignment className="mr-2" /> Test du composant
             </button>
+          </div>{" "}
+          <div className="mt-8">
+            <button onClick={handleLogout} className="w-full flex items-center md:justify-center justify-end  py-2 px-4 rounded-md text-red-400 hover:bg-gray-700">
+              <MdLogout className="mr-2" /> Déconnexion
+            </button>
           </div>
-        </div>
-        <div className="mt-8">
-          <button onClick={handleLogout} className="w-full flex items-center md:justify-center justify-end  py-2 px-4 rounded-md text-red-400 hover:bg-gray-700">
-            <MdLogout className="mr-2" /> Déconnexion
-          </button>
         </div>
       </div>
       {/* FIN SIDE BAR QUI DOIT ETRE FIXE ET PRENDRE LA HAUTEUR DU SCREEN */}
@@ -140,7 +225,9 @@ const Menu = () => {
 
       {/* Dynamic Page Area */}
       <div className="flex-grow  w-screen  overflow-y-scroll">
-        <Header className="shadow-lg" /> {/* RESTE EN HAUT de la div */}
+        {/* {windowWidth > 768 ? <Header className="shadow-lg" /> : null} */}
+        {windowWidth > 768 ? <Header /> : null} {/* Utilisez le nouveau composant Header ici */}
+
         <div className="h-fit p-8 md:p-16 bg-gray-100 ">
           {/* PREND LE RESTE DE LA DIV en H-fit*/}
           {/* //! Essaye de creer quelque chose de sympa avec les memes espacements entre tous. */}
