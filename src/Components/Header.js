@@ -10,15 +10,6 @@ const Header = () => {
   const { isAuthenticated } = useAuth(); // Utilisez le context
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
-  // Fonction pour gérer le clic sur le logo
-  const handleLogoClick = () => {
-    if (isAuthenticated) {
-      navigate("/dashboard"); // Redirige vers /dashboard si authentifié
-    } else {
-      navigate("/"); // Redirige vers / si non authentifié
-    }
-  };
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(new Date());
