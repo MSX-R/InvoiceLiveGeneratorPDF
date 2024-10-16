@@ -28,7 +28,7 @@ const LandingP = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const menuItems = ["Accueil", "À propos", "Services", "Contact", "Testimonials", "Dashboard"];
+  const menuItems = ["MSXFIT", "A propos", "Services", "Contact", "Testimonials", `${isAuthenticated ? "Dashboard" : ""}`];
 
   const handleLoginClick = () => {
     if (isAuthenticated) {
@@ -84,7 +84,7 @@ const Header = ({ currentSection, menuItems, isAuthenticated, handleLoginClick, 
         </button>
 
         <motion.h1 className="text-2xl font-bold text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-          <div className="flex items-center justify-end gap-2 md:justify-center md:mt-8 md:mb-16" onClick={handleLogoClick}>
+          <div className="flex items-center justify-end gap-2 md:justify-center " onClick={handleLogoClick}>
             <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
           </div>
         </motion.h1>
