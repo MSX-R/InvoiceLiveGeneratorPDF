@@ -77,7 +77,7 @@ function App() {
 
               {/* Routes privées avec Menu comme dashboard principal */}
               <Route
-                path="/menu"
+                path="/dashboard"
                 element={
                   <PrivateRoute>
                     <Menu />

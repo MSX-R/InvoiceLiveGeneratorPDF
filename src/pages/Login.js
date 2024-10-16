@@ -19,7 +19,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/menu"); // Redirige vers le menu si connecté
+      navigate("/dashboard"); // Redirige vers le menu si connecté
     }
   }, [navigate]);
 
@@ -45,7 +45,7 @@ const Login = () => {
       if (response.data.token) {
         // Inclure le rôle dans la fonction de connexion
         login(response.data.token, response.data.role, response.data.user); // Passer le token et le rôle
-        navigate("/menu"); // Redirection vers le menu
+        navigate("/dashboard"); // Redirection vers le menu
       } else {
         setError("Identifiants incorrects.");
       }

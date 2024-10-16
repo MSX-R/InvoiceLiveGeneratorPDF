@@ -16,7 +16,7 @@ const Menu = () => {
 
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      navigate("/menu"); // Redirige vers /menu si authentifié
+      navigate("/dashboard"); // Redirige vers /dashboard si authentifié
     } else {
       navigate("/"); // Redirige vers / si non authentifié
     }
@@ -92,7 +92,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/creation-profil-client");
+                    navigate("/dashboard/creation-profil-client");
                     closeSidebar();
                   }}
                 >
@@ -101,7 +101,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/liste-clients");
+                    navigate("/dashboard/liste-clients");
                     closeSidebar();
                   }}
                 >
@@ -111,7 +111,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/formulaire-devis");
+                    navigate("/dashboard/formulaire-devis");
                     closeSidebar();
                   }}
                 >
@@ -120,7 +120,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/compteur-seances");
+                    navigate("/dashboard/compteur-seances");
                     closeSidebar();
                   }}
                 >
@@ -133,7 +133,7 @@ const Menu = () => {
             <button
               className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
               onClick={() => {
-                navigate("/menu/offres-coachings");
+                navigate("/dashboard/offres-coachings");
                 closeSidebar();
               }}
             >
@@ -145,7 +145,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/formulaire-donnees-corporelles");
+                    navigate("/dashboard/formulaire-donnees-corporelles");
                     closeSidebar();
                   }}
                 >
@@ -154,7 +154,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/tableau-des-stats");
+                    navigate("/dashboard/tableau-des-stats");
                     closeSidebar();
                   }}
                 >
@@ -169,7 +169,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/tableau-berger");
+                    navigate("/dashboard/tableau-berger");
                     closeSidebar();
                   }}
                 >
@@ -178,7 +178,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/vma-tapis");
+                    navigate("/dashboard/vma-tapis");
                     closeSidebar();
                   }}
                 >
@@ -187,7 +187,7 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
-                    navigate("/menu/tabata-chrono");
+                    navigate("/dashboard/tabata-chrono");
                     closeSidebar();
                   }}
                 >
@@ -199,7 +199,7 @@ const Menu = () => {
             <button
               className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
               onClick={() => {
-                navigate("/menu/test-de-composant");
+                navigate("/dashboard/test-de-composant");
                 closeSidebar();
               }}
             >

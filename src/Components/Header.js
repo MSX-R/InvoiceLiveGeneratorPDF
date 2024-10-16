@@ -13,7 +13,7 @@ const Header = () => {
   // Fonction pour gérer le clic sur le logo
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      navigate("/menu"); // Redirige vers /menu si authentifié
+      navigate("/dashboard"); // Redirige vers /dashboard si authentifié
     } else {
       navigate("/"); // Redirige vers / si non authentifié
     }

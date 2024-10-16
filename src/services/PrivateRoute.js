@@ -13,7 +13,7 @@ const PrivateRoute = ({ children, requiredRoles }) => {
 
   // Si des rôles sont requis, vérifier que l'utilisateur a un rôle approprié
   if (requiredRoles && !requiredRoles.includes(parseInt(userRole, 10))) {
-    return <Navigate to="/menu" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return children;

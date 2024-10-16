@@ -194,13 +194,13 @@ const ListeClients = () => {
 
         <div className="flex flex-col gap-4 md:flex-row md:justify-between items-center mb-12 md:mb-4">
           <input type="text" placeholder="Rechercher par nom, prénom, ID, Téléphone..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full max-w-md px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
-          <button onClick={() => navigate("/creation-profil-client")} className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
+          <button onClick={() => navigate("/dashboard/creation-profil-client")} className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
             Ajouter un Client
           </button>
         </div>
 
         {isMobile ? (
-          <MobileClientCards clients={filteredClients} onViewDetails={(id) => navigate(`/fiche-client/${id}`)} onEdit={(id) => navigate(`/modifier-profil-client/${id}`)} onDelete={openModal} />
+          <MobileClientCards clients={filteredClients} onViewDetails={(id) => navigate(`/dashboard/fiche-client/${id}`)} onEdit={(id) => navigate(`/dashboard/modifier-profil-client/${id}`)} onDelete={openModal} />
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -240,7 +240,7 @@ const ListeClients = () => {
                     className="hover:bg-gray-50 cursor-pointer"
                     onClick={(e) => {
                       if (!e.target.closest("button")) {
-                        navigate(`/fiche-client/${client.id}`);
+                        navigate(`/dashboard/fiche-client/${client.id}`);
                       }
                     }}
                   >
@@ -292,7 +292,7 @@ const ListeClients = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/modifier-profil-client/${client.id}`);
+                          navigate(`/dashboard/modifier-profil-client/${client.id}`);
                         }}
                         className="p-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 "
                       >

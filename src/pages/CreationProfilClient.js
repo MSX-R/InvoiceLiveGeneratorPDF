@@ -192,7 +192,7 @@ const CreationProfilClient = () => {
           sexe,
           nbEnfant,
         });
-        navigate("/liste-clients");
+        navigate("/dashboard/liste-clients");
       }
     } catch (err) {
       setErrors({ general: "Erreur lors de l'inscription." });

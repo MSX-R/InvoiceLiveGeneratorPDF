@@ -41,7 +41,7 @@ const LandingP = () => {
 
   const handleMenuClick = (item) => {
     if (item.toUpperCase() === "DASHBOARD") {
-      navigate("/menu");
+      navigate("/dashboard");
     } else {
       const index = menuItems.indexOf(item);
       if (index !== -1 && sectionRefs.current[index]) {
@@ -70,7 +70,7 @@ const Header = ({ currentSection, menuItems, isAuthenticated, handleLoginClick, 
 
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      navigate("/menu");
+      navigate("/dashboard");
     } else {
       navigate("/");
     }
@@ -109,7 +109,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, isAuthenticated, handleLogin
   const navigate = useNavigate();
   const handleLogoClick = () => {
     if (isAuthenticated) {
-      navigate("/menu");
+      navigate("/dashboard");
     } else {
       navigate("/");
     }
@@ -413,7 +413,7 @@ export default LandingP;
 
 //   const handleMenuClick = (item) => {
 //     if (item.toUpperCase() === "DASHBOARD") {
-//       navigate("/menu");
+//       navigate("/dashboard");
 //     }
 //   };
 //   return (
@@ -436,13 +436,13 @@ export default LandingP;
 
 //   const handleMenuClick = (item) => {
 //     if (item.toUpperCase() === "DASHBOARD") {
-//       navigate("/menu");
+//       navigate("/dashboard");
 //     }
 //   };
 
 //   const handleLogoClick = () => {
 //     if (isAuthenticated) {
-//       navigate("/menu"); // Redirige vers /menu si authentifié
+//       navigate("/dashboard"); // Redirige vers /dashboard si authentifié
 //     } else {
 //       navigate("/"); // Redirige vers / si non authentifié
 //     }
@@ -493,7 +493,7 @@ export default LandingP;
 //   const navigate = useNavigate();
 //   const handleLogoClick = () => {
 //     if (isAuthenticated) {
-//       navigate("/menu"); // Redirige vers /menu si authentifié
+//       navigate("/dashboard"); // Redirige vers /dashboard si authentifié
 //     } else {
 //       navigate("/"); // Redirige vers / si non authentifié
 //     }
