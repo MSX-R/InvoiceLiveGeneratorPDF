@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { ClientsContext } from "../contexts/ClientsContext";
+import { motion } from "framer-motion";
+import { Dumbbell, Activity, ChevronDown, Calendar, Weight, Ruler, Target, Users, Clipboard, Zap, Heart, Clock } from "lucide-react";
 
 const experienceLevels = [
   { value: "débutant", label: "Débutant" },
@@ -15,6 +17,8 @@ const availableEquipment = [
   { value: "kettlebells", label: "Kettlebells" },
   { value: "corde à sauter", label: "Corde à sauter" },
   { value: "bandes de résistance", label: "Bandes de résistance" },
+  { value: "trx", label: "TRX" },
+  { value: "medecinball", label: "Medecin ball" },
 ];
 
 const availableMethods = [
@@ -82,11 +86,11 @@ const AutocompleteClientSelect = ({ onClientSelect }) => {
 
   return (
     <div className="relative">
-      <input type="text" value={inputValue} onChange={handleInputChange} onFocus={() => setIsOpen(true)} className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Rechercher un client..." />
+      <input type="text" id="clientSearch" value={inputValue} onChange={handleInputChange} onFocus={() => setIsOpen(true)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:border-blue-500" placeholder="Rechercher un client..." />
       {isOpen && filteredClients.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 mt-1 max-h-60 overflow-auto rounded-md shadow-lg">
+        <ul className="absolute z-10 w-full bg-gray-800 border border-gray-700 mt-1 max-h-60 overflow-auto rounded-md shadow-lg">
           {filteredClients.map((client) => (
-            <li key={client.id} onClick={() => handleSelectClient(client)} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+            <li key={client.id} onClick={() => handleSelectClient(client)} className="px-4 py-2 hover:bg-gray-700 cursor-pointer text-white">
               {client.nom} {client.prenom}
             </li>
           ))}
@@ -129,6 +133,7 @@ const CreationDeProgramme = () => {
   const [kcalPourObjectif, setKcalPourObjectif] = useState("");
   const [kilosAPerdre, setKilosAPerdre] = useState("");
   const [kilosAPrendre, setKilosAPrendre] = useState(""); // Ajout de l'état pour kilos à prendre
+  const [sessionsPerWeek, setSessionsPerWeek] = useState(3); // Nouvel état pour le nombre de séances par semaine
 
   const [sexe, setSexe] = useState("");
   useEffect(() => {
@@ -244,7 +249,10 @@ const CreationDeProgramme = () => {
     setError(null);
 
     const workoutRequest = {
-      clientName: selectedClient ? `${selectedClient.prenom} ${selectedClient.nom}` : "",
+      clientName: selectedClient
+        ? `${selectedClient.prenom} 
+      `
+        : "",
       age: selectedClient ? calculerAge(selectedClient.naissance) : "Non renseigné",
       sexe: selectedClient ? selectedClient.sexe : "Non indiqué",
       goal,
@@ -273,12 +281,13 @@ const CreationDeProgramme = () => {
       kcalConseillees,
       kcalPourObjectif,
       kilosAPerdre: goal === "perte_de_poids" ? kilosAPerdre : undefined,
+      sessionsPerWeek,
     };
 
     console.log("Données du programme :", workoutRequest);
 
     const prompt = `
-    PROMPT POUR CONCEPTION D'UN PROGRAMME D'ENTRAÎNEMENT PERSONNALISÉ réalisé par un coach sportif privé qui crée des programmes individualisés et uniques à sa clientèle.
+    PROMPT POUR CONCEPTION D'UN PROGRAMME D'ENTRAÎNEMENT PERSONNALISÉ réalisé par un coach sportif tres experimenté privé qui crée des programmes individualisés et uniques pour sa clientèle.
 
     Client : ${workoutRequest.clientName}
     Âge du client : ${workoutRequest.age}
@@ -294,7 +303,7 @@ const CreationDeProgramme = () => {
     ${workoutRequest.goal === "perte_de_poids" ? `Kilos à perdre : ${workoutRequest.kilosAPerdre}` : ""}
     Nombre de kcal à consommer par jour : ${workoutRequest.kcalPourObjectif}
 
-    Nombre de séances par semaine souhaitées : ${workoutRequest.sessions}
+    Nombre de séances par semaine souhaitées : ${workoutRequest.sessionsPerWeek}
     Durée du programme (semaines) : ${workoutRequest.programDuration}
     
     Niveau d'expérience sportif : ${workoutRequest.experienceLevel || "Non renseigné"}
@@ -360,49 +369,54 @@ const CreationDeProgramme = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Création de Programme d'Entraînement</h1>
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+      <motion.h1 className="text-xl md:text-5xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 md:p-4" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        Création d'un Programme d'Entraînement <Dumbbell className="inline-block ml-2" />
+      </motion.h1>
+
+      <motion.form onSubmit={handleSubmit} className="bg-white bg-opacity-10 rounded-lg shadow-lg backdrop-blur-md p-8 max-w-4xl mx-auto" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+        {/* Sélection du client */}
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="clientSelect">
-            Sélectionner un client :
+          <label className="block text-white text-sm font-bold mb-2" htmlFor="clientSelect">
+            <Users className="inline-block mr-2" /> Rechercher un client
           </label>
           <AutocompleteClientSelect onClientSelect={handleClientSelect} />
         </div>
 
-        {/* Sexe Selection */}
+        {/* Informations de base */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="sexe">
+              <Users className="inline-block mr-2" /> Sexe
+            </label>
+            <select id="sexe" value={sexe} onChange={(e) => setSexe(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
+              <option value="" disabled>
+                Sélectionnez le sexe
+              </option>
+              <option value="Homme">Homme</option>
+              <option value="Femme">Femme</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Ruler className="inline-block mr-2" /> Taille (cm)
+            </label>
+            <input type="number" value={taille} onChange={(e) => setTaille(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Weight className="inline-block mr-2" /> Poids (kg)
+            </label>
+            <input type="number" value={poids} onChange={(e) => setPoids(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </div>
+        </div>
+
+        {/* Objectif et kcal */}
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="sexe">
-            Sexe :
+          <label className="block text-white text-sm font-bold mb-2">
+            <Target className="inline-block mr-2" /> Objectif
           </label>
-          <select
-            id="sexe"
-            value={sexe} // L'état sexe est lié au select
-            onChange={(e) => setSexe(e.target.value)} // Mettez à jour l'état sexe en cas de changement
-            className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option value="" disabled>
-              Sélectionnez le sexe
-            </option>
-            <option value="Homme">Homme</option>
-            <option value="Femme">Femme</option>
-          </select>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">Taille (cm) :</label>
-            <input type="number" value={taille} onChange={(e) => setTaille(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">Poids (kg) :</label>
-            <input type="number" value={poids} onChange={(e) => setPoids(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Objectif :</label>
-          <select value={goal} onChange={(e) => setGoal(e.target.value)} className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <select value={goal} onChange={(e) => setGoal(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
             <option value="prise_de_masse">Prise de masse</option>
             <option value="perte_de_poids">Perte de poids</option>
             <option value="renforcement">Renforcement</option>
@@ -410,64 +424,75 @@ const CreationDeProgramme = () => {
         </div>
 
         {goal === "perte_de_poids" && (
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Kilos à perdre (en {programDuration ? programDuration : "XX"} semaines) :</label>
-            <input type="number" value={kilosAPerdre} onChange={(e) => setKilosAPerdre(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          </div>
+          <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Weight className="inline-block mr-2" /> Kilos à perdre
+            </label>
+            <input type="number" value={kilosAPerdre} onChange={(e) => setKilosAPerdre(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </motion.div>
         )}
 
         {goal === "prise_de_masse" && (
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Kilos à prendre :</label>
-            <input type="number" value={kilosAPrendre} onChange={(e) => setKilosAPrendre(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          </div>
+          <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Weight className="inline-block mr-2" /> Kilos à prendre
+            </label>
+            <input type="number" value={kilosAPrendre} onChange={(e) => setKilosAPrendre(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </motion.div>
         )}
 
-        <div className={`grid grid-cols-${goal !== "renforcement" ? "2" : "1"} gap-4 mb-4`}>
+        {/* Kcal */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">Kcal conseillées / jour :</label>
-            <input type="number" value={kcalConseillees} readOnly className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight bg-gray-100" />
+            <label className="block text-white text-sm font-bold mb-2">
+              <Activity className="inline-block mr-2" /> Kcal conseillées / jour
+            </label>
+            <input type="number" value={kcalConseillees} readOnly className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-300" />
           </div>
-          {/* Affichage conditionnel pour Kcal pour l'objectif */}
           {goal !== "renforcement" && (
             <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Kcal pour l'objectif :</label>
-              <input type="number" value={kcalPourObjectif} readOnly className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight bg-gray-100" />
+              <label className="block text-white text-sm font-bold mb-2">
+                <Zap className="inline-block mr-2" /> Kcal pour l'objectif
+              </label>
+              <input type="number" value={kcalPourObjectif} readOnly className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-300" />
             </div>
           )}
         </div>
 
-        {/* Durée du programme */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="programDuration">
-            Durée du programme (semaines) :
-          </label>
-          <input type="number" id="programDuration" value={programDuration} onChange={(e) => setProgramDuration(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" />
-        </div>
-
-        {/* Date de commencement */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="startDate">
-            Date de commencement :
-          </label>
-          <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" />
-        </div>
-
-        {/* Date de fin estimée */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Date de fin estimée :</label>
-          <input
-            type="date"
-            value={endDate} // Utilisez l'état pour obtenir la date de fin
-            readOnly // Rend l'input non modifiable
-            className="border rounded w-full py-2 px-3 text-gray-400 bg-gray-200" // Couleur gris pour indiquer que c'est non modifiable
-          />
+        {/* Programme details */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="sessionsPerWeek">
+              <Calendar className="inline-block mr-2" /> Séances par semaine
+            </label>
+            <select id="sessionsPerWeek" value={sessionsPerWeek} onChange={(e) => setSessionsPerWeek(parseInt(e.target.value))} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
+              {[2, 3, 4, 5, 6].map((num) => (
+                <option key={num} value={num}>
+                  {num} séances
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="programDuration">
+              <Clock className="inline-block mr-2" /> Durée (semaines)
+            </label>
+            <input type="number" id="programDuration" value={programDuration} onChange={(e) => setProgramDuration(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </div>
+          <div>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="startDate">
+              <Calendar className="inline-block mr-2" /> Date de début
+            </label>
+            <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+          </div>
         </div>
 
         {/* Niveau d'expérience */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Niveau d'expérience :</label>
-          <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700">
+        <div className="mb-6">
+          <label className="block text-white text-sm font-bold mb-2">
+            <Dumbbell className="inline-block mr-2" /> Niveau d'expérience
+          </label>
+          <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
             <option value="">Sélectionnez votre niveau</option>
             {experienceLevels.map((level) => (
               <option key={level.value} value={level.value}>
@@ -477,116 +502,128 @@ const CreationDeProgramme = () => {
           </select>
         </div>
 
-        {/* Équipement */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Équipement disponible :</label>
-          {availableEquipment.map((equipmentOption) => (
-            <div key={equipmentOption.value}>
-              <input type="checkbox" value={equipmentOption.value} checked={equipment.includes(equipmentOption.value)} onChange={handleEquipmentChange} className="mr-2 leading-tight" />
-              <span className="text-sm">{equipmentOption.label}</span>
+        {/* Équipement et Méthodes */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Dumbbell className="inline-block mr-2" /> Équipement disponible
+            </label>
+            <div className="space-y-2">
+              {availableEquipment.map((equipmentOption) => (
+                <div key={equipmentOption.value} className="flex items-center">
+                  <input type="checkbox" id={`equipment-${equipmentOption.value}`} value={equipmentOption.value} checked={equipment.includes(equipmentOption.value)} onChange={handleEquipmentChange} className="mr-2 form-checkbox h-5 w-5 text-blue-600" />
+                  <label htmlFor={`equipment-${equipmentOption.value}`} className="text-sm text-gray-300">
+                    {equipmentOption.label}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Méthodes d'exercice */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Méthodes d'exercice :</label>
-          {availableMethods.map((method) => (
-            <div key={method.value}>
-              <input type="checkbox" value={method.value} checked={methods.includes(method.value)} onChange={handleMethodsChange} className="mr-2 leading-tight" />
-              <span className="text-sm">{method.label}</span>
+          </div>
+          <div>
+            <label className="block text-white text-sm font-bold mb-2">
+              <Activity className="inline-block mr-2" /> Méthodes d'exercice
+            </label>
+            <div className="space-y-2">
+              {availableMethods.map((method) => (
+                <div key={method.value} className="flex items-center">
+                  <input type="checkbox" id={`method-${method.value}`} value={method.value} checked={methods.includes(method.value)} onChange={handleMethodsChange} className="mr-2 form-checkbox h-5 w-5 text-green-600" />
+                  <label htmlFor={`method-${method.value}`} className="text-sm text-gray-300">
+                    {method.label}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
         {/* Cardio */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Inclure du cardio en fin de séance :</label>
-          <input type="checkbox" checked={includeCardio} onChange={(e) => setIncludeCardio(e.target.checked)} className="mr-2 leading-tight" />
-          <span className="text-sm">Oui</span>
+        <div className="mb-6">
+          <label className="flex items-center text-white text-sm font-bold mb-2">
+            <Heart className="inline-block mr-2" /> Inclure du cardio
+            <input type="checkbox" checked={includeCardio} onChange={(e) => setIncludeCardio(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-pink-600" />
+          </label>
           {includeCardio && (
-            <div className="mt-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cardioDuration">
-                Durée du cardio (minutes) :
+            <motion.div className="mt-2" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="cardioDuration">
+                Durée du cardio (minutes)
               </label>
-              <input type="number" id="cardioDuration" value={cardioDuration} onChange={(e) => setCardioDuration(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" />
-            </div>
+              <input type="number" id="cardioDuration" value={cardioDuration} onChange={(e) => setCardioDuration(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
+            </motion.div>
           )}
         </div>
 
-        {/* Santé */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Avez-vous des problèmes de santé ?</label>
-          <input type="checkbox" checked={hasHealthIssues} onChange={(e) => setHasHealthIssues(e.target.checked)} className="mr-2 leading-tight" />
-          <span className="text-sm">Oui</span>
-          {hasHealthIssues && (
-            <div className="mt-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Spécifiez :</label>
-              <input type="text" id="healthIssueDescription" value={healthIssueDescription} onChange={(e) => setHealthIssueDescription(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" placeholder="Zone texte" />
-            </div>
-          )}
-        </div>
-
-        {/* Blessures */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Avez-vous des blessures ?</label>
-          <input type="checkbox" checked={hasInjury} onChange={(e) => setHasInjury(e.target.checked)} className="mr-2 leading-tight" />
-          <span className="text-sm">Oui</span>
-          {hasInjury && (
-            <div className="mt-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Zones touchées :</label>
-              {injuryZones.map((zone) => (
-                <div key={zone.value}>
-                  <input type="checkbox" value={zone.value} checked={injuryAreas.includes(zone.value)} onChange={handleInjuryChange} className="mr-2 leading-tight" />
-                  <span className="text-sm">{zone.label}</span>
-                </div>
-              ))}
-              {injuryAreas.includes("autre") && (
-                <div className="mt-2">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="otherInjuryDescription">
-                    Autre blessure :
-                  </label>
-                  <input type="text" id="otherInjuryDescription" value={otherInjuryDescription} onChange={(e) => setOtherInjuryDescription(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Enfants */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Avez-vous des enfants ?</label>
-          <input type="checkbox" checked={hasChildren} onChange={(e) => setHasChildren(e.target.checked)} className="mr-2 leading-tight" />
-          <span className="text-sm">Oui</span>
-        </div>
-
-        {/* Réhabilitation */}
-        {hasChildren && ( // Vérifiez si l'utilisateur a des enfants
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">Avez-vous complété la réhabilitation du périnée ?</label>
-            <input type="checkbox" checked={hasCompletedRehabilitation} onChange={(e) => setHasCompletedRehabilitation(e.target.checked)} className="mr-2 leading-tight" />
-            <span className="text-sm">Oui</span>
+        {/* Santé et blessures */}
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
+          <div>
+            <label className="flex items-center text-white text-sm font-bold mb-2">
+              <Heart className="inline-block mr-2" /> Problèmes de santé
+              <input type="checkbox" checked={hasHealthIssues} onChange={(e) => setHasHealthIssues(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-red-600" />
+            </label>
+            {hasHealthIssues && (
+              <motion.div className="mt-2" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                <input type="text" id="healthIssueDescription" value={healthIssueDescription} onChange={(e) => setHealthIssueDescription(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" placeholder="Décrivez vos problèmes de santé" />
+              </motion.div>
+            )}
           </div>
-        )}
+          <div>
+            <label className="flex items-center text-white text-sm font-bold mb-2">
+              <Activity className="inline-block mr-2" /> Blessures
+              <input type="checkbox" checked={hasInjury} onChange={(e) => setHasInjury(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-yellow-600" />
+            </label>
+            {hasInjury && (
+              <motion.div className="mt-2 space-y-2" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+                {injuryZones.map((zone) => (
+                  <div key={zone.value} className="flex items-center">
+                    <input type="checkbox" id={`injury-${zone.value}`} value={zone.value} checked={injuryAreas.includes(zone.value)} onChange={handleInjuryChange} className="mr-2 form-checkbox h-5 w-5 text-yellow-600" />
+                    <label htmlFor={`injury-${zone.value}`} className="text-sm text-gray-300">
+                      {zone.label}
+                    </label>
+                  </div>
+                ))}
+                {injuryAreas.includes("autre") && <input type="text" id="otherInjuryDescription" value={otherInjuryDescription} onChange={(e) => setOtherInjuryDescription(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" placeholder="Décrivez votre blessure" />}
+              </motion.div>
+            )}
+          </div>
+        </div>
+
+        {/* Enfants et réhabilitation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="flex items-center text-white text-sm font-bold mb-2">
+              <Users className="inline-block mr-2" /> Avez-vous des enfants ?
+              <input type="checkbox" checked={hasChildren} onChange={(e) => setHasChildren(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-purple-600" />
+            </label>
+          </div>
+          {hasChildren && (
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+              <label className="flex items-center text-white text-sm font-bold mb-2">
+                <Activity className="inline-block mr-2" /> Réhabilitation du périnée complétée ?
+                <input type="checkbox" checked={hasCompletedRehabilitation} onChange={(e) => setHasCompletedRehabilitation(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-green-600" />
+              </label>
+            </motion.div>
+          )}
+        </div>
 
         {/* Alimentation */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Faites-vous attention à votre alimentation ?</label>
-          <input type="checkbox" checked={paysAttentionAlimentation} onChange={(e) => setPaysAttentionAlimentation(e.target.checked)} className="mr-2 leading-tight" />
-          <span className="text-sm">Oui</span>
+        <div className="mb-6">
+          <label className="flex items-center text-white text-sm font-bold mb-2">
+            <Clipboard className="inline-block mr-2" /> Attention à l'alimentation ?
+            <input type="checkbox" checked={paysAttentionAlimentation} onChange={(e) => setPaysAttentionAlimentation(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-blue-600" />
+          </label>
           {paysAttentionAlimentation && (
-            <div className="mt-2">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Comment ?</label>
-              <input type="text" value={alimentAttentionDescription} onChange={(e) => setAlimentAttentionDescription(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700" />
-            </div>
+            <motion.div className="mt-2" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+              <input type="text" value={alimentAttentionDescription} onChange={(e) => setAlimentAttentionDescription(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" placeholder="Décrivez vos habitudes alimentaires" />
+            </motion.div>
           )}
         </div>
 
         {/* Motivation */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Motivation :</label>
-          <select value={motivation} onChange={(e) => setMotivation(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700">
-            <option value="">Sélectionnez votre motivation</option>
+        <div className="mb-6">
+          <label className="block text-white text-sm font-bold mb-2">
+            <Zap className="inline-block mr-2" /> Niveau de motivation
+          </label>
+          <select value={motivation} onChange={(e) => setMotivation(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
+            <option value="">Sélectionnez votre niveau de motivation</option>
             {motivationOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -595,13 +632,11 @@ const CreationDeProgramme = () => {
           </select>
         </div>
 
-        {/* Soumission du formulaire */}
-        <div className="flex items-center justify-between">
-          <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Soumettre
-          </button>
-        </div>
-      </form>
+        {/* Bouton de soumission */}
+        <motion.button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white font-bold py-3 px-6 rounded-md shadow-lg hover:from-blue-600 hover:to-green-600 transition duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Clipboard className="inline-block mr-2" /> Créer le programme
+        </motion.button>
+      </motion.form>
     </div>
   );
 };
