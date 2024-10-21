@@ -443,13 +443,43 @@ app.post('/api/user-offres', verifyToken, verifyAdmin, async (req, res) => {
 app.get('/api/user-offres/:user_id', verifyToken, verifyAdmin, async (req, res) => {
   const userId = req.params.user_id;
 
+  // Restreindre l'accès : soit l'utilisateur est admin, soit il récupère ses propres infos
+  if (req.user.role !== 1 && req.user.id !== parseInt(userId)) {
+    return res.status(403).json({ message: "Accès refusé." });
+  }
+
   try {
-    // Récupérer toutes les offres de l'utilisateur spécifié
-    const userOffres = await UserOffres.getByUserId(userId);
-    res.status(200).json(userOffres);
+    // Récupérer toutes les offres associées à l'utilisateur spécifié
+    const userOffres = await UserOffres.getByUserId(userId); // Récupérer les relations utilisateur-offres
+
+    // Récupérer les détails des offres et des catégories d'offres
+    const detailedOffres = await Promise.all(userOffres.map(async (userOffre) => {
+      const offre = await Offre.getById(userOffre.offre_id);
+      const categorie = await CategorieOffre.getById(offre.categorie_offre_id);
+
+      return {
+        user_offre_id: userOffre.id,
+        offre_id: offre.id,
+        offre_nom: offre.nom,
+        offre_type: offre.type,
+        duree_contrat: offre.duree_contrat,
+        nb_seances: offre.nb_seances,
+        prix_total: offre.prix_total,
+        prix_mensuel: offre.prix_mensuel,
+        prix_semaine: offre.prix_semaine,
+        prix_seance: offre.prix_seance,
+        categorie_id: categorie.id,
+        categorie_nom: categorie.nom,
+        categorie_description: categorie.description,
+        categorie_type: categorie.type,
+      };
+    }));
+
+    // Retourner les offres détaillées
+    res.status(200).json(detailedOffres);
   } catch (err) {
     console.error("Erreur lors de la récupération des offres de l'utilisateur:", err);
-    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur." });
+    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur" });
   }
 });
 
