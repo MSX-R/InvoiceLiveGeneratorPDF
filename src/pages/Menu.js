@@ -169,6 +169,15 @@ const Menu = () => {
                 <button
                   className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                   onClick={() => {
+                    navigate("/dashboard/creation-programme");
+                    closeSidebar();
+                  }}
+                >
+                  <MdShowChart className="mr-2" /> Creation de programme
+                </button>
+                <button
+                  className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                  onClick={() => {
                     navigate("/dashboard/tableau-berger");
                     closeSidebar();
                   }}
@@ -227,7 +236,6 @@ const Menu = () => {
       <div className="flex-grow  w-screen  overflow-y-scroll">
         {/* {windowWidth > 768 ? <Header className="shadow-lg" /> : null} */}
         {windowWidth > 768 ? <Header /> : null} {/* Utilisez le nouveau composant Header ici */}
-
         <div className="h-fit p-8 md:p-16 bg-gray-100 ">
           {/* PREND LE RESTE DE LA DIV en H-fit*/}
           {/* //! Essaye de creer quelque chose de sympa avec les memes espacements entre tous. */}

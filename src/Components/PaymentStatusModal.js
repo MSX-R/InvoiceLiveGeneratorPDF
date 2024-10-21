@@ -54,9 +54,9 @@ const PaymentStatusModal = ({ isOpen, closeModal, currentStatus, currentAmount, 
                 <div className="mt-4">
                   <div className="mb-4">
                     <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-2 border rounded">
-                      <option value="En attente de paiement">En attente de paiement</option>
+                      <option value="En attente">En attente</option>
                       <option value="Partiel">Partiel</option>
-                      <option value="Réglé intégralement">Réglé intégralement</option>
+                      <option value="Réglé">Réglé</option>
                     </select>
                   </div>
                   {status === "Partiel" && (

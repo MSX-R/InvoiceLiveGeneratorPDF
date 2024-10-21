@@ -82,14 +82,14 @@ const Header = ({ currentSection, menuItems, isAuthenticated, handleLoginClick, 
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 mix-blend-difference">
+    <header className="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-60">
       <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
         <button className="md:hidden text-white" onClick={() => setIsSidebarOpen(true)}>
           <MdMenu size={36} />
         </button>
 
         <motion.h1 className="text-2xl font-bold text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-          <div className="flex items-center justify-end gap-2 md:justify-center " onClick={handleLogoClick}>
+          <div className="flex items-center justify-end gap-2 md:justify-center" onClick={handleLogoClick}>
             <img src={logo} alt="Logo" className="h-12 cursor-pointer" />
           </div>
         </motion.h1>
@@ -201,12 +201,12 @@ const About = React.forwardRef((props, ref) => (
         Bienvenue sur MSXFIT
       </motion.h2>
 
-      <motion.p className="text-xl max-w-3xl mx-auto text-center text-gray-200" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.9 }}>
-        Où la passion, la force, l'endurance et le progrès se rencontrent et sont conçus pour inspirer la grandeur. Entrez dans un monde où la santé et le bien-être sont au premier plan et où chaque entraînement est une étape vers la libération de votre plein potentiel.
+      <motion.p className=" text-base md:text-xl max-w-3xl mx-auto text-center text-gray-200" alt="BREVE PRESENTATION DU SITE" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.9 }}>
+        "Un espace dédié aux coachs pour simplifier la gestion des inscriptions, suivre la consommation des séances et réaliser des bilans personnalisés. Accédez aux références de performances de vos clients et concevez des programmes d’entraînement optimisés et précis pour les aider à atteindre leurs objectifs"{" "}
       </motion.p>
 
       <motion.button className="mt-12 px-8 py-3 bg-white text-blue-600 rounded-full font-semibold text-lg shadow-lg hover:bg-purple-100 transition duration-300 mx-auto block" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1.1 }}>
-        Commencez votre voyage
+        Utilisez le site dès maintenant !
       </motion.button>
     </div>
 
@@ -216,10 +216,10 @@ const About = React.forwardRef((props, ref) => (
 
 const Services = React.forwardRef((props, ref) => {
   const services = [
-    { title: "Coaching Individuel", description: "Atteignez vos objectifs de mise en forme grâce à un entraînement personnalisé de haute qualité", image: require("../assets/indiv.jpeg") },
-    { title: "Coaching Duo", description: "Donnez un coup de pouce à votre entreprise avec une formation d'entreprise spécialement conçue", image: require("../assets/duo.jpeg") },
-    { title: "Coaching SmallGroup", description: "Élevez votre niveau de forme physique avec des entraînements de groupe intenses et motivants", image: require("../assets/small.webp") },
-    { title: "Programme d'entrainement", description: "Atteignez vos objectifs fitness où que vous soyez avec un programme d'entraînement en ligne personnalisé", image: require("../assets/programme.webp") },
+    { title: "Coaching Individuel", description: "Débloquez votre potentiel ! Atteignez vos objectifs de mise en forme avec un entraînement personnalisé de haute qualité, conçu spécialement pour vous. Transformez vos efforts en résultats concrets !", image: require("../assets/indiv.jpeg"), lowTarif: 47.5 },
+    { title: "Coaching Duo", description: "Boostez votre motivation à deux ! Partagez votre parcours de fitness avec un ami et profitez d’une formation sur mesure qui dynamisera votre entreprise. Ensemble, franchissez de nouvelles étapes vers le succès !", image: require("../assets/duo.jpeg"), lowTarif: 33 },
+    { title: "Coaching SmallGroup", description: "Libérez votre énergie en groupe ! Élevez votre niveau de forme physique avec des entraînements de groupe intenses et motivants. Rejoignez une communauté dynamique et poussez vos limites ensemble !", image: require("../assets/small.webp"), lowTarif: 30 },
+    { title: "Programme d'entrainement", description: "Entraînez-vous où que vous soyez ! Atteignez vos objectifs fitness avec un programme d’entraînement en ligne personnalisé. Flexibilité, efficacité et résultats garantis, peu importe votre emploi du temps !", image: require("../assets/programme.webp"), lowTarif: 50 },
   ];
 
   return (
@@ -231,7 +231,14 @@ const Services = React.forwardRef((props, ref) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {services.map((service, index) => (
             <motion.div key={service.title} className="bg-white rounded-lg shadow-lg overflow-hidden" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }}>
-              <img src={service.image} alt={service.title} className="w-full h-48 object-cover" />
+              <div className="relative">
+                {" "}
+                {/* Conteneur pour positionner l'image et le tarif */}
+                <img src={service.image} alt={service.title} className="w-full h-48 object-cover" />
+                {/* Div pour le tarif en position absolue */}
+                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-base rounded px-2 py-1">À partir de {service.lowTarif} €</div>
+                {/* IL FAUDRA INDIQUER LE TARIF LE PLUS BAS DE LA FORMULE */}
+              </div>
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
                 <p>{service.description}</p>
@@ -250,7 +257,7 @@ const Testimonials = React.forwardRef((props, ref) => {
       id: 1,
       name: "Sophie Durand",
       date: "15 mars 2024",
-      message: "Grâce à MSXFIT, j'ai retrouvé la forme et la confiance en moi. Romain est un coach exceptionnel !",
+      message: "Grâce à Romain, j'ai retrouvé la forme et la confiance en moi. Un coaching adapté et exceptionnel!",
       image: require("../assets/coach.jpg"),
     },
     {
@@ -271,14 +278,14 @@ const Testimonials = React.forwardRef((props, ref) => {
       id: 4,
       name: "Lucas Dubois",
       date: "5 mai 2024",
-      message: "MSXFIT a transformé ma vie. Je recommande à 100% !",
+      message: "Romain a transformé ma mon quotidien. Je recommande à 100% !",
       image: require("../assets/coach.jpg"),
     },
     {
       id: 5,
       name: "Chloé Petit",
       date: "18 mai 2024",
-      message: "Les séances de small group sont super motivantes. On se dépasse ensemble !",
+      message: "Les séances de small group sont super motivantes. On se dépasse ensemble dans la joie et la sueur !",
       image: require("../assets/coach.jpg"),
     },
   ];
@@ -331,8 +338,8 @@ const Contact = React.forwardRef((props, ref) => (
       <motion.h2 className="text-4xl font-bold mb-8" initial={{ opacity: 0, y: -50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         Prêt à Commencer Votre Transformation ?
       </motion.h2>
-      <motion.p className="text-xl mb-8" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-        Contactez-moi dès aujourd'hui pour planifier un rendez-vous et commencez votre voyage vers une meilleure santé et forme physique.
+      <motion.p className=" text-base md:text-xl mb-8" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+        Êtes-vous prêt à relever le défi ? Contactez-moi aujourd'hui pour un rendez-vous et faites des changements percutants pour atteindre vos objectifs de santé et de performance !
       </motion.p>
 
       <div className="flex flex-col gap-8 mb-8 md:w-fit md:flex-row md:justify-center md:mx-auto md:mt-16">
@@ -346,7 +353,7 @@ const Contact = React.forwardRef((props, ref) => (
       </div>
 
       <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-lg text-gray-900">
-        <h3 className="text-2xl font-bold mb-6">Ou remplissez le formulaire ci-dessous :</h3>
+        <h3 className="text-2xl font-bold mb-6">Ou contactez moi via formulaire :</h3>
         <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -359,6 +366,12 @@ const Contact = React.forwardRef((props, ref) => (
               Email
             </label>
             <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Votre email" />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telephone">
+              Telephone
+            </label>
+            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="telephone" type="telephone" placeholder="Votre telephone" />
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">

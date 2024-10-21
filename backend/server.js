@@ -443,13 +443,46 @@ app.post('/api/user-offres', verifyToken, verifyAdmin, async (req, res) => {
 app.get('/api/user-offres/:user_id', verifyToken, verifyAdmin, async (req, res) => {
   const userId = req.params.user_id;
 
+  // Restreindre l'accès : soit l'utilisateur est admin, soit il récupère ses propres infos
+  if (req.user.role !== 1 && req.user.id !== parseInt(userId)) {
+    return res.status(403).json({ message: "Accès refusé." });
+  }
+
   try {
-    // Récupérer toutes les offres de l'utilisateur spécifié
-    const userOffres = await UserOffres.getByUserId(userId);
-    res.status(200).json(userOffres);
+    // Récupérer toutes les offres associées à l'utilisateur spécifié
+    const userOffres = await UserOffres.getByUserId(userId); // Récupérer les relations utilisateur-offres
+
+    // Récupérer les détails des offres et des catégories d'offres
+    const detailedOffres = await Promise.all(userOffres.map(async (userOffre) => {
+      const offre = await Offre.getById(userOffre.offre_id);
+      const categorie = await CategorieOffre.getById(offre.categorie_offre_id);
+
+      return {
+        user_offre_id: userOffre.id,
+        date_creation: userOffre.date_creation,
+        statut_paiement: userOffre.statut_paiement,
+        montant_paiement: userOffre.montant_paiement,
+        offre_id: offre.id,
+        offre_nom: offre.nom,
+        offre_type: offre.type,
+        duree_contrat: offre.duree_contrat,
+        nb_seances: offre.nb_seances,
+        prix_total: offre.prix_total,
+        prix_mensuel: offre.prix_mensuel,
+        prix_semaine: offre.prix_semaine,
+        prix_seance: offre.prix_seance,
+        categorie_id: categorie.id,
+        categorie_nom: categorie.nom,
+        categorie_description: categorie.description,
+        categorie_type: categorie.type,
+      };
+    }));
+
+    // Retourner les offres détaillées
+    res.status(200).json(detailedOffres);
   } catch (err) {
     console.error("Erreur lors de la récupération des offres de l'utilisateur:", err);
-    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur." });
+    res.status(500).json({ message: "Erreur lors de la récupération des offres de l'utilisateur" });
   }
 });
 
@@ -467,6 +500,36 @@ app.delete('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) =>
   } catch (err) {
     console.error("Erreur lors de la suppression de la relation utilisateur-offre:", err);
     res.status(500).json({ message: "Erreur lors de la suppression de la relation utilisateur-offre." });
+  }
+});
+
+// Route pour mettre à jour une relation entre un utilisateur et une offre
+app.put('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userOffreId = req.params.id;
+  const { statut_paiement, montant_paiement, offre_id, categorie_offre_id } = req.body;
+
+  // Vérifier si les champs nécessaires sont présents (au moins un champ à mettre à jour)
+  if (!statut_paiement && montant_paiement === undefined && !offre_id && !categorie_offre_id) {
+    return res.status(400).json({ message: "Au moins un champ à mettre à jour doit être fourni." });
+  }
+
+  try {
+    // Mise à jour de la relation utilisateur-offre dans la base de données
+    const updated = await UserOffres.updateById(userOffreId, {
+      statut_paiement,
+      montant_paiement,
+      offre_id,
+      categorie_offre_id,
+    });
+
+    if (updated) {
+      res.status(200).json({ message: "Relation utilisateur-offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Relation utilisateur-offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de la relation utilisateur-offre." });
   }
 });
 
