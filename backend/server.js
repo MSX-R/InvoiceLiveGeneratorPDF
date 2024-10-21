@@ -459,6 +459,9 @@ app.get('/api/user-offres/:user_id', verifyToken, verifyAdmin, async (req, res) 
 
       return {
         user_offre_id: userOffre.id,
+        date_creation: userOffre.date_creation,
+        statut_paiement: userOffre.statut_paiement,
+        montant_paiement: userOffre.montant_paiement,
         offre_id: offre.id,
         offre_nom: offre.nom,
         offre_type: offre.type,
@@ -497,6 +500,36 @@ app.delete('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) =>
   } catch (err) {
     console.error("Erreur lors de la suppression de la relation utilisateur-offre:", err);
     res.status(500).json({ message: "Erreur lors de la suppression de la relation utilisateur-offre." });
+  }
+});
+
+// Route pour mettre à jour une relation entre un utilisateur et une offre
+app.put('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const userOffreId = req.params.id;
+  const { statut_paiement, montant_paiement, offre_id, categorie_offre_id } = req.body;
+
+  // Vérifier si les champs nécessaires sont présents (au moins un champ à mettre à jour)
+  if (!statut_paiement && montant_paiement === undefined && !offre_id && !categorie_offre_id) {
+    return res.status(400).json({ message: "Au moins un champ à mettre à jour doit être fourni." });
+  }
+
+  try {
+    // Mise à jour de la relation utilisateur-offre dans la base de données
+    const updated = await UserOffres.updateById(userOffreId, {
+      statut_paiement,
+      montant_paiement,
+      offre_id,
+      categorie_offre_id,
+    });
+
+    if (updated) {
+      res.status(200).json({ message: "Relation utilisateur-offre mise à jour avec succès." });
+    } else {
+      res.status(404).json({ message: "Relation utilisateur-offre non trouvée." });
+    }
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour de la relation utilisateur-offre:", err);
+    res.status(500).json({ message: "Erreur lors de la mise à jour de la relation utilisateur-offre." });
   }
 });
 

@@ -48,7 +48,6 @@ const FicheClient = () => {
         });
         setClient(response.data);
       } catch (err) {
-        console.error("Erreur lors de la récupération du client :", err);
         setErrorMessage("Erreur lors de la récupération du client.");
       }
     };
@@ -71,7 +70,6 @@ const FicheClient = () => {
           setSelectedOffer(response.data[0]); // Sélectionner par défaut la première offre disponible
         }
       } catch (err) {
-        console.error("Erreur lors de la récupération des offres de l'utilisateur :", err);
         setErrorMessage("Erreur lors de la récupération des offres.");
       }
     };
@@ -98,7 +96,6 @@ const FicheClient = () => {
       setIsModalOpen(false); // Fermer la modal de confirmation
       navigate("/dashboard/liste-clients"); // Rediriger vers la liste des clients après la suppression
     } catch (err) {
-      console.error("Erreur lors de la suppression du client :", err);
       setErrorMessage("Erreur lors de la suppression du client.");
     }
   };
@@ -122,22 +119,64 @@ const FicheClient = () => {
       setSelectedOffer(null);
       setIsDeleteOfferModalOpen(false);
     } catch (err) {
-      console.error("Erreur lors de la suppression de l'offre :", err);
       setErrorMessage("Erreur lors de la suppression de l'offre.");
+    }
+  };
+
+  const updatePaymentStatusAPI = async (offerId, newStatus, amount) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setErrorMessage("Erreur : Aucun token disponible");
+        return;
+      }
+
+      await axios.put(
+        `https://msxghost.boardy.fr/api/user-offres/${offerId}`,
+        {
+          statut_paiement: newStatus,
+          montant_paiement: amount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Mettez à jour l'offre localement après la réussite de la requête
+      setUserOffres((prevOffers) =>
+        prevOffers.map((offer) =>
+          offer.user_offre_id === offerId
+            ? { ...offer, statut_paiement: newStatus, montant_paiement: amount }
+            : offer
+        )
+      );
+    } catch (err) {
+      setErrorMessage("Erreur lors de la mise à jour de l'état de paiement.");
     }
   };
 
   const handleUpdatePaymentStatus = (newStatus, amount) => {
     if (selectedOffer) {
+      let updatedAmount = amount;
+  
+      // Si le statut de paiement est "Réglé", définir le montant payé à la valeur totale
+      if (newStatus === "Réglé") {
+        updatedAmount = selectedOffer.prix_total || 0;
+      }
+  
       const updatedOffer = {
         ...selectedOffer,
-        etatPaiement: newStatus,
-        montantRegle: amount,
+        statut_paiement: newStatus,
+        montant_paiement: updatedAmount,
       };
+      
       setSelectedOffer(updatedOffer);
-      // Ici, vous devriez également envoyer ces informations à votre API pour mettre à jour les données sur le serveur
+      updatePaymentStatusAPI(selectedOffer.user_offre_id, newStatus, updatedAmount);
     }
-  };
+  };  
 
   const handleOfferChange = (event) => {
     const offerId = event.target.value;
@@ -145,6 +184,12 @@ const FicheClient = () => {
     if (newSelectedOffer) {
       setSelectedOffer(newSelectedOffer);
     }
+  };
+
+  const calculateEndDate = (startDate, durationInDays) => {
+    const start = new Date(startDate);
+    start.setDate(start.getDate() + durationInDays);
+    return start;
   };
 
   const formatDate = (date) => {
@@ -232,16 +277,34 @@ const FicheClient = () => {
                   {/* LIGNE 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-4">
                     <div>
+                      <p className="text-sm text-gray-600">Date de début du contrat</p>
+                      <p className="text-xl font-semibold text-gray-800">
+                        {selectedOffer.date_creation ? formatDate(selectedOffer.date_creation) : formatDate(new Date())}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Date de fin estimée du contrat</p>
+                      <p className="text-xl font-semibold text-gray-800">
+                        {selectedOffer.date_creation
+                          ? formatDate(calculateEndDate(selectedOffer.date_creation, selectedOffer.duree_contrat || 0))
+                          : formatDate(calculateEndDate(new Date(), selectedOffer.duree_contrat || 0))}
+                      </p>
+                    </div>
+                    <div>
                       <p className="text-sm text-gray-600">Tarif Total</p>
                       <p className="text-xl font-semibold text-gray-800">{selectedOffer.prix_total || 0} €</p>
                     </div>
+                  </div>
+
+                  {/* LIGNE 3 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-4">
                     <div>
-                      <p className="text-sm text-gray-600">Tarif Mensuel</p>
-                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.prix_mensuel || 0} €</p>
+                      <p className="text-sm text-gray-600">Montant payé</p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.montant_paiement || 0} €</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">État de paiement</p>
-                      <Chip label={selectedOffer.etatPaiement || "Non défini"} status={selectedOffer.etatPaiement || "Non défini"} />
+                      <Chip label={selectedOffer.statut_paiement || "Non défini"} status={selectedOffer.statut_paiement || "Non défini"} />
                     </div>
                   </div>
 
@@ -271,7 +334,7 @@ const FicheClient = () => {
       <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={handleDelete} title="Confirmer la Suppression" message="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible." />
       <CustomModal isOpen={isDeleteOfferModalOpen} onClose={() => setIsDeleteOfferModalOpen(false)} onConfirm={handleDeleteOffer} title="Confirmer la Suppression de l'Offre" message="Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible." />
       <AddOfferModal isOpen={isAddOfferModalOpen} closeModal={() => setIsAddOfferModalOpen(false)} client={client} categories={categories} offres={offres} handleAddOffer={() => {}} />
-      <PaymentStatusModal isOpen={isPaymentModalOpen} closeModal={() => setIsPaymentModalOpen(false)} currentStatus={selectedOffer?.etatPaiement} currentAmount={selectedOffer?.montantRegle} totalAmount={selectedOffer?.prix_total} onUpdatePaymentStatus={handleUpdatePaymentStatus} />
+      <PaymentStatusModal isOpen={isPaymentModalOpen} closeModal={() => setIsPaymentModalOpen(false)} currentStatus={selectedOffer?.statut_paiement} currentAmount={selectedOffer?.montant_paiement} totalAmount={selectedOffer?.prix_total} onUpdatePaymentStatus={handleUpdatePaymentStatus} />
     </div>
   );
 };

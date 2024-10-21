@@ -5,13 +5,13 @@ const Chip = ({ label, status, offer }, xs) => {
 
   // Définir les couleurs en fonction du statut
   switch (status) {
-    case "Réglé intégralement":
+    case "Réglé":
       bgColor = "bg-green-500";
       break;
     case "Partiel":
       bgColor = "bg-orange-500";
       break;
-    case "En attente de paiement":
+    case "En attente":
       bgColor = "bg-red-500";
       break;
     default:
