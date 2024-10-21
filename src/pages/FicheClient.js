@@ -146,13 +146,7 @@ const FicheClient = () => {
       );
 
       // Mettez à jour l'offre localement après la réussite de la requête
-      setUserOffres((prevOffers) =>
-        prevOffers.map((offer) =>
-          offer.user_offre_id === offerId
-            ? { ...offer, statut_paiement: newStatus, montant_paiement: amount }
-            : offer
-        )
-      );
+      setUserOffres((prevOffers) => prevOffers.map((offer) => (offer.user_offre_id === offerId ? { ...offer, statut_paiement: newStatus, montant_paiement: amount } : offer)));
     } catch (err) {
       setErrorMessage("Erreur lors de la mise à jour de l'état de paiement.");
     }
@@ -161,22 +155,22 @@ const FicheClient = () => {
   const handleUpdatePaymentStatus = (newStatus, amount) => {
     if (selectedOffer) {
       let updatedAmount = amount;
-  
+
       // Si le statut de paiement est "Réglé", définir le montant payé à la valeur totale
       if (newStatus === "Réglé") {
         updatedAmount = selectedOffer.prix_total || 0;
       }
-  
+
       const updatedOffer = {
         ...selectedOffer,
         statut_paiement: newStatus,
         montant_paiement: updatedAmount,
       };
-      
+
       setSelectedOffer(updatedOffer);
       updatePaymentStatusAPI(selectedOffer.user_offre_id, newStatus, updatedAmount);
     }
-  };  
+  };
 
   const handleOfferChange = (event) => {
     const offerId = event.target.value;
@@ -225,7 +219,7 @@ const FicheClient = () => {
                   <h1 className="text-2xl font-bold text-gray-800">
                     {client.prenom} {client.nom}
                   </h1>
-                  <p className="text-gray-600">{client.role || "coach sportif" || "Rôle non défini"}</p>
+                  <p className="text-gray-600">{client.role || "Rôle non défini"}</p>
                 </div>
               </div>
               <div className="text-xs font-normal hidden md:block">
@@ -240,12 +234,7 @@ const FicheClient = () => {
                 <label htmlFor="select-offer" className="block text-sm font-medium text-gray-700 mb-1">
                   Choisissez une offre souscrite :
                 </label>
-                <select
-                  id="select-offer"
-                  value={selectedOffer ? selectedOffer.user_offre_id : ""}
-                  onChange={handleOfferChange}
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
+                <select id="select-offer" value={selectedOffer ? selectedOffer.user_offre_id : ""} onChange={handleOfferChange} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   {userOffres.map((offer) => (
                     <option key={offer.user_offre_id} value={offer.user_offre_id}>
                       {offer.offre_nom} - {offer.categorie_nom}
@@ -269,42 +258,45 @@ const FicheClient = () => {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Nb. Séances de l'offre</p>
-                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.nb_seances || 0}</p>
+                      <p className="text-sm text-gray-600">Tarif Total</p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.prix_total || 0} €</p>
                     </div>
                   </div>
 
                   {/* LIGNE 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-4">
                     <div>
+                      <p className="text-sm text-gray-600">Nb. séances de l'offre</p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.nb_seances || 0}</p>
+                    </div>
+                    <div>
                       <p className="text-sm text-gray-600">Date de début du contrat</p>
-                      <p className="text-xl font-semibold text-gray-800">
-                        {selectedOffer.date_creation ? formatDate(selectedOffer.date_creation) : formatDate(new Date())}
-                      </p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.date_creation ? formatDate(selectedOffer.date_creation) : formatDate(new Date())}</p>
                     </div>
+
                     <div>
-                      <p className="text-sm text-gray-600">Date de fin estimée du contrat</p>
-                      <p className="text-xl font-semibold text-gray-800">
-                        {selectedOffer.date_creation
-                          ? formatDate(calculateEndDate(selectedOffer.date_creation, selectedOffer.duree_contrat || 0))
-                          : formatDate(calculateEndDate(new Date(), selectedOffer.duree_contrat || 0))}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Tarif Total</p>
-                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.prix_total || 0} €</p>
+                      <p className="text-sm text-gray-600">État de paiement</p>
+                      <Chip label={selectedOffer.statut_paiement || "Non défini"} status={selectedOffer.statut_paiement || "Non défini"} />
                     </div>
                   </div>
 
                   {/* LIGNE 3 */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-4">
                     <div>
-                      <p className="text-sm text-gray-600">Montant payé</p>
-                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.montant_paiement || 0} €</p>
+                      <p className="text-sm text-gray-600">Nb. séances effectuées</p>
+                      <p className="text-xl font-semibold text-gray-800">
+                        {0} {/* //! 1er zero a remplacer par nombre de seance dynamique */}
+                         / {selectedOffer.nb_seances || 0}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">État de paiement</p>
-                      <Chip label={selectedOffer.statut_paiement || "Non défini"} status={selectedOffer.statut_paiement || "Non défini"} />
+                      <p className="text-sm text-gray-600">Date de fin estimée du contrat</p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.date_creation ? formatDate(calculateEndDate(selectedOffer.date_creation, selectedOffer.duree_contrat || 0)) : formatDate(calculateEndDate(new Date(), selectedOffer.duree_contrat || 0))}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-gray-600">Montant payé</p>
+                      <p className="text-xl font-semibold text-gray-800">{selectedOffer.montant_paiement || 0} €</p>
                     </div>
                   </div>
 
