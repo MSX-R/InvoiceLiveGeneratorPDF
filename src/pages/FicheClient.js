@@ -395,7 +395,7 @@ const FicheClient = () => {
                   <h1 className="text-2xl font-bold text-gray-800">
                     {client.prenom} {client.nom}
                   </h1>
-                  <p className="text-gray-600">{client.role || "Rôle non défini"}</p>
+                  <p className="text-gray-600">{client.role_nom || "Rôle non défini"}</p>
                 </div>
               </div>
               <div className="text-xs font-normal mt-8 hidden md:block">

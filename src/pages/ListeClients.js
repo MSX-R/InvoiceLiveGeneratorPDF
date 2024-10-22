@@ -233,7 +233,7 @@ const ListeClients = () => {
         {isMobile ? (
           <ClientCards clients={filteredClients} offers={offers} navigate={navigate} openModal={openModal} FakePicture={FakePicture} />
         ) : (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-md overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>

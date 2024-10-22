@@ -8,6 +8,7 @@ const Offre = require('./models/Offre');
 const CategorieOffre = require('./models/Categorie_Offre');
 const UserOffres = require('./models/User_Offre');
 const Seance = require('./models/Seance');
+const Role = require('./models/Role');
 
 const fs = require('fs');
 const logStream = fs.createWriteStream('msxghostlogs.txt', { flags: 'a' });
@@ -174,6 +175,17 @@ app.post('/api/login', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
+  }
+});
+
+// Route pour récupérer tous les rôles disponibles
+app.get('/api/roles', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const roles = await Role.getAll();
+    res.status(200).json(roles);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des rôles :", err);
+    res.status(500).json({ message: "Erreur lors de la récupération des rôles." });
   }
 });
 

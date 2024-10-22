@@ -39,7 +39,7 @@ const Chip = ({ label, status, offer }, xs) => {
       break; // Conserver la couleur par défaut selon le statut
   }
 
-  return <span className={`inline-flex items-center px-3 py-1 rounded-full ${xs ? "text-xs " : "text-sm"} font-medium ${bgColor} text-white`}>{label}</span>;
+  return <span className={`inline-flex items-center w-20 px-3 py-1 rounded-full ${xs ? "text-xs " : "text-sm"} font-medium ${bgColor} text-white`}>{label}</span>;
 };
 
 export default Chip;
