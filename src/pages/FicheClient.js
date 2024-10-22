@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import fr from "date-fns/locale/fr"; // Import de la locale française
 import axios from "axios";
-import { FaEdit, FaTrash, FaArrowLeft, FaPlus, FaMoneyBillAlt, FaListUl } from "react-icons/fa";
+import { FaEdit, FaTrash, FaEllipsisH, FaArrowLeft, FaPlusCircle, FaMoneyBillAlt, FaCheckCircle, FaListUl } from "react-icons/fa";
 import CustomModal from "../Components/CustomModal";
 import Chip from "../Components/Chip";
 import { useOffresCoaching } from "../contexts/OffresCoachingContext";
@@ -38,6 +38,7 @@ const FicheClient = () => {
   const [refreshUserOffres, setRefreshUserOffres] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("En attente");
   const [partialAmount, setPartialAmount] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const formatDate3 = (dateString) => {
     const date = new Date(dateString);
@@ -294,7 +295,7 @@ const FicheClient = () => {
         },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -334,23 +335,59 @@ const FicheClient = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gray-100 ">
+      <div className=" mx-auto bg-white rounded-none shadow-xl overflow-hidden">
         <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600">
           {/* Boutons de navigation en haut du profil client */}
           <button onClick={() => navigate("/dashboard/liste-clients")} className="absolute top-4 left-4 text-white hover:text-gray-200">
             <FaArrowLeft size={24} />
           </button>
-          <button onClick={() => navigate(`/dashboard/modifier-profil-client/${id}`)} className="absolute top-4 right-16 text-white hover:text-gray-200">
+          {/* <button onClick={() => navigate(`/dashboard/modifier-profil-client/${id}`)} className="absolute top-4 right-16 text-white hover:text-gray-200">
             <FaEdit size={24} />
           </button>
           <button onClick={() => setIsModalOpen(true)} className="absolute top-4 right-4 text-white hover:text-gray-200">
             <FaTrash size={24} />
-          </button>
+          </button> */}
         </div>
 
         <div className="relative px-6 -mt-24 mb-6">
+          {/* PLACER LES 3 points ici pour acceder a modifier ou supprimer */}
           <div className="bg-white p-6 rounded-lg shadow-lg">
+            {/* Menu à 3 points */}
+            <div className="absolute top-4 right-12">
+              <div className="relative">
+                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-500 hover:text-gray-700">
+                  <FaEllipsisH size={20} />
+                </button>
+
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="py-1" role="menu">
+                      <button
+                        onClick={() => {
+                          navigate(`/dashboard/modifier-profil-client/${id}`);
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        role="menuitem"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setIsMenuOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        role="menuitem"
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="flex justify-center md:justify-between">
               <div className="flex flex-col items-center sm:flex-row sm:items-start">
                 <img className="h-24 w-24 rounded-full border-4 object-cover border-gray-300 mb-4 sm:mb-0 sm:mr-4" src={client.profilePicture || require("../assets/coach.jpg")} alt={`${client.prenom} ${client.nom}'s profile`} />
@@ -361,7 +398,7 @@ const FicheClient = () => {
                   <p className="text-gray-600">{client.role || "Rôle non défini"}</p>
                 </div>
               </div>
-              <div className="text-xs font-normal hidden md:block">
+              <div className="text-xs font-normal mt-8 hidden md:block">
                 <i>Profil créé le {formatDate3(client.date_creation)}</i>
               </div>
             </div>
@@ -436,9 +473,9 @@ const FicheClient = () => {
                   <button onClick={() => setIsSeanceModalOpen(true)} className="bg-teal-500 text-white py-2 px-4 rounded-md hover:bg-teal-600 transition duration-300 mt-4">
                     <FaListUl className="inline-block mr-2" /> Voir les séances réalisées
                   </button>
-                  {/* Bouton pour ajouter une séance */}
+                  {/* Bouton pour valider une séance */}
                   <button onClick={() => setIsAddSeanceModalOpen(true)} className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition duration-300 mt-1">
-                    <FaPlus className="inline-block mr-2" /> Ajouter une séance
+                    <FaCheckCircle className="inline-block mr-2" /> Valider une séance
                   </button>
                   {/* Bouton pour modifier l'état de paiement */}
                   <button onClick={() => setIsPaymentModalOpen(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mt-1">
@@ -448,7 +485,7 @@ const FicheClient = () => {
               )}
 
               <button onClick={() => setIsAddOfferModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 mt-1">
-                <FaPlus className="inline-block mr-2" /> Ajouter une offre
+                <FaPlusCircle className="inline-block mr-2" /> Ajouter une offre
               </button>
 
               {selectedOffer && (
@@ -471,45 +508,16 @@ const FicheClient = () => {
       {/* Modal pour la suppression d'une offre */}
       <CustomModal isOpen={isDeleteOfferModalOpen} onClose={() => setIsDeleteOfferModalOpen(false)} onConfirm={handleDeleteOffer} title="Confirmer la Suppression de l'Offre" message="Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est irréversible." confirmButtonColor="red" confirmButtonText="Supprimer" />
       {/* Modal pour l'ajout d'une offre */}
-      <CustomModal
-        isOpen={isAddOfferModalOpen}
-        onClose={() => setIsAddOfferModalOpen(false)}
-        onConfirm={handleAddOffer}
-        title="Ajouter une Offre"
-        message="Veuillez sélectionner une catégorie et une offre pour l'ajouter au client."
-        confirmButtonColor="blue"
-        confirmButtonText="Ajouter"
-      >
+      <CustomModal isOpen={isAddOfferModalOpen} onClose={() => setIsAddOfferModalOpen(false)} onConfirm={handleAddOffer} title="Ajouter une Offre" message="Veuillez sélectionner une catégorie et une offre pour l'ajouter au client." confirmButtonColor="blue" confirmButtonText="Ajouter">
         <div className="mb-4">
-          <Select
-            options={categoryOptions}
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            placeholder="Sélectionner une catégorie"
-            className="w-full"
-          />
+          <Select options={categoryOptions} value={selectedCategory} onChange={handleCategoryChange} placeholder="Sélectionner une catégorie" className="w-full" />
         </div>
         <div className="mb-4">
-          <Select
-            options={getOffreOptions()}
-            value={selectedOffre}
-            onChange={(option) => setSelectedOffre(option)}
-            placeholder="Sélectionner une offre"
-            className="w-full"
-            isDisabled={!selectedCategory}
-          />
+          <Select options={getOffreOptions()} value={selectedOffre} onChange={(option) => setSelectedOffre(option)} placeholder="Sélectionner une offre" className="w-full" isDisabled={!selectedCategory} />
         </div>
       </CustomModal>
       {/* Modal pour modifier l'état de paiement */}
-      <CustomModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        onConfirm={handleUpdatePaymentStatus}
-        title="Modifier l'état de paiement"
-        message="Veuillez modifier l'état de paiement et le montant partiel si nécessaire."
-        confirmButtonColor="blue"
-        confirmButtonText="Modifier"
-      >
+      <CustomModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onConfirm={handleUpdatePaymentStatus} title="Modifier l'état de paiement" message="Veuillez modifier l'état de paiement et le montant partiel si nécessaire." confirmButtonColor="blue" confirmButtonText="Modifier">
         <div className="mb-4">
           <select value={paymentStatus} onChange={(e) => setPaymentStatus(e.target.value)} className="w-full p-2 border rounded">
             <option value="En attente">En attente</option>
@@ -519,70 +527,29 @@ const FicheClient = () => {
         </div>
         {paymentStatus === "Partiel" && (
           <div className="mb-4">
-            <input
-              type="number"
-              value={partialAmount}
-              onChange={(e) => setPartialAmount(Number(e.target.value))}
-              placeholder="Montant réglé"
-              className="w-full p-2 border rounded"
-              min={0.01}
-              max={selectedOffer?.prix_total || 0}
-              step="0.01"
-            />
+            <input type="number" value={partialAmount} onChange={(e) => setPartialAmount(Number(e.target.value))} placeholder="Montant réglé" className="w-full p-2 border rounded" min={0.01} max={selectedOffer?.prix_total || 0} step="0.01" />
             {partialAmount <= 0 && <p className="text-red-500 text-sm mt-1">Le montant partiel doit être supérieur à 0</p>}
           </div>
         )}
       </CustomModal>
       {/* Modal pour l'ajout d'une séance */}
-      <CustomModal
-        isOpen={isAddSeanceModalOpen}
-        onClose={() => setIsAddSeanceModalOpen(false)}
-        onConfirm={handleAddSeance}
-        title="Ajouter une séance"
-        message="Veuillez remplir les informations suivantes pour ajouter une séance."
-        confirmButtonColor="blue"
-        confirmButtonText="Ajouter"
-      >
+      <CustomModal isOpen={isAddSeanceModalOpen} onClose={() => setIsAddSeanceModalOpen(false)} onConfirm={handleAddSeance} title="Valider une séance" message="Veuillez remplir les informations suivantes pour valider une séance." confirmButtonColor="blue" confirmButtonText="Ajouter">
         <div className="mb-4">
           <label htmlFor="seance-description" className="block text-sm font-medium text-gray-700 mb-1">
             Description de la séance
           </label>
-          <textarea
-            id="seance-description"
-            value={newSeanceDescription}
-            onChange={(e) => setNewSeanceDescription(e.target.value)}
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            rows="3"
-          />
+          <textarea id="seance-description" value={newSeanceDescription} onChange={(e) => setNewSeanceDescription(e.target.value)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" />
         </div>
 
         <div className="mb-4">
           <label htmlFor="seance-date" className="block text-sm font-medium text-gray-700 mb-1">
             Date et heure de la séance
           </label>
-          <DatePicker
-            id="seance-date"
-            selected={newSeanceDate ? new Date(newSeanceDate) : null}
-            onChange={(date) => setNewSeanceDate(date)}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholderText="Sélectionnez la date et l'heure"
-            locale="fr"
-            wrapperClassName="w-full"
-          />
+          <DatePicker id="seance-date" selected={newSeanceDate ? new Date(newSeanceDate) : null} onChange={(date) => setNewSeanceDate(date)} showTimeSelect timeFormat="HH:mm" timeIntervals={15} dateFormat="dd/MM/yyyy HH:mm" className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholderText="Sélectionnez la date et l'heure" locale="fr" wrapperClassName="w-full" />
         </div>
       </CustomModal>
       {/* Modal pour afficher les séances */}
-      <CustomModal
-        isOpen={isSeanceModalOpen}
-        onClose={() => setIsSeanceModalOpen(false)}
-        title="Liste des séances réalisées"
-        message="Voici la liste des séances réalisées pour cette offre."
-        hideConfirmButton={true}
-      >
+      <CustomModal isOpen={isSeanceModalOpen} onClose={() => setIsSeanceModalOpen(false)} title="Liste des séances réalisées" message="Voici la liste des séances réalisées pour cette offre." hideConfirmButton={true}>
         <div className="overflow-y-auto max-h-60">
           {seances.length > 0 ? (
             seances.map((seance, index) => (
