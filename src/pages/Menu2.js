@@ -8,7 +8,6 @@ const Menu2 = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   useEffect(() => {
-    console.log("Contenu de loggedUser :", loggedUser.nom);
   }, [loggedUser]);
 
   // Utilisez useEffect pour mettre à jour l'état local 'role' quand 'userRole' change

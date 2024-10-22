@@ -7,6 +7,7 @@ const User = require('./models/User');
 const Offre = require('./models/Offre');
 const CategorieOffre = require('./models/Categorie_Offre');
 const UserOffres = require('./models/User_Offre');
+const Seance = require('./models/Seance');
 
 const fs = require('fs');
 const logStream = fs.createWriteStream('msxghostlogs.txt', { flags: 'a' });
@@ -530,6 +531,80 @@ app.put('/api/user-offres/:id', verifyToken, verifyAdmin, async (req, res) => {
   } catch (err) {
     console.error("Erreur lors de la mise à jour de la relation utilisateur-offre:", err);
     res.status(500).json({ message: "Erreur lors de la mise à jour de la relation utilisateur-offre." });
+  }
+});
+
+// Route pour obtenir toutes les séances
+app.get('/api/seances', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const seances = await Seance.getAll();
+    res.status(200).json(seances);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Route pour obtenir une séance par ID
+app.get('/api/seances/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const seance = await Seance.getById(id);
+    res.status(200).json(seance);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+});
+
+// Route pour obtenir les séances par user_offre_id
+app.get('/api/seances/user-offre/:userOffreId', verifyToken, verifyAdmin, async (req, res) => {
+  const { userOffreId } = req.params;
+  try {
+    const seances = await Seance.getByUserOffreId(userOffreId);
+    res.status(200).json(seances);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Route pour créer une nouvelle séance
+app.post('/api/seances', verifyToken, verifyAdmin, async (req, res) => {
+  const { userOffreId, description } = req.body;
+  try {
+    const seanceId = await Seance.create(userOffreId, description);
+    res.status(201).json({ message: 'Séance ajoutée avec succès.', seanceId });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Route pour mettre à jour une séance
+app.put('/api/seances/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { description } = req.body;
+  try {
+    const updated = await Seance.updateById(id, description);
+    if (updated) {
+      res.status(200).json({ message: 'Séance mise à jour avec succès.' });
+    } else {
+      res.status(404).json({ message: 'Séance non trouvée.' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Route pour supprimer une séance
+app.delete('/api/seances/:id', verifyToken, verifyAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleted = await Seance.deleteById(id);
+    if (deleted) {
+      res.status(200).json({ message: 'Séance supprimée avec succès.' });
+    } else {
+      res.status(404).json({ message: 'Séance non trouvée.' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

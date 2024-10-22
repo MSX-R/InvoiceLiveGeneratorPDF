@@ -21,7 +21,6 @@ const OffreCoaching = () => {
   }, []);
 
   const addToCart = (item) => {
-    console.log("Ajouté au panier:", item);
     setNotification(`${item.nom} ajouté au panier`);
     setTimeout(() => setNotification(null), 3000);
   };
