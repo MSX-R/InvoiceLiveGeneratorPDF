@@ -215,7 +215,7 @@ app.get('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   // Requête SQL pour récupérer l'utilisateur avec le nom du rôle via une jointure
   const sql = `
     SELECT u.id, u.nom, u.prenom, u.email, u.telephone, u.adresse1, u.adresse2, 
-           u.cp, u.ville, u.pays, u.naissance, u.contact_urgence, u.sexe, 
+           u.cp, u.ville, u.pays, DATE_FORMAT(u.naissance, '%Y-%m-%d') AS naissance, u.contact_urgence, u.sexe, 
            u.nb_enfant, u.role_id, r.nom AS role_nom, u.date_creation
     FROM User u
     JOIN Role r ON u.role_id = r.id
@@ -259,7 +259,7 @@ app.delete('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
 // Route pour mettre à jour un utilisateur spécifique
 app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
   const userId = req.params.id;
-  const { nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant } = req.body;
+  const { nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id } = req.body;
 
   // Construire la requête SQL pour mettre à jour l'utilisateur
   const sql = `
@@ -277,13 +277,14 @@ app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
       naissance = ?, 
       contact_urgence = ?, 
       sexe = ?, 
-      nb_enfant = ?
+      nb_enfant = ?,
+      role_id = ?
     WHERE id = ?
   `;
 
   try {
     const [results] = await pool.query(sql, [
-      nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contactUrgence, sexe, nbEnfant, userId
+      nom, prenom, email, telephone, adresse1, adresse2, cp, ville, pays, naissance, contact_urgence, sexe, nb_enfant, role_id, userId
     ]);
 
     if (results.affectedRows === 0) {
@@ -294,7 +295,7 @@ app.put('/api/users/:id', verifyToken, verifyAdmin, async (req, res) => {
     res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'utilisateur:", err);
-    res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur." });
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur : "+err });
   }
 });
 
