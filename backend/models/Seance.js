@@ -49,10 +49,10 @@ class Seance {
   }
 
   // Mettre à jour une séance par son ID
-  static async updateById(id, description) {
+  static async updateById(id, date, description) {
     try {
-      const sql = `UPDATE Seance SET description = ? WHERE id = ?`;
-      const [result] = await pool.query(sql, [description, id]);
+      const sql = `UPDATE Seance SET description = ?, date_seance = ? WHERE id = ?`;
+      const [result] = await pool.query(sql, [description, date, id]);
       return result.affectedRows > 0;
     } catch (err) {
       throw new Error('Erreur lors de la mise à jour de la séance: ' + err.message);

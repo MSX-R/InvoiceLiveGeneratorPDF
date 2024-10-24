@@ -593,9 +593,9 @@ app.post('/api/seances', verifyToken, verifyAdmin, async (req, res) => {
 // Route pour mettre à jour une séance
 app.put('/api/seances/:id', verifyToken, verifyAdmin, async (req, res) => {
   const { id } = req.params;
-  const { description } = req.body;
+  const { date, description } = req.body;
   try {
-    const updated = await Seance.updateById(id, description);
+    const updated = await Seance.updateById(id, date, description);
     if (updated) {
       res.status(200).json({ message: 'Séance mise à jour avec succès.' });
     } else {

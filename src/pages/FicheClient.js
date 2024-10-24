@@ -6,13 +6,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import fr from "date-fns/locale/fr"; // Import de la locale française
 import axios from "axios";
-import { FaEdit, FaTrash, FaEllipsisH, FaArrowLeft, FaPlusCircle, FaMoneyBillAlt, FaCheckCircle, FaListUl } from "react-icons/fa";
+import { FaTrash, FaEllipsisH, FaArrowLeft, FaPlusCircle, FaMoneyBillAlt, FaCheckCircle, FaListUl } from "react-icons/fa";
 import CustomModal from "../Components/CustomModal";
 import Chip from "../Components/Chip";
 import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 import ClientDetails from "../Components/ClientDetails";
-import AddOfferModal from "../Components/AddOfferModal";
-import PaymentStatusModal from "../Components/PaymentStatusModal";
+import moment from 'moment';
 
 registerLocale("fr", fr);
 
@@ -31,10 +30,13 @@ const FicheClient = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isAddSeanceModalOpen, setIsAddSeanceModalOpen] = useState(false);
   const [isSeanceModalOpen, setIsSeanceModalOpen] = useState(false);
+  const [isDeleteSeanceModalOpen, setIsDeleteSeanceModalOpen] = useState(false);
+  const [seanceToDelete, setSeanceToDelete] = useState(null);
   const [newSeanceDescription, setNewSeanceDescription] = useState("");
   const [newSeanceDate, setNewSeanceDate] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedOffre, setSelectedOffre] = useState(null);
+  const [selectedSeanceToEdit, setSelectedSeanceToEdit] = useState(null);
   const [refreshUserOffres, setRefreshUserOffres] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("En attente");
   const [partialAmount, setPartialAmount] = useState(0);
@@ -146,6 +148,42 @@ const FicheClient = () => {
     }
   };
 
+  // Fonction pour supprimer une séance
+  const handleDeleteSeance = async (seanceId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setErrorMessage("Erreur : Aucun token disponible");
+        return;
+      }
+      await axios.delete(`https://msxghost.boardy.fr/api/seances/${seanceId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      fetchSeances(selectedOffer.user_offre_id);
+      setIsDeleteSeanceModalOpen(false);
+    } catch (err) {
+      setErrorMessage("Erreur lors de la suppression de la séance.");
+    }
+  };
+
+  const handleDeleteSeanceClick = (seanceId) => {
+    setSeanceToDelete(seanceId);
+    setIsDeleteSeanceModalOpen(true);
+  };   
+
+  // Fonction pour éditer une séance
+  const handleEditSeance = (seance) => {
+    setIsSeanceModalOpen(false);
+    setNewSeanceDescription(seance.description);
+    setNewSeanceDate(new Date(seance.date_seance));
+    setSelectedSeanceToEdit(seance);
+    setIsAddSeanceModalOpen(true);
+  };  
+
+  // Mise à jour de la fonction handleAddSeance pour gérer les modifications
   const handleAddSeance = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -153,28 +191,51 @@ const FicheClient = () => {
         setErrorMessage("Erreur : Aucun token disponible");
         return;
       }
-      await axios.post(
-        `https://msxghost.boardy.fr/api/seances`,
-        {
-          userOffreId: selectedOffer.user_offre_id,
-          description: newSeanceDescription,
-          date: newSeanceDate,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+
+      const formattedDate = moment(newSeanceDate).format('YYYY-MM-DD HH:mm');
+  
+      // Vérifier si une séance est en cours d'édition
+      if (selectedSeanceToEdit) {
+        // Modifier la séance existante
+        await axios.put(
+          `https://msxghost.boardy.fr/api/seances/${selectedSeanceToEdit.id}`,
+          {
+            description: newSeanceDescription,
+            date: formattedDate,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setSelectedSeanceToEdit(null);
+      } else {
+        await axios.post(
+          `https://msxghost.boardy.fr/api/seances`,
+          {
+            userOffreId: selectedOffer.user_offre_id,
+            description: newSeanceDescription,
+            date: formattedDate,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+  
       fetchSeances(selectedOffer.user_offre_id);
       setNewSeanceDescription("");
       setNewSeanceDate("");
       setIsAddSeanceModalOpen(false);
     } catch (err) {
-      setErrorMessage("Erreur lors de l'ajout de la séance.");
+      setErrorMessage("Erreur lors de l'ajout ou de la modification de la séance.");
     }
-  };
+  };  
 
   const handleDelete = async () => {
     try {
@@ -196,6 +257,13 @@ const FicheClient = () => {
     } catch (err) {
       setErrorMessage("Erreur lors de la suppression du client.");
     }
+  };
+
+  // Fonction pour gérer l'ajout d'une séance avec une description par défaut)
+  const handleAddSeanceModalOpen = () => {
+    setNewSeanceDescription(`Séance #${seances.length + 1}`);
+    setNewSeanceDate("");
+    setIsAddSeanceModalOpen(true);
   };
 
   const handleDeleteOffer = async () => {
@@ -474,7 +542,7 @@ const FicheClient = () => {
                     <FaListUl className="inline-block mr-2" /> Voir les séances réalisées
                   </button>
                   {/* Bouton pour valider une séance */}
-                  <button onClick={() => setIsAddSeanceModalOpen(true)} className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition duration-300 mt-1">
+                  <button onClick={ handleAddSeanceModalOpen } className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition duration-300 mt-1">
                     <FaCheckCircle className="inline-block mr-2" /> Valider une séance
                   </button>
                   {/* Bouton pour modifier l'état de paiement */}
@@ -532,20 +600,49 @@ const FicheClient = () => {
           </div>
         )}
       </CustomModal>
-      {/* Modal pour l'ajout d'une séance */}
-      <CustomModal isOpen={isAddSeanceModalOpen} onClose={() => setIsAddSeanceModalOpen(false)} onConfirm={handleAddSeance} title="Valider une séance" message="Veuillez remplir les informations suivantes pour valider une séance." confirmButtonColor="blue" confirmButtonText="Ajouter">
+      {/* Modal pour l'ajout/modification d'une séance */}
+      <CustomModal
+        isOpen={isAddSeanceModalOpen}
+        onClose={() => {
+          setIsAddSeanceModalOpen(false);
+          setSelectedSeanceToEdit(null); // Réinitialiser en cas de fermeture
+        }}
+        onConfirm={handleAddSeance}
+        title={selectedSeanceToEdit ? "Modifier une Séance" : "Valider une Séance"}
+        message={selectedSeanceToEdit ? "Veuillez modifier les informations suivantes pour mettre à jour la séance." : "Veuillez remplir les informations suivantes pour valider une séance."}
+        confirmButtonColor="blue"
+        confirmButtonText={selectedSeanceToEdit ? "Modifier" : "Ajouter"}
+      >
         <div className="mb-4">
           <label htmlFor="seance-description" className="block text-sm font-medium text-gray-700 mb-1">
             Description de la séance
           </label>
-          <textarea id="seance-description" value={newSeanceDescription} onChange={(e) => setNewSeanceDescription(e.target.value)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" />
+          <textarea
+            id="seance-description"
+            value={newSeanceDescription}
+            onChange={(e) => setNewSeanceDescription(e.target.value)}
+            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            rows="3"
+          />
         </div>
 
         <div className="mb-4">
           <label htmlFor="seance-date" className="block text-sm font-medium text-gray-700 mb-1">
             Date et heure de la séance
           </label>
-          <DatePicker id="seance-date" selected={newSeanceDate ? new Date(newSeanceDate) : null} onChange={(date) => setNewSeanceDate(date)} showTimeSelect timeFormat="HH:mm" timeIntervals={15} dateFormat="dd/MM/yyyy HH:mm" className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholderText="Sélectionnez la date et l'heure" locale="fr" wrapperClassName="w-full" />
+          <DatePicker
+            id="seance-date"
+            selected={newSeanceDate ? new Date(newSeanceDate) : null}
+            onChange={(date) => setNewSeanceDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="dd/MM/yyyy HH:mm"
+            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholderText="Sélectionnez la date et l'heure"
+            locale="fr"
+            wrapperClassName="w-full"
+          />
         </div>
       </CustomModal>
       {/* Modal pour afficher les séances */}
@@ -553,9 +650,25 @@ const FicheClient = () => {
         <div className="overflow-y-auto max-h-60">
           {seances.length > 0 ? (
             seances.map((seance, index) => (
-              <div key={index} className="p-4 border-b border-gray-200">
-                <p className="font-semibold">{seance.description}</p>
-                <p className="text-sm text-gray-600">Date: {formatDate3(seance.date_seance)}</p>
+              <div key={index} className="p-4 border-b border-gray-200 flex justify-between items-center">
+                <div>
+                  <p className="font-semibold">{seance.description}</p>
+                  <p className="text-sm text-gray-600">Date: {formatDate3(seance.date_seance)}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditSeance(seance)}
+                    className="text-blue-500 hover:text-blue-700 transition"
+                  >
+                    Modifier
+                  </button>
+                  <button
+                    onClick={() => handleDeleteSeanceClick(seance.id)}
+                    className="text-red-500 hover:text-red-700 transition"
+                  >
+                    Supprimer
+                  </button>
+                </div>
               </div>
             ))
           ) : (
@@ -563,6 +676,16 @@ const FicheClient = () => {
           )}
         </div>
       </CustomModal>
+      {/* Modal de confirmation de suppression d'une séance */}
+      <CustomModal
+        isOpen={isDeleteSeanceModalOpen}
+        onClose={() => setIsDeleteSeanceModalOpen(false)}
+        onConfirm={() => handleDeleteSeance(seanceToDelete)}
+        title="Confirmer la Suppression de la Séance"
+        message="Êtes-vous sûr de vouloir supprimer cette séance ? Cette action est irréversible."
+        confirmButtonColor="red"
+        confirmButtonText="Supprimer"
+      />
     </div>
   );
 };
