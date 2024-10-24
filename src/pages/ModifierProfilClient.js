@@ -20,12 +20,15 @@ const ModifierProfilClient = () => {
     contactUrgence: "",
     sexe: "",
     nbEnfant: 0,
+    role_id: "",
   });
+  const [roles, setRoles] = useState([]);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchClientData(id);
+    fetchRoles();
   }, [id]);
 
   const fetchClientData = async (clientId) => {
@@ -40,14 +43,37 @@ const ModifierProfilClient = () => {
       if (response.status === 200) {
         const clientData = response.data;
 
-        // Exclure le mot de passe, le rôle et la date de création
-        const { password, role_id, date_creation, ...dataToUpdate } = clientData;
+        // Exclure le mot de passe et autres champs inutiles
+        const { password, date_creation, role_nom, ...dataToUpdate } = clientData;
+
+        // Formater la date de naissance pour l'affichage dans l'input de type "date"
+        if (dataToUpdate.naissance) {
+          dataToUpdate.naissance = new Date(dataToUpdate.naissance).toISOString().split('T')[0];
+        }
 
         setFormData(dataToUpdate);
       }
     } catch (error) {
       console.error("Erreur lors de la récupération des données du client:", error);
       setErrors({ general: "Erreur lors de la récupération des données du client." });
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`https://msxghost.boardy.fr/api/roles`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        setRoles(response.data);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des rôles:", error);
+      setErrors({ general: "Erreur lors de la récupération des rôles." });
     }
   };
 
@@ -136,19 +162,19 @@ const ModifierProfilClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gray-100">
+      <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-center mb-8">Modification du Profil Client</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(formData).map(([key, value]) => {
-            if (key === "id") return null; // Ne pas afficher l'ID
+            if (key === "id") return null;
 
             if (key === "sexe") {
               return (
-                <div key={key}>
-                  <label className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                  <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className="border border-gray-300 p-3 rounded-md w-full">
+                <div key={key} className="space-y-2">
+                  <label className="text-gray-700">Sexe</label>
+                  <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className="w-full border border-gray-300 p-3 rounded-md">
                     <option value="">Sélectionnez un sexe</option>
                     <option value="Homme">Homme</option>
                     <option value="Femme">Femme</option>
@@ -158,19 +184,43 @@ const ModifierProfilClient = () => {
               );
             }
 
+            if (key === "role_id") {
+              return (
+                <div key={key} className="space-y-2">
+                  <label className="text-gray-700">Rôle</label>
+                  <select value={value} onChange={(e) => handleInputChange(key, e.target.value)} className="w-full border border-gray-300 p-3 rounded-md">
+                    <option value="">Sélectionnez un rôle</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.nom}
+                      </option>
+                    ))}
+                  </select>
+                  {errors[key] && <p className="text-red-600">{errors[key]}</p>}
+                </div>
+              );
+            }
+
             return (
-              <div key={key}>
-                <label className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                <input type={key === "naissance" ? "date" : key === "nbEnfant" ? "number" : "text"} value={value} onChange={(e) => handleInputChange(key, e.target.value)} className="border border-gray-300 p-3 rounded-md w-full" />
+              <div key={key} className="space-y-2">
+                <label className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")}</label>
+                <input
+                  type={key === "naissance" ? "date" : key === "nbEnfant" ? "number" : "text"}
+                  value={value}
+                  onChange={(e) => handleInputChange(key, e.target.value)}
+                  className="w-full border border-gray-300 p-3 rounded-md"
+                />
                 {errors[key] && <p className="text-red-600">{errors[key]}</p>}
               </div>
             );
           })}
 
-          <button type="submit" className="bg-blue-600 text-white p-3 rounded-md">
-            Modifier le Profil
-          </button>
-          {errors.general && <p className="text-red-600">{errors.general}</p>}
+          <div className="md:col-span-2 mt-6">
+            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700">
+              Modifier le Profil
+            </button>
+            {errors.general && <p className="text-red-600 mt-2">{errors.general}</p>}
+          </div>
         </form>
       </div>
     </div>

@@ -236,7 +236,7 @@ const Menu = () => {
       <div className="flex-grow  w-screen  overflow-y-scroll">
         {/* {windowWidth > 768 ? <Header className="shadow-lg" /> : null} */}
         {windowWidth > 768 ? <Header /> : null} {/* Utilisez le nouveau composant Header ici */}
-        <div className="h-fit p-8 md:p-16 bg-gray-100 ">
+        <div className="h-fit bg-gray-100 ">
           {/* PREND LE RESTE DE LA DIV en H-fit*/}
           {/* //! Essaye de creer quelque chose de sympa avec les memes espacements entre tous. */}
           <Outlet />
