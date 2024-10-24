@@ -343,17 +343,20 @@ const Contact = React.forwardRef((props, ref) => (
       </motion.p>
 
       <div className="flex flex-col gap-8 mb-8 md:w-fit md:flex-row md:justify-center md:mx-auto md:mt-16">
+        <motion.a href="tel:0789619164" className="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
+          Contactez-moi par téléphone
+        </motion.a>{" "}
         <motion.a href="mailto:romain@marsaleix-training.com" className="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
           Contactez-moi par email
         </motion.a>
-
-        <motion.a href="tel:0789619164" className="bg-gray-800 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-200 transition duration-300" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
-          Contactez-moi par téléphone
-        </motion.a>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-lg mx-auto bg-gray-100 p-8 rounded-lg shadow-lg text-gray-900">
-        <h3 className="text-2xl font-bold mb-6">Ou contactez moi via formulaire :</h3>
+      <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="w-full max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg text-gray-900">
+        <h3 className="text-2xl font-bold mb-6 uppercase">réservez directement votre séance avec moi</h3>
+        <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2Cx4TANfdM0FfpDR9BX5x1S6bAT3kK7bfqqVg52F0sk1kVfDWurnm49CRaPK5P31BOM9a9oG4G?gv=true" style={{ border: "0" }} width="100%" height="600" frameBorder="0" allowFullScreen></iframe>
+
+        {/* //! A CONSERVER ON NE SAIT JAMAIS */}
+        {/* <h3 className="text-2xl font-bold mb-6">Ou contactez moi via formulaire :</h3>
         <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
@@ -384,7 +387,7 @@ const Contact = React.forwardRef((props, ref) => (
               Envoyer
             </button>
           </div>
-        </form>
+        </form> */}
       </motion.div>
     </div>
   </section>
