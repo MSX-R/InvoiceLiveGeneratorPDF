@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
-import fr from "date-fns/locale/fr"; // Import de la locale française
+import fr from "date-fns/locale/fr";
 import axios from "axios";
 import { FaTrash, FaEllipsisH, FaArrowLeft, FaPlusCircle, FaMoneyBillAlt, FaCheckCircle, FaListUl } from "react-icons/fa";
 import CustomModal from "../Components/CustomModal";
