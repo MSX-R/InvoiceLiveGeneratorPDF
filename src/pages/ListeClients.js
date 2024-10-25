@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CustomModal from "../Components/CustomModal";
-import { FaEye, FaEdit, FaTrash, FaChevronDown } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaChevronDown, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import Chip from "../Components/Chip";
 import FakePicture from "../assets/coach.jpg";
 
@@ -109,6 +109,23 @@ const ClientCards = ({ clients, offers, navigate, openModal, FakePicture }) => {
   );
 };
 
+const SortableHeader = ({ label, column, currentSort, onSort }) => {
+  const isCurrentSort = currentSort.column === column;
+
+  return (
+    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer group hover:bg-gray-100" onClick={() => onSort(column)}>
+      <div className="flex items-center space-x-2">
+        <span>{label}</span>
+        <span className="text-gray-400">
+          {!isCurrentSort && <FaSort className="opacity-0 group-hover:opacity-100" />}
+          {isCurrentSort && currentSort.direction === "asc" && <FaSortUp />}
+          {isCurrentSort && currentSort.direction === "desc" && <FaSortDown />}
+        </span>
+      </div>
+    </th>
+  );
+};
+
 const ListeClients = () => {
   const [clients, setClients] = useState([]);
   const [offers, setOffers] = useState({});
@@ -117,6 +134,10 @@ const ListeClients = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [sortConfig, setSortConfig] = useState({
+    column: "nom",
+    direction: "asc",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -216,17 +237,67 @@ const ListeClients = () => {
 
   const filteredClients = clients.filter((client) => client.nom.toLowerCase().includes(searchTerm.toLowerCase()) || client.prenom.toLowerCase().includes(searchTerm.toLowerCase()) || client.id.toString().includes(searchTerm) || client.telephone.toString().includes(searchTerm));
 
+  const handleSort = (column) => {
+    setSortConfig((prevConfig) => ({
+      column,
+      direction: prevConfig.column === column && prevConfig.direction === "asc" ? "desc" : "asc",
+    }));
+  };
+
+  const sortData = (data) => {
+    return [...data].sort((a, b) => {
+      const direction = sortConfig.direction === "asc" ? 1 : -1;
+
+      switch (sortConfig.column) {
+        case "nom":
+          return direction * `${a.nom} ${a.prenom}`.localeCompare(`${b.nom} ${b.prenom}`);
+
+        case "contrat":
+          const aOffer = offers[a.id]?.[0]?.offre_nom || "ZZZZ";
+          const bOffer = offers[b.id]?.[0]?.offre_nom || "ZZZZ";
+          return direction * aOffer.localeCompare(bOffer);
+
+        case "debut_contrat":
+          const aDate = offers[a.id]?.[0]?.date_creation || "9999-12-31";
+          const bDate = offers[b.id]?.[0]?.date_creation || "9999-12-31";
+          return direction * (new Date(aDate) - new Date(bDate));
+
+        case "contact":
+          return direction * a.email.localeCompare(b.email);
+
+        case "adresse":
+          const aAddress = `${a.adresse1} ${a.ville}`;
+          const bAddress = `${b.adresse1} ${b.ville}`;
+          return direction * aAddress.localeCompare(bAddress);
+
+        case "naissance":
+          return direction * (new Date(a.naissance) - new Date(b.naissance));
+
+        case "sexe":
+          return direction * a.sexe.localeCompare(b.sexe);
+
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const sortedAndFilteredClients = sortData(filteredClients);
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Liste de Clients</h1>
+      <div
+        className="
+       mx-auto"
+      >
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">Liste des clients</h1>
 
         {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-8">{errorMessage}</div>}
 
         <div className="flex flex-col gap-4 md:flex-row md:justify-between items-center mb-12 md:mb-4">
           <input type="text" placeholder="Rechercher par nom, prénom, ID, Téléphone..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full max-w-md px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
           <button onClick={() => navigate("/dashboard/creation-profil-client")} className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
-            Ajouter un Client
+            Ajouter un client
           </button>
         </div>
 
@@ -237,18 +308,18 @@ const ListeClients = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contrat</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Début Contrat</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adresse</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de Naissance</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexe</th>
+                  <SortableHeader label="Nom" column="nom" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Contrat" column="contrat" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Début Contrat" column="debut_contrat" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Contact" column="contact" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Adresse" column="adresse" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Date de Naissance" column="naissance" currentSort={sortConfig} onSort={handleSort} />
+                  <SortableHeader label="Sexe" column="sexe" currentSort={sortConfig} onSort={handleSort} />
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredClients.map((client) => {
+                {sortedAndFilteredClients.map((client) => {
                   const clientOffers = offers[client.id] || [];
                   const currentOffer = clientOffers.length > 0 ? clientOffers[0] : null;
 
@@ -292,7 +363,7 @@ const ListeClients = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(client.naissance).toLocaleDateString()}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.sexe}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
+                      <td className="pr-2 py-4 whitespace-nowrap text-sm font-medium flex gap-2">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();

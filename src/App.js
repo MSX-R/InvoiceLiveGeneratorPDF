@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Logout from "./pages/Logout";
 import Menu from "./pages/Menu";
+import DashboardHome from "./Components/DashboardHome";
 import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
@@ -87,7 +88,7 @@ function App() {
                   </PrivateRoute>
                 }
               >
-                <Route index element={<div>Contenu par défaut du dashboard</div>} />
+                <Route index element={<DashboardHome />} />
                 <Route path="formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
                 <Route
                   path="tableau-berger"
@@ -190,14 +191,6 @@ function App() {
                   element={
                     <PrivateRoute requiredRoles={[1]}>
                       <ListeClients />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="test-de-composant"
-                  element={
-                    <PrivateRoute>
-                      <TestDeComposant />
                     </PrivateRoute>
                   }
                 />

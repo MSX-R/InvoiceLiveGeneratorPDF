@@ -38,10 +38,10 @@ class Seance {
   }
 
   // Créer une nouvelle séance
-  static async create(userOffreId, description) {
+  static async create(userOffreId, date, description) {
     try {
-      const sql = `INSERT INTO Seance (user_offre_id, date_seance, description) VALUES (?, NOW(), ?)`;
-      const [result] = await pool.query(sql, [userOffreId, description]);
+      const sql = `INSERT INTO Seance (user_offre_id, date_seance, description) VALUES (?, ?, ?)`;
+      const [result] = await pool.query(sql, [userOffreId, date, description]);
       return result.insertId;
     } catch (err) {
       throw new Error('Erreur lors de la création de la séance: ' + err.message);

@@ -581,9 +581,9 @@ app.get('/api/seances/user-offre/:userOffreId', verifyToken, verifyAdmin, async 
 
 // Route pour créer une nouvelle séance
 app.post('/api/seances', verifyToken, verifyAdmin, async (req, res) => {
-  const { userOffreId, description } = req.body;
+  const { userOffreId, date, description } = req.body;
   try {
-    const seanceId = await Seance.create(userOffreId, description);
+    const seanceId = await Seance.create(userOffreId, date, description);
     res.status(201).json({ message: 'Séance ajoutée avec succès.', seanceId });
   } catch (err) {
     res.status(500).json({ message: err.message });
