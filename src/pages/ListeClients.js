@@ -290,14 +290,14 @@ const ListeClients = () => {
         className="
        mx-auto"
       >
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Liste de Clients</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">Liste des clients</h1>
 
         {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-8">{errorMessage}</div>}
 
         <div className="flex flex-col gap-4 md:flex-row md:justify-between items-center mb-12 md:mb-4">
           <input type="text" placeholder="Rechercher par nom, prénom, ID, Téléphone..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full max-w-md px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
           <button onClick={() => navigate("/dashboard/creation-profil-client")} className="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300">
-            Ajouter un Client
+            Ajouter un client
           </button>
         </div>
 

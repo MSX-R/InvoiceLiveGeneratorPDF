@@ -33,7 +33,7 @@ const LandingP = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const menuItems = ["MSXFIT", "A propos", "Services", "Testimonials", "Contact", `${isAuthenticated ? "Dashboard" : ""}`];
+  const menuItems = ["MSXFIT", "À propos", "Services", "Testimonials", "Contact", `${isAuthenticated ? "Dashboard" : ""}`];
 
   const handleLoginClick = () => {
     if (isAuthenticated) {
@@ -130,7 +130,7 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, isAuthenticated, handleLogin
               </button>
               <div className="flex items-center justify-end gap-2 md:justify-center md:mt-8 md:mb-16" onClick={handleLogoClick}>
                 <img src={logo} alt="Logo" className="h-10 cursor-pointer" />
-                <h2 className="text-2xl font-bold text-left cursor-pointer">MENU MOBILE</h2>
+                <h2 className="text-2xl font-bold text-left cursor-pointer">MSXFIT</h2>
               </div>
             </div>
             <ul className="flex flex-col space-y-4">
