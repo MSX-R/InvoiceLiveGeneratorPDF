@@ -57,9 +57,9 @@ const Menu = () => {
   };
 
   return (
-    <div className="flex min-h-screen h-screen">
+    <div className="flex min-h-screen h-screen md:p-4 bg-gray-100 ">
       {/* Sidebar */}
-      <div className={`fixed md:static inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen md:h-full`}>
+      <div className={`fixed md:static rounded-md  inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen md:h-full`}>
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="flex items-center gap-2 md:justify-center px-4 mt-8 mb-8 cursor-pointer" onClick={handleLogoClick}>
@@ -223,7 +223,7 @@ const Menu = () => {
       {isSidebarOpen && <div className="fixed inset-0 bg-black opacity-50 z-10 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       {/* Dynamic Page Area */}
-      <div className="flex-grow w-screen overflow-y-auto bg-gray-100">
+      <div className="relative flex-grow w-screen overflow-y-auto bg-gray-100">
         {windowWidth > 768 ? (
           <Header />
         ) : (
@@ -234,7 +234,7 @@ const Menu = () => {
             </button>
           </div>
         )}
-        <div className=" w-full mx-auto  p-4  md:p-6 min-h-screen h-fit bg-gray-100">
+        <div className=" w-full mx-auto  p-4   min-h-screen h-fit bg-gray-100  md:top-32">
           <Outlet />
         </div>
       </div>

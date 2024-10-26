@@ -252,7 +252,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
       <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
         <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           {" "}
-          Création de Facture
+          Création d'un Devis
         </motion.h1>
       </div>
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
