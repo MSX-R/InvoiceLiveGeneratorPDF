@@ -1,0 +1,25 @@
+name: Deploy to msx.boardy.fr/prod
+
+on:
+  push:
+    branches:
+      - prod  # Le workflow s'exécute lorsque des modifications sont poussées à la branche prod
+
+jobs:
+  deployment:
+    tasks:
+      # Chemin de déploiement
+      - export DEPLOYPATH=/home/hibe7449/public_html/msx.boardy.fr/prod/
+      
+      # Nettoyage des fichiers existants dans le répertoire cible (facultatif)
+      - /bin/rm -rf $DEPLOYPATH/*
+
+      # Installation des dépendances et construction du projet
+      - npm install
+      - npm run build
+      
+      # Copie du build vers le répertoire de déploiement
+      - /bin/cp -R build/* $DEPLOYPATH
+
+      # Ajuster les permissions (facultatif)
+      - /bin/chmod -R 755 $DEPLOYPATH
