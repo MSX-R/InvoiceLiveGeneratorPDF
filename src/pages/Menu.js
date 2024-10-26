@@ -59,17 +59,10 @@ const Menu = () => {
   return (
     <div className="flex min-h-screen h-screen">
       {/* Sidebar */}
-      <div
-        className={`fixed md:static inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen md:h-full`}
-      >
+      <div className={`fixed md:static inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen md:h-full`}>
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div
-            className="flex items-center gap-2 md:justify-center px-4 mt-8 mb-8 cursor-pointer"
-            onClick={handleLogoClick}
-          >
+          <div className="flex items-center gap-2 md:justify-center px-4 mt-8 mb-8 cursor-pointer" onClick={handleLogoClick}>
             <img src={logo} alt="Logo" className="h-10" />
             <h2 className="text-2xl font-bold">MSXFIT</h2>
           </div>
@@ -198,6 +191,15 @@ const Menu = () => {
                   >
                     <MdTimer className="mr-2" /> Tabata Chronomètre
                   </button>
+                  <button
+                    className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                    onClick={() => {
+                      navigate("/dashboard/questionnaire-entretien");
+                      closeSidebar();
+                    }}
+                  >
+                    <MdShowChart className="mr-2" /> Questionnaire Entretien
+                  </button>
                 </>
               )}
             </div>
@@ -205,10 +207,7 @@ const Menu = () => {
 
           {/* Sidebar Footer */}
           <div className="py-4">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center py-2 px-4 rounded-md text-red-400 hover:bg-gray-700"
-            >
+            <button onClick={handleLogout} className="w-full flex items-center justify-center py-2 px-4 rounded-md text-red-400 hover:bg-gray-700">
               <MdLogout className="mr-2" /> Déconnexion
             </button>
           </div>
@@ -216,20 +215,12 @@ const Menu = () => {
       </div>
 
       {/* Burger Menu Button for Mobile */}
-      <button
-        className={`md:hidden fixed top-4 ${isSidebarOpen ? "right-4" : "left-4"} z-30 p-2 bg-gray-800 text-white rounded-md`}
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-      >
+      <button className={`md:hidden fixed top-4 ${isSidebarOpen ? "right-4" : "left-4"} z-30 p-2 bg-gray-800 text-white rounded-md`} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
         <MdMenu size={24} />
       </button>
 
       {/* Overlay for Sidebar on Mobile */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 z-10 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-      )}
+      {isSidebarOpen && <div className="fixed inset-0 bg-black opacity-50 z-10 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       {/* Dynamic Page Area */}
       <div className="flex-grow w-screen overflow-y-auto bg-gray-100">

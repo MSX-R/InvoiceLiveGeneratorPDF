@@ -28,6 +28,7 @@ import FicheClient from "./pages/FicheClient";
 import LandingP from "./pages/LandingP";
 import CreationDeProgramme from "./pages/CreationDeProgramme";
 import { ClientsProvider } from "./contexts/ClientsContext";
+import QuestionnaireEntretien from "./pages/QuestionnaireEntretien";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -155,6 +156,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="questionnaire-entretien"
+                  element={
+                    <PrivateRoute>
+                      <QuestionnaireEntretien />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
                   path="creation-programme"
                   element={
                     <PrivateRoute>
@@ -186,6 +195,7 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                
                 <Route
                   path="liste-clients"
                   element={
@@ -195,6 +205,7 @@ function App() {
                   }
                 />
               </Route>
+              
 
               {/* Catch-all route for 404 */}
               <Route path="*" element={<NotFound />} />

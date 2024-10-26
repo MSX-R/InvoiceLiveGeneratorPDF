@@ -79,9 +79,5 @@ export const AuthProvider = ({ children }) => {
     setUserRole(localStorage.getItem("userRole"));
   };
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole }}>{children}</AuthContext.Provider>;
 };
