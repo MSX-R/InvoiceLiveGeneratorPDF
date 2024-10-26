@@ -5,6 +5,7 @@ import Select from "react-select";
 import axios from "axios";
 import { usePrix } from "../contexts/PrixContext";
 import { useOffresCoaching } from "../contexts/OffresCoachingContext";
+import { motion } from "framer-motion";
 
 const customStyles = {
   option: (provided, state) => ({
@@ -245,9 +246,15 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center mt-8 mb-12 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          Création de Facture
+        </motion.h1>
+      </div>
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-center mb-8">Formulaire de Facturation</h1>
         <form onSubmit={handleSubmit}>
           {/* Informations Client */}
           <div className="mb-8">
@@ -353,7 +360,7 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
           {formError && <p className="text-red-500 text-center mt-4">{formError}</p>}
         </form>
       </div>
-    </div>
+    </>
   );
 };
 

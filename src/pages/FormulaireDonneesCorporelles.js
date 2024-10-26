@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Switch } from "@mui/material";
+import { motion } from "framer-motion";
 
 // Composant pour les mensurations physiques
 const FormulaireMensurations = ({ mensurations, handleChangeMensurations, isSaveMensurationsEnabled }) => {
@@ -156,36 +157,33 @@ const FormulaireDonneesCorporelles = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 w-full">
-      <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-center mb-8">ANALYSE DES DONNEES CORPORELLES</h1>
-
-        {/* Boutons de test */}
-        <div className="flex justify-between my-4">
-          <button onClick={handleTestCorporelles} className="w-1/2 mr-2 bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-md">
-            Test DC
-          </button>
-          <button onClick={handleTestMensurations} className="w-1/2 ml-2 bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-md">
-            Test M
-          </button>
-        </div>
-
-        {/* Switch pour basculer entre les formulaires */}
-        <div className="flex justify-center items-center mb-6">
-          <span className={`mr-2 text-lg font-semibold transition-all duration-300 ${showCorporelles ? "text-gray-900 font-bold" : "text-gray-400 font-light"}`}>Données corporelles</span>
-          <Switch checked={!showCorporelles} onChange={() => setShowCorporelles(!showCorporelles)} inputProps={{ "aria-label": "toggle between corporelles and mensurations" }} />
-          <span className={`ml-2 text-lg font-semibold transition-all duration-300 ${!showCorporelles ? "text-gray-900 font-bold" : "text-gray-400 font-light"}`}>Mensurations physiques</span>
-        </div>
-
-        {/* Affichage conditionnel basé sur l'état */}
-        {showCorporelles ? <FormulaireCorporelles corporelles={corporelles} handleChangeCorporelles={handleChangeCorporelles} isSaveCorporellesEnabled={isSaveCorporellesEnabled} /> : <FormulaireMensurations mensurations={mensurations} handleChangeMensurations={handleChangeMensurations} isSaveMensurationsEnabled={isSaveMensurationsEnabled} />}
-
-        {/* Bouton pour enregistrer les deux formulaires */}
-        <button className={`w-full mt-6 p-4 rounded-md text-white ${isGlobalSaveEnabled ? "bg-green-600 hover:bg-green-700" : "bg-gray-400 cursor-not-allowed"}`} disabled={!isGlobalSaveEnabled} onClick={handleGlobalSave}>
-          Enregistrer tous les formulaires
+    <>
+      {" "}     {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+      <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>        Bilan Corporel{" "}
+      </motion.h1></div>
+      {/* Boutons de test */}
+      <div className="flex justify-between my-4">
+        <button onClick={handleTestCorporelles} className="w-1/2 mr-2 bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-md">
+          Test DC
+        </button>
+        <button onClick={handleTestMensurations} className="w-1/2 ml-2 bg-yellow-500 hover:bg-yellow-600 text-white p-4 rounded-md">
+          Test M
         </button>
       </div>
-    </div>
+      {/* Switch pour basculer entre les formulaires */}
+      <div className="flex justify-center items-center mb-6">
+        <span className={`mr-2 text-lg font-semibold transition-all duration-300 ${showCorporelles ? "text-gray-900 font-bold" : "text-gray-400 font-light"}`}>Données corporelles</span>
+        <Switch checked={!showCorporelles} onChange={() => setShowCorporelles(!showCorporelles)} inputProps={{ "aria-label": "toggle between corporelles and mensurations" }} />
+        <span className={`ml-2 text-lg font-semibold transition-all duration-300 ${!showCorporelles ? "text-gray-900 font-bold" : "text-gray-400 font-light"}`}>Mensurations physiques</span>
+      </div>
+      {/* Affichage conditionnel basé sur l'état */}
+      {showCorporelles ? <FormulaireCorporelles corporelles={corporelles} handleChangeCorporelles={handleChangeCorporelles} isSaveCorporellesEnabled={isSaveCorporellesEnabled} /> : <FormulaireMensurations mensurations={mensurations} handleChangeMensurations={handleChangeMensurations} isSaveMensurationsEnabled={isSaveMensurationsEnabled} />}
+      {/* Bouton pour enregistrer les deux formulaires */}
+      <button className={`w-full mt-6 p-4 rounded-md text-white ${isGlobalSaveEnabled ? "bg-green-600 hover:bg-green-700" : "bg-gray-400 cursor-not-allowed"}`} disabled={!isGlobalSaveEnabled} onClick={handleGlobalSave}>
+        Enregistrer tous les formulaires
+      </button>
+    </>
   );
 };
 

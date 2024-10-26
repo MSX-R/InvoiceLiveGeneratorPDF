@@ -105,17 +105,20 @@ const OffreCoaching = () => {
   if (error) return <div>Erreur: {error}</div>;
 
   return (
-    <div className="container mx-auto px-4 py-16 bg-gray-50 min-h-screen">
-      <motion.h1 className="text-4xl sm:text-5xl font-bold text-center mb-8 text-gray-800" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        Offres de Coaching
-      </motion.h1>
-
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          OFFRES COACHING
+        </motion.h1>
+      </div>
       <div className="flex justify-center mb-8">
-        <button onClick={() => setIsEditModalOpen(true)} className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center">
+        <button onClick={() => setIsEditModalOpen(true)} className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center w-full md:w-fit ">
           <FaEdit className="mr-2" /> Éditer les offres et catégories
         </button>
       </div>
-
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="lg:w-1/2 space-y-6">
           {categories.map((category, index) => (
@@ -154,9 +157,8 @@ const OffreCoaching = () => {
         </AnimatePresence>
       )}
       <AnimatePresence>{notification && <Notification message={notification} />}</AnimatePresence>
-
       <ModalEditionOffres isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
-    </div>
+    </>
   );
 };
 

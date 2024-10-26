@@ -369,15 +369,19 @@ const CreationDeProgramme = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
-      <motion.h1 className="text-xl md:text-5xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 md:p-4" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        Création d'un Programme d'Entraînement <Dumbbell className="inline-block ml-2" />
-      </motion.h1>
-
-      <motion.form onSubmit={handleSubmit} className="bg-white bg-opacity-10 rounded-lg shadow-lg backdrop-blur-md p-8 max-w-4xl mx-auto" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          Création de programme{" "}
+        </motion.h1>
+      </div>
+      <motion.form onSubmit={handleSubmit} className="bg-white  border-gray-200  rounded-lg border  shadow-lg backdrop-blur-md p-8 max-w-4xl mx-auto" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
         {/* Sélection du client */}
         <div className="mb-6">
-          <label className="block text-white text-sm font-bold mb-2" htmlFor="clientSelect">
+          <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="clientSelect">
             <Users className="inline-block mr-2" /> Rechercher un client
           </label>
           <AutocompleteClientSelect onClientSelect={handleClientSelect} />
@@ -386,7 +390,7 @@ const CreationDeProgramme = () => {
         {/* Informations de base */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="sexe">
+            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="sexe">
               <Users className="inline-block mr-2" /> Sexe
             </label>
             <select id="sexe" value={sexe} onChange={(e) => setSexe(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
@@ -398,13 +402,13 @@ const CreationDeProgramme = () => {
             </select>
           </div>
           <div>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Ruler className="inline-block mr-2" /> Taille (cm)
             </label>
             <input type="number" value={taille} onChange={(e) => setTaille(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
           </div>
           <div>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Weight className="inline-block mr-2" /> Poids (kg)
             </label>
             <input type="number" value={poids} onChange={(e) => setPoids(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
@@ -413,7 +417,7 @@ const CreationDeProgramme = () => {
 
         {/* Objectif et kcal */}
         <div className="mb-6">
-          <label className="block text-white text-sm font-bold mb-2">
+          <label className="block text-gray-800 text-sm font-bold mb-2">
             <Target className="inline-block mr-2" /> Objectif
           </label>
           <select value={goal} onChange={(e) => setGoal(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
@@ -425,7 +429,7 @@ const CreationDeProgramme = () => {
 
         {goal === "perte_de_poids" && (
           <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Weight className="inline-block mr-2" /> Kilos à perdre
             </label>
             <input type="number" value={kilosAPerdre} onChange={(e) => setKilosAPerdre(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
@@ -434,7 +438,7 @@ const CreationDeProgramme = () => {
 
         {goal === "prise_de_masse" && (
           <motion.div className="mb-6" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Weight className="inline-block mr-2" /> Kilos à prendre
             </label>
             <input type="number" value={kilosAPrendre} onChange={(e) => setKilosAPrendre(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
@@ -444,14 +448,14 @@ const CreationDeProgramme = () => {
         {/* Kcal */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Activity className="inline-block mr-2" /> Kcal conseillées / jour
             </label>
             <input type="number" value={kcalConseillees} readOnly className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-300" />
           </div>
           {goal !== "renforcement" && (
             <div>
-              <label className="block text-white text-sm font-bold mb-2">
+              <label className="block text-gray-800 text-sm font-bold mb-2">
                 <Zap className="inline-block mr-2" /> Kcal pour l'objectif
               </label>
               <input type="number" value={kcalPourObjectif} readOnly className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md text-gray-300" />
@@ -462,7 +466,7 @@ const CreationDeProgramme = () => {
         {/* Programme details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="sessionsPerWeek">
+            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="sessionsPerWeek">
               <Calendar className="inline-block mr-2" /> Séances par semaine
             </label>
             <select id="sessionsPerWeek" value={sessionsPerWeek} onChange={(e) => setSessionsPerWeek(parseInt(e.target.value))} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
@@ -474,13 +478,13 @@ const CreationDeProgramme = () => {
             </select>
           </div>
           <div>
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="programDuration">
+            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="programDuration">
               <Clock className="inline-block mr-2" /> Durée (semaines)
             </label>
             <input type="number" id="programDuration" value={programDuration} onChange={(e) => setProgramDuration(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
           </div>
           <div>
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="startDate">
+            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="startDate">
               <Calendar className="inline-block mr-2" /> Date de début
             </label>
             <input type="date" id="startDate" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
@@ -489,7 +493,7 @@ const CreationDeProgramme = () => {
 
         {/* Niveau d'expérience */}
         <div className="mb-6">
-          <label className="block text-white text-sm font-bold mb-2">
+          <label className="block text-gray-800 text-sm font-bold mb-2">
             <Dumbbell className="inline-block mr-2" /> Niveau d'expérience
           </label>
           <select value={experienceLevel} onChange={(e) => setExperienceLevel(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
@@ -505,14 +509,14 @@ const CreationDeProgramme = () => {
         {/* Équipement et Méthodes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-white text-sm font-bold mb-2">
+            <label className="block text-gray-800 text-sm font-bold mb-2">
               <Dumbbell className="inline-block mr-2" /> Équipement disponible
             </label>
             <div className="space-y-2">
               {availableEquipment.map((equipmentOption) => (
                 <div key={equipmentOption.value} className="flex items-center">
                   <input type="checkbox" id={`equipment-${equipmentOption.value}`} value={equipmentOption.value} checked={equipment.includes(equipmentOption.value)} onChange={handleEquipmentChange} className="mr-2 form-checkbox h-5 w-5 text-blue-600" />
-                  <label htmlFor={`equipment-${equipmentOption.value}`} className="text-sm text-gray-300">
+                  <label htmlFor={`equipment-${equipmentOption.value}`} className="text-sm text-gray-800">
                     {equipmentOption.label}
                   </label>
                 </div>
@@ -527,7 +531,7 @@ const CreationDeProgramme = () => {
               {availableMethods.map((method) => (
                 <div key={method.value} className="flex items-center">
                   <input type="checkbox" id={`method-${method.value}`} value={method.value} checked={methods.includes(method.value)} onChange={handleMethodsChange} className="mr-2 form-checkbox h-5 w-5 text-green-600" />
-                  <label htmlFor={`method-${method.value}`} className="text-sm text-gray-300">
+                  <label htmlFor={`method-${method.value}`} className="text-sm text-gray-800">
                     {method.label}
                   </label>
                 </div>
@@ -538,13 +542,13 @@ const CreationDeProgramme = () => {
 
         {/* Cardio */}
         <div className="mb-6">
-          <label className="flex items-center text-white text-sm font-bold mb-2">
+          <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
             <Heart className="inline-block mr-2" /> Inclure du cardio
             <input type="checkbox" checked={includeCardio} onChange={(e) => setIncludeCardio(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-pink-600" />
           </label>
           {includeCardio && (
             <motion.div className="mt-2" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="cardioDuration">
+              <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="cardioDuration">
                 Durée du cardio (minutes)
               </label>
               <input type="number" id="cardioDuration" value={cardioDuration} onChange={(e) => setCardioDuration(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white" />
@@ -555,7 +559,7 @@ const CreationDeProgramme = () => {
         {/* Santé et blessures */}
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
           <div>
-            <label className="flex items-center text-white text-sm font-bold mb-2">
+            <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
               <Heart className="inline-block mr-2" /> Problèmes de santé
               <input type="checkbox" checked={hasHealthIssues} onChange={(e) => setHasHealthIssues(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-red-600" />
             </label>
@@ -566,7 +570,7 @@ const CreationDeProgramme = () => {
             )}
           </div>
           <div>
-            <label className="flex items-center text-white text-sm font-bold mb-2">
+            <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
               <Activity className="inline-block mr-2" /> Blessures
               <input type="checkbox" checked={hasInjury} onChange={(e) => setHasInjury(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-yellow-600" />
             </label>
@@ -575,7 +579,7 @@ const CreationDeProgramme = () => {
                 {injuryZones.map((zone) => (
                   <div key={zone.value} className="flex items-center">
                     <input type="checkbox" id={`injury-${zone.value}`} value={zone.value} checked={injuryAreas.includes(zone.value)} onChange={handleInjuryChange} className="mr-2 form-checkbox h-5 w-5 text-yellow-600" />
-                    <label htmlFor={`injury-${zone.value}`} className="text-sm text-gray-300">
+                    <label htmlFor={`injury-${zone.value}`} className="text-sm text-gray-800">
                       {zone.label}
                     </label>
                   </div>
@@ -589,14 +593,14 @@ const CreationDeProgramme = () => {
         {/* Enfants et réhabilitation */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="flex items-center text-white text-sm font-bold mb-2">
+            <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
               <Users className="inline-block mr-2" /> Avez-vous des enfants ?
               <input type="checkbox" checked={hasChildren} onChange={(e) => setHasChildren(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-purple-600" />
             </label>
           </div>
           {hasChildren && (
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-              <label className="flex items-center text-white text-sm font-bold mb-2">
+              <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
                 <Activity className="inline-block mr-2" /> Réhabilitation du périnée complétée ?
                 <input type="checkbox" checked={hasCompletedRehabilitation} onChange={(e) => setHasCompletedRehabilitation(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-green-600" />
               </label>
@@ -606,7 +610,7 @@ const CreationDeProgramme = () => {
 
         {/* Alimentation */}
         <div className="mb-6">
-          <label className="flex items-center text-white text-sm font-bold mb-2">
+          <label className="flex items-center text-gray-800 text-sm font-bold mb-2">
             <Clipboard className="inline-block mr-2" /> Attention à l'alimentation ?
             <input type="checkbox" checked={paysAttentionAlimentation} onChange={(e) => setPaysAttentionAlimentation(e.target.checked)} className="ml-2 form-checkbox h-5 w-5 text-blue-600" />
           </label>
@@ -619,7 +623,7 @@ const CreationDeProgramme = () => {
 
         {/* Motivation */}
         <div className="mb-6">
-          <label className="block text-white text-sm font-bold mb-2">
+          <label className="block text-gray-800 text-sm font-bold mb-2">
             <Zap className="inline-block mr-2" /> Niveau de motivation
           </label>
           <select value={motivation} onChange={(e) => setMotivation(e.target.value)} className="w-full p-3 bg-gray-800 border border-gray-700 rounded-md text-white">
@@ -637,7 +641,7 @@ const CreationDeProgramme = () => {
           <Clipboard className="inline-block mr-2" /> Créer le programme
         </motion.button>
       </motion.form>
-    </div>
+    </>
   );
 };
 

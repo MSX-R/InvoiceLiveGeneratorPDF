@@ -215,16 +215,26 @@ const Menu = () => {
       </div>
 
       {/* Burger Menu Button for Mobile */}
-      <button className={`md:hidden fixed top-4 ${isSidebarOpen ? "right-4" : "left-4"} z-30 p-2 bg-gray-800 text-white rounded-md`} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+      {/* <button className={`md:hidden fixed top-4 ${isSidebarOpen ? "right-4" : "left-4"} z-30 p-2 bg-gray-800 text-white rounded-md`} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
         <MdMenu size={24} />
-      </button>
+      </button> */}
 
       {/* Overlay for Sidebar on Mobile */}
       {isSidebarOpen && <div className="fixed inset-0 bg-black opacity-50 z-10 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       {/* Dynamic Page Area */}
       <div className="flex-grow w-screen overflow-y-auto bg-gray-100">
-        <div className="p-6 h-full bg-gray-100">
+        {windowWidth > 768 ? (
+          <Header />
+        ) : (
+          <div className="h-fit p-4 bg-gray-700">
+            {" "}
+            <button className={`md:hidden   z-30 p-2 bg-gray-800 text-white rounded-md`} onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              <MdMenu size={24} />
+            </button>
+          </div>
+        )}
+        <div className=" w-full mx-auto  p-4  md:p-6 min-h-screen h-fit bg-gray-100">
           <Outlet />
         </div>
       </div>

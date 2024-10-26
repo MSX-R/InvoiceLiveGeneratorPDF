@@ -18,7 +18,7 @@ const InputField = ({ label, name, type = "text", value, onChange, required, err
       placeholder={placeholder}
       required={required}
       className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-        focus:border-blue-500 focus:ring-blue-500 
+        focus:border-blue-500 focus:ring-blue-500  p-4
         ${error ? "border-red-500" : ""}`}
     />
     {error && <span className="text-red-500 text-sm">{error}</span>}
@@ -40,7 +40,7 @@ const AlertDescription = ({ children }) => {
 };
 const RadioGroup = ({ label, name, options, value, onChange, required, error, inline = false }) => (
   <div className="space-y-2">
-    <span className="text-gray-700">
+    <span className="text-gray-700 font-semibold">
       {label} {required && "*"}
     </span>
     <div className={`${inline ? "space-x-4" : "space-y-2"}`}>
@@ -332,7 +332,7 @@ const QuestionnaireEntretien = () => {
               <label htmlFor="client-select" className="text-gray-700">
                 Sélectionner un client existant
               </label>
-              <select id="client-select" value={selectedClientId || ""} onChange={handleClientSelect} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <select id="client-select" value={selectedClientId || ""} onChange={handleClientSelect} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4">
                 <option value="">-- Aucun client sélectionné --</option>
                 {clients.map((client) => (
                   <option key={client.id} value={client.id}>
@@ -355,7 +355,7 @@ const QuestionnaireEntretien = () => {
       case 1: // Infos Complémentaires
         return (
           <div className="space-y-6">
-            <h2 className="text-xl font-semibold mb-4">Informations Complémentaires</h2> {/* //! LOIC : INFO TRANSMISE AUTOMATIQUEMENT CAR LE PROFIL DE LUSER EST DEJA SUR LE SITE pas besoin des infos de bas een saisie */} */}
+            <h2 className="text-xl font-semibold mb-4">Informations Complémentaires</h2> {/* //! LOIC : INFO TRANSMISE AUTOMATIQUEMENT CAR LE PROFIL DE LUSER EST DEJA SUR LE SITE pas besoin des infos de bas een saisie  */}
             <div className="grid grid-cols-1 gap-6">
               <InputField label="Âge" name="age" type="number" value={formData.age} onChange={handleChange} required error={errorFields.includes("age") && "Ce champ est requis"} />
 
@@ -363,8 +363,8 @@ const QuestionnaireEntretien = () => {
 
               <div className="space-y-2">
                 <label className="block">
-                  <span className="text-gray-700">Ville *</span>
-                  <select name="ville" value={formData.ville || ""} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  <span className="text-gray-700 font-medium">Ville *</span>
+                  <select name="ville" value={formData.ville || ""} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4">
                     <option value="">Sélectionnez une ville</option>
                     {villes.map((ville) => (
                       <option key={ville} value={ville}>
@@ -408,8 +408,8 @@ const QuestionnaireEntretien = () => {
 
                 <div className="space-y-2">
                   <label className="block">
-                    <span className="text-gray-700">Localisation de votre travail</span>
-                    <select name="lieuTravail" value={formData.lieuTravail || ""} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span className="text-gray-700  font-medium">Localisation de votre travail</span>
+                    <select name="lieuTravail" value={formData.lieuTravail || ""} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4">
                       <option value="">Sélectionnez une localisation</option>
                       {villesTravail.map((ville) => (
                         <option key={ville} value={ville}>
@@ -438,7 +438,7 @@ const QuestionnaireEntretien = () => {
                       }
                       className="text-blue-600 rounded"
                     />
-                    <span className="text-gray-700">+ de 50h</span>
+                    <span className="text-gray-700 ">+ de 50h</span>
                   </label>
                 </div>
 
@@ -464,8 +464,8 @@ const QuestionnaireEntretien = () => {
               {formData.problemeSante !== "Non" && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                   <label className="block">
-                    <span className="text-gray-700">De quoi s'agit-il ?</span>
-                    <textarea name="descriptionProblemeSante" value={formData.descriptionProblemeSante} onChange={handleChange} placeholder="Décrivez de manière précise votre ou vos problèmes" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows={4} required />
+                    <span className="text-gray-700  font-medium">De quoi s'agit-il ?</span>
+                    <textarea name="descriptionProblemeSante" value={formData.descriptionProblemeSante} onChange={handleChange} placeholder="Décrivez de manière précise votre ou vos problèmes" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4" rows={4} required />
                   </label>
                 </motion.div>
               )}
@@ -579,8 +579,8 @@ const QuestionnaireEntretien = () => {
 
               <div className="space-y-2">
                 <label className="block">
-                  <span className="text-gray-700">Sensation au réveil ? *</span>
-                  <select name="sensationReveil" value={formData.sensationReveil || ""} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                  <span className="text-gray-700  font-medium">Sensation au réveil ? *</span>
+                  <select name="sensationReveil" value={formData.sensationReveil || ""} onChange={handleChange} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4">
                     <option value="">Sélectionner</option>
                     {sensationsReveil.map((sensation) => (
                       <option key={sensation} value={sensation}>
@@ -602,8 +602,8 @@ const QuestionnaireEntretien = () => {
               {["Petit déjeuner", "Déjeuner", "Collation", "Diner"].map((repas) => (
                 <div key={repas}>
                   <label className="block">
-                    <span className="text-gray-700">Exemple de {repas}</span>
-                    <textarea name={`exemple${repas.replace(" ", "")}`} value={formData[`exemple${repas.replace(" ", "")}`] || ""} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows={2} />
+                    <span className="text-gray-700  font-medium">Exemple de {repas}</span>
+                    <textarea name={`exemple${repas.replace(" ", "")}`} value={formData[`exemple${repas.replace(" ", "")}`] || ""} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4" rows={2} />
                   </label>
                 </div>
               ))}
@@ -641,8 +641,8 @@ const QuestionnaireEntretien = () => {
 
                   <div>
                     <label className="block">
-                      <span className="text-gray-700">Dans quel but ?</span>
-                      <textarea name="butComplements" value={formData.butComplements || ""} onChange={handleChange} placeholder="Explique-moi brièvement" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" rows={3} />
+                      <span className="text-gray-700  font-medium">Dans quel but ?</span>
+                      <textarea name="butComplements" value={formData.butComplements || ""} onChange={handleChange} placeholder="Explique-moi brièvement" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-4" rows={3} />
                     </label>
                   </div>
                 </motion.div>
@@ -799,17 +799,26 @@ const QuestionnaireEntretien = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto p-4 md:p-6 lg:p-8">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-4">ENTRETIEN CLIENT(E)</h1>
-          <p className="text-gray-600">Durée approximative : 10 minutes. Vos réponses nous permettront de personnaliser votre expérience de coaching.</p>
-        </motion.div>
-
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          Questionnaire entretien{" "}
+        </motion.h1>
+      </div>
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto mb-8 md:mb-0 md:p-6 lg:p-8  ">
+        <p className="text-gray-600 w-full ">
+          <span className="font-bold">Durée : </span>10 minutes
+        </p>
+        <p className="text-gray-600 w-full">Vos réponses nous permettront de personnaliser votre expérience de coaching.</p>
+      </motion.div>
+      <div className="max-w-4xl mx-auto md:p-6 lg:p-8">
         {/* Progress Stepper */}
-        <div className="relative mb-8 ">
-          <div className="flex justify-between items-center min-w-max px-4">
+        <div className="relative mb-8 overflow-x-auto ">
+          <div className="flex justify-between items-center min-w-max px-2">
             {steps.map((step, index) => (
               <React.Fragment key={step.id}>
                 <div className="relative">
@@ -821,7 +830,7 @@ const QuestionnaireEntretien = () => {
                   >
                     {index < currentStep ? <Check size={16} /> : index + 1}
                   </motion.div>
-                  <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap">{step.title}</span>
+                  {/* <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap">{step.title}</span> */}
                 </div>
                 {index < steps.length - 1 && (
                   <div
@@ -870,7 +879,7 @@ const QuestionnaireEntretien = () => {
           </motion.button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

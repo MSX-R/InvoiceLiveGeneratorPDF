@@ -19,11 +19,13 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-full flex justify-between items-center p-4 text-black shadow-lg">
-      <p className="text-sm  font-medium flex flex-col ">
-        <span className="text-sm">Date du jour : {currentDateTime.toLocaleDateString("fr-FR")}</span> <span className="text-xs">Heure: {currentDateTime.toLocaleTimeString("fr-FR")}</span>
-      </p>
-      {isAuthenticated && <LogoutButton />} {/* Affiche le bouton uniquement si authentifié */}
+    <header className="w-full flex justify-between items-center p-6  text-white shadow-lg">
+      <div className="flex justify-between p-4 w-full bg-gray-800 shadow-md rounded-md">
+        <p className="text-sm  font-medium flex flex-col ">
+          <span className="text-sm">Date du jour : {currentDateTime.toLocaleDateString("fr-FR")}</span> <span className="text-xs">Heure: {currentDateTime.toLocaleTimeString("fr-FR")}</span>
+        </p>
+        {isAuthenticated && <LogoutButton />} {/* Affiche le bouton uniquement si authentifié */}
+      </div>
     </header>
   );
 };

@@ -15,9 +15,9 @@ import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
 import TestVmaTapis from "./pages/TestVmaTapis";
 import SuiviClients from "./pages/SuiviClients";
-import TabataChrono from "./pages/TabataChrono";
+import Chronometres from "./pages/Chronometres";
 import ChronoDetail from "./Components/ChronoDetail";
-import TestDeComposant from "./pages/TestDeComposant";
+// import TestDeComposant from "./pages/TestDeComposant";
 import OffresCoachings from "./pages/OffresCoachings";
 import TableauDesStats from "./pages/TableauDesStats";
 import CreationProfilClient from "./pages/CreationProfilClient";
@@ -70,147 +70,146 @@ function App() {
       <NotificationProvider>
         <OffresCoachingProvider>
           <ClientsProvider>
-          <Router>
-            <Routes>
-              {/* Route publique pour la Landing Page */}
-              <Route path="/" element={<LandingP />} />
+            <Router>
+              <Routes>
+                {/* Route publique pour la Landing Page */}
+                <Route path="/" element={<LandingP />} />
 
-              {/* Routes publiques */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/signup" element={<Signup />} />
+                {/* Routes publiques */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/signup" element={<Signup />} />
 
-              {/* Routes privées avec Menu comme dashboard principal */}
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <Menu />
-                  </PrivateRoute>
-                }
-              >
-                <Route index element={<DashboardHome />} />
-                <Route path="formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+                {/* Routes privées avec Menu comme dashboard principal */}
                 <Route
-                  path="tableau-berger"
+                  path="/dashboard"
                   element={
                     <PrivateRoute>
-                      <TableauBerger />
+                      <Menu />
                     </PrivateRoute>
                   }
-                />
-                <Route
-                  path="formulaire-donnees-corporelles"
-                  element={
-                    <PrivateRoute>
-                      <FormulaireDonneesCorporelles />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="vma-tapis"
-                  element={
-                    <PrivateRoute>
-                      <TestVmaTapis />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="compteur-seances"
-                  element={
-                    <PrivateRoute>
-                      <SuiviClients />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="tabata-chrono"
-                  element={
-                    <PrivateRoute>
-                      <TabataChrono />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="chrono/:id"
-                  element={
-                    <PrivateRoute>
-                      <ChronoDetail />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="tableau-des-stats"
-                  element={
-                    <PrivateRoute>
-                      <TableauDesStats />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="offres-coachings"
-                  element={
-                    <PrivateRoute>
-                      <OffresCoachings />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="questionnaire-entretien"
-                  element={
-                    <PrivateRoute>
-                      <QuestionnaireEntretien />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="creation-programme"
-                  element={
-                    <PrivateRoute>
-                      <CreationDeProgramme />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="creation-profil-client/:id?"
-                  element={
-                    <PrivateRoute requiredRoles={[1]}>
-                      <CreationProfilClient />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="fiche-client/:id?"
-                  element={
-                    <PrivateRoute requiredRoles={[1]}>
-                      <FicheClient />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="modifier-profil-client/:id"
-                  element={
-                    <PrivateRoute requiredRoles={[1]}>
-                      <ModifierProfilClient />
-                    </PrivateRoute>
-                  }
-                />
-                
-                <Route
-                  path="liste-clients"
-                  element={
-                    <PrivateRoute requiredRoles={[1]}>
-                      <ListeClients />
-                    </PrivateRoute>
-                  }
-                />
-              </Route>
-              
+                >
+                  <Route index element={<DashboardHome />} />
+                  <Route path="formulaire-devis" element={<PrivateRoute>{!showPreview ? <FormulaireDevis onGenerateInvoice={handleGenerateInvoice} /> : <InvoiceFormPreview clientInfo={invoice?.clientInfo} items={invoice?.items} entrepriseInfo={invoice?.entrepriseInfo} onEdit={handleEditInvoice} />}</PrivateRoute>} />
+                  <Route
+                    path="tableau-berger"
+                    element={
+                      <PrivateRoute>
+                        <TableauBerger />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="formulaire-donnees-corporelles"
+                    element={
+                      <PrivateRoute>
+                        <FormulaireDonneesCorporelles />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="vma-tapis"
+                    element={
+                      <PrivateRoute>
+                        <TestVmaTapis />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="compteur-seances"
+                    element={
+                      <PrivateRoute>
+                        <SuiviClients />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="tabata-chrono"
+                    element={
+                      <PrivateRoute>
+                        <Chronometres />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="chrono/:id"
+                    element={
+                      <PrivateRoute>
+                        <ChronoDetail />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="tableau-des-stats"
+                    element={
+                      <PrivateRoute>
+                        <TableauDesStats />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="offres-coachings"
+                    element={
+                      <PrivateRoute>
+                        <OffresCoachings />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="questionnaire-entretien"
+                    element={
+                      <PrivateRoute>
+                        <QuestionnaireEntretien />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="creation-programme"
+                    element={
+                      <PrivateRoute>
+                        <CreationDeProgramme />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="creation-profil-client/:id?"
+                    element={
+                      <PrivateRoute requiredRoles={[1]}>
+                        <CreationProfilClient />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="fiche-client/:id?"
+                    element={
+                      <PrivateRoute requiredRoles={[1]}>
+                        <FicheClient />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="modifier-profil-client/:id"
+                    element={
+                      <PrivateRoute requiredRoles={[1]}>
+                        <ModifierProfilClient />
+                      </PrivateRoute>
+                    }
+                  />
 
-              {/* Catch-all route for 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
+                  <Route
+                    path="liste-clients"
+                    element={
+                      <PrivateRoute requiredRoles={[1]}>
+                        <ListeClients />
+                      </PrivateRoute>
+                    }
+                  />
+                </Route>
+
+                {/* Catch-all route for 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Router>
           </ClientsProvider>
         </OffresCoachingProvider>
       </NotificationProvider>

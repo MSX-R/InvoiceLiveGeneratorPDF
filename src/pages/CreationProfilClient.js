@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ClientsContext } from "../contexts/ClientsContext";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const CreationProfilClient = () => {
   const { addClient } = useContext(ClientsContext);
@@ -221,10 +222,16 @@ const CreationProfilClient = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 border-blue-500">
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          Création d'un client
+        </motion.h1>{" "}
+      </div>
       <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg border-blue-900">
-        <h1 className="text-4xl font-bold text-center mb-8">Création de Profil Client</h1>
-
         <button onClick={fillWithMockData} className="mb-4 bg-green-500 text-white p-2 rounded-md hover:bg-green-600">
           Test (Remplir avec les données de Zidane)
         </button>
@@ -330,7 +337,7 @@ const CreationProfilClient = () => {
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 };
 
