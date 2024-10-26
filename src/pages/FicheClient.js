@@ -480,9 +480,9 @@ const FicheClient = () => {
 
             <hr className="mt-8" />
             {/* Section pour gérer les offres de coaching du client */}
-            <div className="flex flex-col gap-4 my-8">
+            <div className="flex flex-col  my-8">
               {selectedOffer && (
-                <>
+                <div className="mb-8">
                   <div className="mb-6">
                     <label htmlFor="select-offer" className="block text-sm font-medium text-gray-700 mb-1">
                       Choisissez une offre souscrite :
@@ -543,34 +543,52 @@ const FicheClient = () => {
                       <p className="text-xl font-semibold text-gray-800">{selectedOffer.montant_paiement || 0} €</p>
                     </div>
                   </div>
-
-                  {/* Bouton pour afficher les séances */}
-                  <button onClick={() => setIsSeanceModalOpen(true)} className="bg-teal-500 text-white py-2 px-4 rounded-md hover:bg-teal-600 transition duration-300 mt-4">
-                    <FaListUl className="inline-block mr-2" /> Voir les séances réalisées
-                  </button>
-                  {/* Bouton pour valider une séance */}
-                  <button onClick={handleAddSeanceModalOpen} className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition duration-300 mt-1">
-                    <FaCheckCircle className="inline-block mr-2" /> Valider une séance
-                  </button>
-                  {/* Bouton pour modifier l'état de paiement */}
-                  <button onClick={() => setIsPaymentModalOpen(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mt-1">
-                    <FaMoneyBillAlt className="inline-block mr-2" /> Modifier l'état de paiement
-                  </button>
-                </>
+                </div>
               )}
 
-              <button onClick={() => setIsAddOfferModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 mt-1">
-                <FaPlusCircle className="inline-block mr-2" /> Ajouter une offre
-              </button>
+              {/* BOUTONS FICHE CLIENT */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Bouton pour afficher les séances */}
+                <button onClick={() => setIsSeanceModalOpen(true)} className="p-6 bg-teal-500 text-white rounded-lg shadow-md hover:bg-teal-600 transition">
+                  <div className="flex items-center">
+                    <FaListUl size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Historique séances</span>
+                  </div>
+                </button>
+                {/* Bouton pour ajouter une offre */}
+                <button onClick={() => setIsAddOfferModalOpen(true)} className="p-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                  <div className="flex items-center">
+                    <FaPlusCircle size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Ajouter une offre</span>
+                  </div>
+                </button>
 
-              {selectedOffer && (
-                <>
-                  {/* Bouton pour supprimer une offre */}
-                  <button onClick={() => setIsDeleteOfferModalOpen(true)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 mt-1">
-                    <FaTrash className="inline-block mr-2" /> Supprimer l'offre
+                {/* Bouton pour valider une séance */}
+                <button onClick={handleAddSeanceModalOpen} className="p-6 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition">
+                  <div className="flex items-center">
+                    <FaCheckCircle size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Valider une séance</span>
+                  </div>
+                </button>
+
+                {/* Bouton pour modifier l'état de paiement */}
+                <button onClick={() => setIsPaymentModalOpen(true)} className="p-6 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition">
+                  <div className="flex items-center">
+                    <FaMoneyBillAlt size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Modifier paiement</span>
+                  </div>
+                </button>
+
+                {/* Bouton pour supprimer une offre (conditionnel) */}
+                {selectedOffer && (
+                  <button onClick={() => setIsDeleteOfferModalOpen(true)} className="p-6 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition">
+                    <div className="flex items-center">
+                      <FaTrash size={24} className="mr-4" />
+                      <span className="font-semibold text-xl">Supprimer l'offre</span>
+                    </div>
                   </button>
-                </>
-              )}
+                )}
+              </div>
             </div>
 
             <hr className="mt-8" />
