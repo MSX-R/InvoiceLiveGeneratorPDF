@@ -249,8 +249,9 @@ const FormulaireDevis = ({ onGenerateInvoice }) => {
     <>
       {" "}
       {/* ENTETE DE PAGE DYNAMIQUE */}
-      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-8">
-        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center mt-8 mb-12 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
           Création de Facture
         </motion.h1>
       </div>
