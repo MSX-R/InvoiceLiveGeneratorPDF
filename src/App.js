@@ -13,7 +13,7 @@ import FormulaireDevis from "./Components/FormulaireDevis";
 import InvoiceFormPreview from "./Components/CreationDuDevis";
 import TableauBerger from "./pages/TableauBerger";
 import FormulaireDonneesCorporelles from "./pages/FormulaireDonneesCorporelles";
-import TestVmaTapis from "./pages/TestVmaTapis";
+import TestVamevalTapis from "./pages/TestVamevalTapis";
 import SuiviClients from "./pages/SuiviClients";
 import Chronometres from "./pages/Chronometres";
 import ChronoDetail from "./Components/ChronoDetail";
@@ -29,6 +29,8 @@ import LandingP from "./pages/LandingP";
 import CreationDeProgramme from "./pages/CreationDeProgramme";
 import { ClientsProvider } from "./contexts/ClientsContext";
 import QuestionnaireEntretien from "./pages/QuestionnaireEntretien";
+import TestVamevalPiste from "./pages/TestVamevalPiste";
+import TestLucLeger from "./pages/TestLucLeger";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -111,7 +113,23 @@ function App() {
                     path="vma-tapis"
                     element={
                       <PrivateRoute>
-                        <TestVmaTapis />
+                        <TestVamevalTapis />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="test-vameval-piste"
+                    element={
+                      <PrivateRoute>
+                        <TestVamevalPiste />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="test-luc-leger"
+                    element={
+                      <PrivateRoute>
+                        <TestLucLeger />
                       </PrivateRoute>
                     }
                   />

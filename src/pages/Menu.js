@@ -180,7 +180,25 @@ const Menu = () => {
                       closeSidebar();
                     }}
                   >
-                    <MdShowChart className="mr-2" /> Calculer sa VMA
+                    <MdShowChart className="mr-2" /> VAMEVAL TAPIS
+                  </button>
+                  <button
+                    className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                    onClick={() => {
+                      navigate("/dashboard/test-vameval-piste");
+                      closeSidebar();
+                    }}
+                  >
+                    <MdShowChart className="mr-2" /> VAMEVAL PISTE
+                  </button>
+                  <button
+                    className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                    onClick={() => {
+                      navigate("/dashboard/test-luc-leger");
+                      closeSidebar();
+                    }}
+                  >
+                    <MdShowChart className="mr-2" /> LUC LEGER
                   </button>
                   <button
                     className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"

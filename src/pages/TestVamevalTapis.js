@@ -146,10 +146,14 @@ const TestVmaTapis = () => {
 
   return (
     <>
-      {" "}     {/* ENTETE DE PAGE DYNAMIQUE */}
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
       <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
-      <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>        TEST VMA SUR TAPIS DE COURSE{" "}
-      </motion.h1></div>
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          VAMEVAL SUR TAPIS DE COURSE{" "}
+        </motion.h1>
+      </div>
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         {!isWarmUpRunning && !isTestRunning && !testResults && (
           <>
