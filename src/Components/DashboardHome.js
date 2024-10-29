@@ -4,18 +4,13 @@ import { Link } from "react-router-dom";
 import { FaUsers, FaChartLine, FaClipboardList, FaFileInvoice, FaStopwatch } from "react-icons/fa";
 
 const DashboardHome = () => {
-  const { loggedUser } = useAuth(); // Utilisation de useAuth() pour obtenir loggedUser
+  const { loggedUser, isAdmin } = useAuth(); // Utilisation de useAuth() pour obtenir loggedUser
   console.log(loggedUser);
 
-  // Fonction pour vérifier si l'utilisateur a un rôle d'admin
-  const isAdmin = () => {
-    return loggedUser && loggedUser.role_id === 1;
-  };
-  // Utilisation de la fonction pour déclencher une action si l'utilisateur est admin
   if (isAdmin()) {
     console.log("L'utilisateur est un administrateur.");
-    // Placez ici toute action que vous voulez déclencher pour les administrateurs
   }
+
 
   return (
     <>
@@ -45,13 +40,13 @@ const DashboardHome = () => {
             </Link>
           )}
 
- {/* Raccourci vers Formulaire de Devis */}
-            <Link to="/dashboardquestionnaire-entretien" className="p-6 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition">
-              <div className="flex items-center">
-                <FaFileInvoice size={24} className="mr-4" />
-                <span className="font-semibold text-xl">Questionnaire-Entretien </span>
-              </div>
-            </Link>
+          {/* Raccourci vers Formulaire de Devis */}
+          <Link to="/dashboard/questionnaire-entretien" className="p-6 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition">
+            <div className="flex items-center">
+              <FaFileInvoice size={24} className="mr-4" />
+              <span className="font-semibold text-xl">Questionnaire-Entretien </span>
+            </div>
+          </Link>
 
           {/* Raccourci vers Tableau des Statistiques */}
           <Link to="/dashboard/tableau-des-stats" className="p-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
