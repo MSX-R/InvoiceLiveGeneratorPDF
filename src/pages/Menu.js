@@ -255,7 +255,7 @@ const Menu = () => {
             </button>
           </div>
         )}
-        <div className=" w-full mx-auto     h-full bg-gray-100  md:top-32">
+        <div className="w-full mx-auto  px-4 pb-4 md:p-0  h-fit md:h-full bg-gray-100  md:top-32">
           <Outlet />
         </div>
       </div>
