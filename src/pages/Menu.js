@@ -58,7 +58,7 @@ const Menu = () => {
   };
 
   return (
-    <div className="flex min-h-screen h-screen md:p-4 bg-gray-100 ">
+    <div className="flex min-h-screen h-screen md:p-4 gap-4 bg-gray-100 ">
       {/* Sidebar */}
       <div className={`fixed md:static rounded-md  inset-0 md:w-64 md:min-w-[300px] bg-gray-800 text-white flex flex-col transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out z-20 h-screen md:h-full`}>
         <div className="flex flex-col h-full">
@@ -156,16 +156,17 @@ const Menu = () => {
               )}
               {role && (
                 <>
-                        {isAdmin() && (
-                          <button
-                    className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
-                    onClick={() => {
-                      navigate("/dashboard/creation-programme");
-                      closeSidebar();
-                    }}
-                  >
-                    <MdShowChart className="mr-2" /> Création de programme
-                  </button>)}
+                  {isAdmin() && (
+                    <button
+                      className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
+                      onClick={() => {
+                        navigate("/dashboard/creation-programme");
+                        closeSidebar();
+                      }}
+                    >
+                      <MdShowChart className="mr-2" /> Création de programme
+                    </button>
+                  )}
                   <button
                     className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                     onClick={() => {
@@ -243,7 +244,7 @@ const Menu = () => {
       {isSidebarOpen && <div className="fixed inset-0 bg-black opacity-50 z-10 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
 
       {/* Dynamic Page Area */}
-      <div className="relative flex-grow w-screen overflow-y-auto bg-gray-100">
+      <div className="flex flex-col  w-screen h-full gap-4 overflow-y-auto bg-gray-100">
         {windowWidth > 768 ? (
           <Header />
         ) : (
@@ -254,7 +255,7 @@ const Menu = () => {
             </button>
           </div>
         )}
-        <div className=" w-full mx-auto  p-4   min-h-screen h-fit bg-gray-100  md:top-32">
+        <div className=" w-full mx-auto     h-full bg-gray-100  md:top-32">
           <Outlet />
         </div>
       </div>

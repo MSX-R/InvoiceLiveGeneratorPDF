@@ -19,7 +19,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className=" flex justify-between items-center p-4 pt-0  text-white shadow-lg w-full ">
+    <header className=" flex justify-between items-center   text-white shadow-lg w-full ">
       <div className="flex justify-between p-4 w-full bg-gray-800 shadow-md rounded-md">
         <p className="text-sm  font-medium flex flex-col ">
           <span className="text-sm">Date du jour : {currentDateTime.toLocaleDateString("fr-FR")}</span> <span className="text-xs">Heure: {currentDateTime.toLocaleTimeString("fr-FR")}</span>
