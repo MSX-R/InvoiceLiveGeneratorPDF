@@ -12,6 +12,7 @@ const Menu = () => {
   const [role, setRole] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const { isAdmin } = useAuth(); // Utilisation de useAuth() pour obtenir loggedUser
 
   const handleLogoClick = () => {
     if (isAuthenticated) {
@@ -155,7 +156,8 @@ const Menu = () => {
               )}
               {role && (
                 <>
-                  <button
+                        {isAdmin() && (
+                          <button
                     className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                     onClick={() => {
                       navigate("/dashboard/creation-programme");
@@ -163,7 +165,7 @@ const Menu = () => {
                     }}
                   >
                     <MdShowChart className="mr-2" /> Création de programme
-                  </button>
+                  </button>)}
                   <button
                     className="flex items-center text-left py-2 px-4 rounded-md hover:bg-gray-700"
                     onClick={() => {
