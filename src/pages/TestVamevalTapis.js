@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const TestVmaTapis = () => {
   const [palier, setPalier] = useState(1);
@@ -144,10 +145,16 @@ const TestVmaTapis = () => {
   const progressBarWidthTest = Math.min((elapsedTime / calculateTotalTestDuration(ciblePalier)) * 100, 100); // Limiter à 100%
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          VAMEVAL SUR TAPIS DE COURSE{" "}
+        </motion.h1>
+      </div>
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-center mb-8">Test VMA sur Tapis de Course</h1>
-
         {!isWarmUpRunning && !isTestRunning && !testResults && (
           <>
             <h2 className="text-2xl font-bold mb-4">Protocole</h2>
@@ -240,7 +247,7 @@ const TestVmaTapis = () => {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -11,7 +11,8 @@ import CustomModal from "../Components/CustomModal";
 import Chip from "../Components/Chip";
 import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 import ClientDetails from "../Components/ClientDetails";
-import moment from 'moment';
+import moment from "moment";
+import { motion } from "framer-motion";
 
 registerLocale("fr", fr);
 
@@ -172,7 +173,7 @@ const FicheClient = () => {
   const handleDeleteSeanceClick = (seanceId) => {
     setSeanceToDelete(seanceId);
     setIsDeleteSeanceModalOpen(true);
-  };   
+  };
 
   // Fonction pour éditer une séance
   const handleEditSeance = (seance) => {
@@ -181,7 +182,7 @@ const FicheClient = () => {
     setNewSeanceDate(new Date(seance.date_seance));
     setSelectedSeanceToEdit(seance);
     setIsAddSeanceModalOpen(true);
-  };  
+  };
 
   // Mise à jour de la fonction handleAddSeance pour gérer les modifications
   const handleAddSeance = async () => {
@@ -192,8 +193,8 @@ const FicheClient = () => {
         return;
       }
 
-      const formattedDate = moment(newSeanceDate).format('YYYY-MM-DD HH:mm');
-  
+      const formattedDate = moment(newSeanceDate).format("YYYY-MM-DD HH:mm");
+
       // Vérifier si une séance est en cours d'édition
       if (selectedSeanceToEdit) {
         // Modifier la séance existante
@@ -227,7 +228,7 @@ const FicheClient = () => {
           }
         );
       }
-  
+
       fetchSeances(selectedOffer.user_offre_id);
       setNewSeanceDescription("");
       setNewSeanceDate("");
@@ -235,7 +236,7 @@ const FicheClient = () => {
     } catch (err) {
       setErrorMessage("Erreur lors de l'ajout ou de la modification de la séance.");
     }
-  };  
+  };
 
   const handleDelete = async () => {
     try {
@@ -403,8 +404,14 @@ const FicheClient = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 ">
-      <div className=" mx-auto bg-white rounded-none shadow-xl overflow-hidden">
+    <>
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          Fiche Client
+        </motion.h1>{" "}
+      </div>
+      <div className=" mx-auto bg-white rounded-md shadow-xl overflow-hidden">
         <div className="relative h-48 bg-gradient-to-r from-blue-500 to-indigo-600">
           {/* Boutons de navigation en haut du profil client */}
           <button onClick={() => navigate("/dashboard/liste-clients")} className="absolute top-4 left-4 text-white hover:text-gray-200">
@@ -473,9 +480,9 @@ const FicheClient = () => {
 
             <hr className="mt-8" />
             {/* Section pour gérer les offres de coaching du client */}
-            <div className="flex flex-col gap-4 my-8">
+            <div className="flex flex-col  my-8">
               {selectedOffer && (
-                <>
+                <div className="mb-8">
                   <div className="mb-6">
                     <label htmlFor="select-offer" className="block text-sm font-medium text-gray-700 mb-1">
                       Choisissez une offre souscrite :
@@ -536,34 +543,52 @@ const FicheClient = () => {
                       <p className="text-xl font-semibold text-gray-800">{selectedOffer.montant_paiement || 0} €</p>
                     </div>
                   </div>
-
-                  {/* Bouton pour afficher les séances */}
-                  <button onClick={() => setIsSeanceModalOpen(true)} className="bg-teal-500 text-white py-2 px-4 rounded-md hover:bg-teal-600 transition duration-300 mt-4">
-                    <FaListUl className="inline-block mr-2" /> Voir les séances réalisées
-                  </button>
-                  {/* Bouton pour valider une séance */}
-                  <button onClick={ handleAddSeanceModalOpen } className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition duration-300 mt-1">
-                    <FaCheckCircle className="inline-block mr-2" /> Valider une séance
-                  </button>
-                  {/* Bouton pour modifier l'état de paiement */}
-                  <button onClick={() => setIsPaymentModalOpen(true)} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 mt-1">
-                    <FaMoneyBillAlt className="inline-block mr-2" /> Modifier l'état de paiement
-                  </button>
-                </>
+                </div>
               )}
 
-              <button onClick={() => setIsAddOfferModalOpen(true)} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 mt-1">
-                <FaPlusCircle className="inline-block mr-2" /> Ajouter une offre
-              </button>
+              {/* BOUTONS FICHE CLIENT */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Bouton pour afficher les séances */}
+                <button onClick={() => setIsSeanceModalOpen(true)} className="p-6 bg-teal-500 text-white rounded-lg shadow-md hover:bg-teal-600 transition">
+                  <div className="flex items-center">
+                    <FaListUl size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Historique séances</span>
+                  </div>
+                </button>
+                {/* Bouton pour ajouter une offre */}
+                <button onClick={() => setIsAddOfferModalOpen(true)} className="p-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition">
+                  <div className="flex items-center">
+                    <FaPlusCircle size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Ajouter une offre</span>
+                  </div>
+                </button>
 
-              {selectedOffer && (
-                <>
-                  {/* Bouton pour supprimer une offre */}
-                  <button onClick={() => setIsDeleteOfferModalOpen(true)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300 mt-1">
-                    <FaTrash className="inline-block mr-2" /> Supprimer l'offre
+                {/* Bouton pour valider une séance */}
+                <button onClick={handleAddSeanceModalOpen} className="p-6 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition">
+                  <div className="flex items-center">
+                    <FaCheckCircle size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Valider une séance</span>
+                  </div>
+                </button>
+
+                {/* Bouton pour modifier l'état de paiement */}
+                <button onClick={() => setIsPaymentModalOpen(true)} className="p-6 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition">
+                  <div className="flex items-center">
+                    <FaMoneyBillAlt size={24} className="mr-4" />
+                    <span className="font-semibold text-xl">Modifier paiement</span>
+                  </div>
+                </button>
+
+                {/* Bouton pour supprimer une offre (conditionnel) */}
+                {selectedOffer && (
+                  <button onClick={() => setIsDeleteOfferModalOpen(true)} className="p-6 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition">
+                    <div className="flex items-center">
+                      <FaTrash size={24} className="mr-4" />
+                      <span className="font-semibold text-xl">Supprimer l'offre</span>
+                    </div>
                   </button>
-                </>
-              )}
+                )}
+              </div>
             </div>
 
             <hr className="mt-8" />
@@ -617,32 +642,14 @@ const FicheClient = () => {
           <label htmlFor="seance-description" className="block text-sm font-medium text-gray-700 mb-1">
             Description de la séance
           </label>
-          <textarea
-            id="seance-description"
-            value={newSeanceDescription}
-            onChange={(e) => setNewSeanceDescription(e.target.value)}
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            rows="3"
-          />
+          <textarea id="seance-description" value={newSeanceDescription} onChange={(e) => setNewSeanceDescription(e.target.value)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" />
         </div>
 
         <div className="mb-4">
           <label htmlFor="seance-date" className="block text-sm font-medium text-gray-700 mb-1">
             Date et heure de la séance
           </label>
-          <DatePicker
-            id="seance-date"
-            selected={newSeanceDate ? new Date(newSeanceDate) : null}
-            onChange={(date) => setNewSeanceDate(date)}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholderText="Sélectionnez la date et l'heure"
-            locale="fr"
-            wrapperClassName="w-full"
-          />
+          <DatePicker id="seance-date" selected={newSeanceDate ? new Date(newSeanceDate) : null} onChange={(date) => setNewSeanceDate(date)} showTimeSelect timeFormat="HH:mm" timeIntervals={15} dateFormat="dd/MM/yyyy HH:mm" className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholderText="Sélectionnez la date et l'heure" locale="fr" wrapperClassName="w-full" />
         </div>
       </CustomModal>
       {/* Modal pour afficher les séances */}
@@ -656,16 +663,10 @@ const FicheClient = () => {
                   <p className="text-sm text-gray-600">Date: {formatDate3(seance.date_seance)}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditSeance(seance)}
-                    className="text-blue-500 hover:text-blue-700 transition"
-                  >
+                  <button onClick={() => handleEditSeance(seance)} className="text-blue-500 hover:text-blue-700 transition">
                     Modifier
                   </button>
-                  <button
-                    onClick={() => handleDeleteSeanceClick(seance.id)}
-                    className="text-red-500 hover:text-red-700 transition"
-                  >
+                  <button onClick={() => handleDeleteSeanceClick(seance.id)} className="text-red-500 hover:text-red-700 transition">
                     Supprimer
                   </button>
                 </div>
@@ -677,16 +678,8 @@ const FicheClient = () => {
         </div>
       </CustomModal>
       {/* Modal de confirmation de suppression d'une séance */}
-      <CustomModal
-        isOpen={isDeleteSeanceModalOpen}
-        onClose={() => setIsDeleteSeanceModalOpen(false)}
-        onConfirm={() => handleDeleteSeance(seanceToDelete)}
-        title="Confirmer la Suppression de la Séance"
-        message="Êtes-vous sûr de vouloir supprimer cette séance ? Cette action est irréversible."
-        confirmButtonColor="red"
-        confirmButtonText="Supprimer"
-      />
-    </div>
+      <CustomModal isOpen={isDeleteSeanceModalOpen} onClose={() => setIsDeleteSeanceModalOpen(false)} onConfirm={() => handleDeleteSeance(seanceToDelete)} title="Confirmer la Suppression de la Séance" message="Êtes-vous sûr de vouloir supprimer cette séance ? Cette action est irréversible." confirmButtonColor="red" confirmButtonText="Supprimer" />
+    </>
   );
 };
 

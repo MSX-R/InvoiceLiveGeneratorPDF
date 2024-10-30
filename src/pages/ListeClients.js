@@ -5,6 +5,7 @@ import CustomModal from "../Components/CustomModal";
 import { FaEye, FaEdit, FaTrash, FaChevronDown, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import Chip from "../Components/Chip";
 import FakePicture from "../assets/coach.jpg";
+import { motion } from "framer-motion";
 
 const ClientCards = ({ clients, offers, navigate, openModal, FakePicture }) => {
   const [visibleCards, setVisibleCards] = useState(5);
@@ -285,13 +286,17 @@ const ListeClients = () => {
   const sortedAndFilteredClients = sortData(filteredClients);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-6">
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+      <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>          Liste des clients
+        </motion.h1>{" "}
+      </div>
       <div
         className="
        mx-auto"
       >
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Liste des clients</h1>
-
         {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-8">{errorMessage}</div>}
 
         <div className="flex flex-col gap-4 md:flex-row md:justify-between items-center mb-12 md:mb-4">
@@ -402,9 +407,8 @@ const ListeClients = () => {
           </div>
         )}
       </div>
-
       <CustomModal isOpen={isModalOpen} onClose={closeModal} onConfirm={handleDeleteClient} title="Confirmer la Suppression" message="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible." />
-    </div>
+    </>
   );
 };
 

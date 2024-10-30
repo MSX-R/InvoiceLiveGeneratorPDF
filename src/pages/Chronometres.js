@@ -59,11 +59,11 @@ const ChronoCard = React.memo(({ chrono, startChrono, deleteChrono, startEditing
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2 sm:mt-4 space-x-2">
-        <button onClick={() => startChrono(chrono)} className="flex-1 px-2 sm:px-4 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg hover:from-green-500 hover:to-green-700 transition-all duration-300 flex items-center justify-center text-sm sm:text-base">
+      <div className="flex justify-between items-center mt-2 sm:mt-4 space-x-2 text-base sm:text-base">
+        <button onClick={() => startChrono(chrono)} className="flex-1 p-3  bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg hover:from-green-500 hover:to-green-700 transition-all duration-300 flex items-center justify-center ">
           <FaPlay className="mr-1 sm:mr-2" /> Démarrer
         </button>
-        <button onClick={() => startEditingChrono(chrono)} className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-300" aria-label="Modifier">
+        <button onClick={() => startEditingChrono(chrono)} className="p-4 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-all duration-300" aria-label="Modifier">
           <FaEdit />
         </button>
         <button
@@ -71,7 +71,7 @@ const ChronoCard = React.memo(({ chrono, startChrono, deleteChrono, startEditing
             e.stopPropagation();
             deleteChrono(chrono.id);
           }}
-          className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-300"
+          className="p-4 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all duration-300"
           aria-label="Supprimer"
         >
           <FaTrash />
@@ -276,15 +276,21 @@ const AdvancedTabataTimer = () => {
   }, [editingChrono]);
 
   return (
-    <div className="min-h-screen  min-full sm:p-6 flex flex-col items-center">
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">Advanced Tabata Timer</h1>
-
-      <button onClick={() => setShowSettings(true)} className="mb-6 sm:mb-8 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-sm sm:text-base">
-        <FaPlus className="inline-block mr-2" /> Créer un Nouveau Chrono
-      </button>
-
+    <>
+      {" "}
+      {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+        <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          {" "}
+          CREATION DE CHRONOMETRES
+        </motion.h1>
+      </div>
+      <div className="flex justify-center ">
+        <button onClick={() => setShowSettings(true)} className="mb-6 sm:mb-8 p-4 w-full md:w-fit bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-300 text-sm sm:text-base">
+          <FaPlus className="inline-block mr-2" /> Créer un Nouveau Chrono
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full max-w-6xl">{chronos.length > 0 ? chronos.map((chrono) => <ChronoCard key={chrono.id} chrono={chrono} startChrono={startChrono} deleteChrono={deleteChrono} startEditingChrono={startEditingChrono} />) : <p className="text-gray-600 col-span-full text-center">Aucun chrono trouvé.</p>}</div>
-
       {showModal && currentChrono && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ type: "spring", damping: 15 }} className="bg-white p-6 sm:p-8 rounded-lg shadow-lg text-center max-w-sm w-full">
@@ -320,7 +326,6 @@ const AdvancedTabataTimer = () => {
           </motion.div>
         </motion.div>
       )}
-
       {showSettings && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
@@ -383,7 +388,6 @@ const AdvancedTabataTimer = () => {
           </div>
         </div>
       )}
-
       {showEditModal && editingChrono && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
@@ -436,7 +440,7 @@ const AdvancedTabataTimer = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

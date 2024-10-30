@@ -213,12 +213,12 @@ const TableauBerger = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <>
+      {" "}     {/* ENTETE DE PAGE DYNAMIQUE */}
+      <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
+      <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>        Calculateur de RM{" "}
+      </motion.h1></div>
       <div className="max-w-4xl mx-auto p-8">
-        <motion.h1 className="text-5xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          Calculateur de RM <Dumbbell className="inline-block ml-2" />
-        </motion.h1>
-
         <motion.div className="bg-white bg-opacity-10 p-8 rounded-lg shadow-lg backdrop-blur-md" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-stretch mb-6">
             <div className="relative flex-1">
@@ -307,7 +307,6 @@ const TableauBerger = () => {
           </div>
         </div>
       )}
-
       {/* MODALE METHODE */}
       {isMethodModalOpen && (
         <motion.div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -356,7 +355,7 @@ const TableauBerger = () => {
           </motion.div>
         </motion.div>
       )}
-    </div>
+    </>
   );
 };
 

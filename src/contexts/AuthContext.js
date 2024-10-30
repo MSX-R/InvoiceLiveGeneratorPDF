@@ -79,9 +79,10 @@ export const AuthProvider = ({ children }) => {
     setUserRole(localStorage.getItem("userRole"));
   };
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    // Fonction pour vérifier si l'utilisateur est admin
+    const isAdmin = () => {
+      return loggedUser && loggedUser.role_id === 1;
+    };
+
+  return <AuthContext.Provider value={{ isAuthenticated, login, logout, loggedUser, userRole, refreshUserRole, isAdmin }}>{children}</AuthContext.Provider>;
 };
