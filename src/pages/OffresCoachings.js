@@ -124,8 +124,8 @@ const OffreCoaching = () => {
           </button>
         </div>
       )}
-      <div className="flex h-full flex-col lg:flex-row gap-8">
-        <div className="lg:w-1/2 flex flex-col justify-between">
+      <div className="flex h-fit flex-col lg:flex-row gap-8">
+        <div className="lg:w-1/2 flex flex-col gap-4  ">
           {categories.map((category, index) => (
             <OfferCard key={index} category={category} isSelected={selectedOffer === category} />
           ))}
@@ -136,7 +136,7 @@ const OffreCoaching = () => {
               {selectedOffer ? (
                 <OfferDetails key={selectedOffer.id} category={selectedOffer} onClose={() => setSelectedOffer(null)} />
               ) : (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white rounded-2xl shadow-2xl p-8 h-full flex items-center justify-center">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="bg-white rounded-2xl shadow-2xl p-8 h-fit flex items-center justify-center">
                   <p className="text-2xl text-gray-400 text-center">Sélectionnez une offre pour voir les détails</p>
                 </motion.div>
               )}
