@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaDumbbell, FaUsers, FaClock, FaTimes, FaFilePdf, FaShoppingCart, FaEdit } from "react-icons/fa";
 import { useOffresCoaching } from "../contexts/OffresCoachingContext";
 import ModalEditionOffres from "../Components//ModalEditionOffres";
+import { useAuth } from "../contexts/AuthContext"; // Utilisation de useAuth pour accéder au contexte d'authentification
 
 const OffreCoaching = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -10,6 +11,9 @@ const OffreCoaching = () => {
   const [notification, setNotification] = useState(null);
   const { categories, offres, loading, error, getOffresByCategory } = useOffresCoaching();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+
+  const { isAdmin } = useAuth(); // Utilisation de useAuth() pour obtenir loggedUser
 
   useEffect(() => {
     const checkMobile = () => {
@@ -114,12 +118,13 @@ const OffreCoaching = () => {
           OFFRES COACHING
         </motion.h1>
       </div>
-      <div className="flex justify-center mb-8">
+      {isAdmin() && (
+        <div className="flex justify-center mb-8">
         <button onClick={() => setIsEditModalOpen(true)} className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center w-full md:w-fit ">
           <FaEdit className="mr-2" /> Éditer les offres et catégories
         </button>
-      </div>
-      <div className="flex flex-col lg:flex-row gap-8">
+      </div>)}
+      <div className="flex h-full flex-col lg:flex-row gap-8">
         <div className="lg:w-1/2 space-y-6">
           {categories.map((category, index) => (
             <OfferCard key={index} category={category} isSelected={selectedOffer === category} />
