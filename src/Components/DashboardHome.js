@@ -11,11 +11,10 @@ const DashboardHome = () => {
     console.log("L'utilisateur est un administrateur.");
   }
 
-
   return (
     <>
       {" "}
-      <div className="bg-white p-6 rounded-md shadow-md">
+      <div className="bg-white p-6 h-full rounded-md shadow-md">
         <h1 className="text-3xl font-bold mb-4">Bonjour, {loggedUser ? loggedUser.prenom : "Coach"} !</h1>
         <p className="text-lg text-gray-700 mb-8">Bienvenue sur votre tableau de bord de coaching. Vous trouverez ici tous les outils nécessaires pour gérer vos clients, suivre leur progression, et faciliter votre travail quotidien.</p>
 

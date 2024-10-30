@@ -12,7 +12,6 @@ const OffreCoaching = () => {
   const { categories, offres, loading, error, getOffresByCategory } = useOffresCoaching();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-
   const { isAdmin } = useAuth(); // Utilisation de useAuth() pour obtenir loggedUser
 
   useEffect(() => {
@@ -78,7 +77,7 @@ const OffreCoaching = () => {
         <motion.div className={`absolute top-0 right-0 w-64 h-64 rounded-full bg-gradient-to-br ${category.couleur} opacity-10 -mr-32 -mt-32`} animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} />
         <h2 className="text-3xl font-bold mb-6 text-gray-800">{category.nom}</h2>
 
-        <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="space-y-6 h-fit  overflow-hidden ">
           {categoryOffres.map((offre, index) => (
             <motion.div key={index} className="mb-4 p-3 bg-gray-100 rounded-lg flex justify-between items-center" whileHover={{ scale: 1.02 }}>
               <div>
@@ -95,9 +94,9 @@ const OffreCoaching = () => {
                 )}
                 <p className="text-sm text-green-600 font-semibold">{offre.prix_seance}€ / séance</p>
               </div>
-              <button onClick={() => addToCart({ nom: `${category.nom} - ${offre.nom}`, prix: offre.prix_total })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
+              {/* <button onClick={() => addToCart({ nom: `${category.nom} - ${offre.nom}`, prix: offre.prix_total })} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">
                 <FaShoppingCart className="inline-block mr-2" /> Choisir
-              </button>
+              </button> */}
             </motion.div>
           ))}
         </div>
@@ -120,12 +119,13 @@ const OffreCoaching = () => {
       </div>
       {isAdmin() && (
         <div className="flex justify-center mb-8">
-        <button onClick={() => setIsEditModalOpen(true)} className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center w-full md:w-fit ">
-          <FaEdit className="mr-2" /> Éditer les offres et catégories
-        </button>
-      </div>)}
+          <button onClick={() => setIsEditModalOpen(true)} className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center w-full md:w-fit ">
+            <FaEdit className="mr-2" /> Éditer les offres et catégories
+          </button>
+        </div>
+      )}
       <div className="flex h-full flex-col lg:flex-row gap-8">
-        <div className="lg:w-1/2 space-y-6">
+        <div className="lg:w-1/2 flex flex-col justify-between">
           {categories.map((category, index) => (
             <OfferCard key={index} category={category} isSelected={selectedOffer === category} />
           ))}
