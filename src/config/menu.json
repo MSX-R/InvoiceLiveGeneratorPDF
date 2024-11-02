@@ -1,0 +1,156 @@
+[
+  {
+    "label": "Entretien",
+    "type": "formulaire",
+    "path": "/dashboard/questionnaire-entretien",
+    "bgColor": "bg-yellow-500",
+    "hoverColor": "hover:bg-yellow-600",
+    "icon": "FaFileInvoice",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Devis",
+    "type": "vente",
+    "path": "/dashboard/formulaire-devis",
+    "bgColor": "bg-yellow-500",
+    "hoverColor": "hover:bg-yellow-600",
+    "icon": "FaFileInvoice",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": false
+  },
+  {
+    "label": "Offres",
+    "type": "vente",
+    "path": "/dashboard/offres-coachings",
+    "bgColor": "bg-teal-500",
+    "hoverColor": "hover:bg-teal-600",
+    "icon": "FaClipboardList",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Clients",
+    "type": "clients",
+    "path": "/dashboard/liste-clients",
+    "bgColor": "bg-blue-500",
+    "hoverColor": "hover:bg-blue-600",
+    "icon": "FaUsers",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": false
+  },
+  {
+    "label": "Créer client",
+    "type": "clients",
+    "path": "/dashboard/creation-profil-client",
+    "bgColor": "bg-blue-500",
+    "hoverColor": "hover:bg-blue-600",
+    "icon": "MdAssignment",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": false
+  },
+  {
+    "label": "Bilan corporel",
+    "type": "client",
+    "path": "/dashboard/formulaire-donnees-corporelles",
+    "bgColor": "bg-red-500",
+    "hoverColor": "hover:bg-red-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Performances",
+    "type": "client",
+    "path": "/dashboard/tableau-des-stats",
+    "bgColor": "bg-red-500",
+    "hoverColor": "hover:bg-red-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Suivi des séances",
+    "type": "client",
+    "path": "/dashboard/compteur-seances",
+    "bgColor": "bg-red-500",
+    "hoverColor": "hover:bg-red-600",
+    "icon": "MdFitnessCenter",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Programmation",
+    "type": "outils",
+    "path": "/dashboard/creation-programme",
+    "bgColor": "bg-gray-500",
+    "hoverColor": "hover:bg-gray-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": false
+  },
+  {
+    "label": "RM Calculator",
+    "type": "outils",
+    "path": "/dashboard/tableau-berger",
+    "bgColor": "bg-gray-500",
+    "hoverColor": "hover:bg-gray-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Chrono",
+    "type": "outils",
+    "path": "/dashboard/tabata-chrono",
+    "bgColor": "bg-gray-500",
+    "hoverColor": "hover:bg-gray-600",
+    "icon": "FaStopwatch",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Luc Léger",
+    "type": "tests",
+    "path": "/dashboard/test-luc-leger",
+    "bgColor": "bg-purple-500",
+    "hoverColor": "hover:bg-teal-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Vameval P",
+    "type": "tests",
+    "path": "/dashboard/test-vameval-piste",
+    "bgColor": "bg-purple-500",
+    "hoverColor": "hover:bg-orange-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  },
+  {
+    "label": "Vameval T",
+    "type": "tests",
+    "path": "/dashboard/vma-tapis",
+    "bgColor": "bg-purple-500",
+    "hoverColor": "hover:bg-purple-600",
+    "icon": "MdShowChart",
+    "viewPermission": ["admin", "client"],
+    "onDashboardAdmin": true,
+    "onDashboardClient": true
+  }
+]
