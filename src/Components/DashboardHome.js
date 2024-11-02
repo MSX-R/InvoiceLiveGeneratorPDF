@@ -43,7 +43,7 @@ const DashboardHome = () => {
 
           return (
             canView && (
-              <Link key={index} to={button.path} className={`${button.bgColor} ${button.hoverColor} w-full min-h-16 p-4 md:p-6 text-white rounded-lg shadow-md transition flex items-center justify-center`}>
+              <Link key={index} to={button.path} className={`${button.bgColor} ${button.hoverColor} w-full min-h-16 p-2 md:p-6 text-white rounded-lg shadow-md transition flex items-center justify-center`}>
                 <div className="flex items-center justify-center">
                   {React.createElement(iconMapping[button.icon], { size: 24, className: "mr-4 hidden md:block" })}
                   <span className="font-semibold text-sm md:text-xl uppercase">{button.label}</span>
