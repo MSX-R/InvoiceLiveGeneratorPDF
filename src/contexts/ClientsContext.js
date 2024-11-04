@@ -107,7 +107,7 @@ export const ClientsProvider = ({ children }) => {
 
   // Fonction pour trouver un client par ID
   const findClientById = (clientId) => {
-    return clients.find((client) => client.id === clientId);
+    return clients.find((client) => client.id === Number(clientId));
   };
 
   // Nouvelle fonction pour sauvegarder les résultats des tests RM
@@ -119,15 +119,19 @@ export const ClientsProvider = ({ children }) => {
         return;
       }
 
-      const response = await axios.post(`https://msxghost.boardy.fr/api/rm-tests`, {
-        clientId,
-        ...testData
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await axios.post(
+        `https://msxghost.boardy.fr/api/rm-tests`,
+        {
+          clientId,
+          ...testData,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       console.log("Résultats du test RM enregistrés avec succès :", response.data);
       return response.data;
