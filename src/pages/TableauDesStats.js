@@ -3,6 +3,7 @@ import exercicesData from "../config/exercicesRM.json";
 import { FaCheckCircle, FaTimes } from "react-icons/fa";
 import Modal from "../Components/Modal";
 import { ClientsContext } from "../contexts/ClientsContext";
+import { useAuth } from "../contexts/AuthContext";
 import { motion } from "framer-motion";
 
 const TableauDesStats = () => {
@@ -12,14 +13,39 @@ const TableauDesStats = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState("");
 
+  const { loggedUser } = useAuth();
   const { clients, findClientById, saveRMTestResults } = useContext(ClientsContext);
 
   useEffect(() => {
     setExercises(exercicesData.exercises);
-  }, []);
+
+    // If user is not admin, set their ID as the selected client ID
+    if (loggedUser.role_nom !== "Administrateur" && loggedUser.id) {
+      setSelectedClientId(loggedUser.id.toString());
+    }
+  }, [loggedUser]);
 
   const handleClientChange = (event) => {
-    setSelectedClientId(event.target.value);
+    const clientId = event.target.value;
+    setSelectedClientId(clientId);
+  };
+
+  // Get the current client based on user role and selection
+  const getCurrentClient = () => {
+    if (!selectedClientId) return null;
+
+    if (loggedUser.role_nom !== "Administrateur") {
+      // For non-admin users, return their own user object with necessary client fields
+      return {
+        id: loggedUser.id,
+        nom: loggedUser.nom,
+        prenom: loggedUser.prenom,
+        sexe: loggedUser.sexe,
+      };
+    } else {
+      // For admin users, find the selected client from the clients list
+      return findClientById(Number(selectedClientId));
+    }
   };
 
   const handleChange = (theme, exercise, value) => {
@@ -43,62 +69,76 @@ const TableauDesStats = () => {
   };
 
   const handleSave = async () => {
-    if (!selectedClientId) {
+    const currentClient = getCurrentClient();
+
+    if (!currentClient) {
       alert("Veuillez sélectionner un client avant d'enregistrer.");
+      return;
+    }
+
+    // Vérifier qu'il y a au moins une valeur à enregistrer
+    const hasValues = Object.values(inputs).some((themeInputs) => Object.values(themeInputs).some((value) => value !== ""));
+
+    if (!hasValues) {
+      alert("Veuillez entrer au moins une valeur avant d'enregistrer.");
       return;
     }
 
     const filteredInputs = Object.fromEntries(Object.entries(inputs).map(([theme, exercises]) => [theme, Object.fromEntries(Object.entries(exercises).filter(([, value]) => value !== ""))]));
 
-    const testData = {
-      name: `Récupération de RM10 ${testDate}`,
-      date: testDate,
-      exercises: filteredInputs,
-    };
-
     try {
-      await saveRMTestResults(selectedClientId, testData);
-      alert("Les résultats du test ont été enregistrés avec succès !");
+      await saveRMTestResults(currentClient.id, {
+        clientId: currentClient.id, //! VOIR SI l'envoid e l'id du client (connecté ou selectioné) est iun probleme en plus de la reponse du formulaie mais je pense pas
+        name: `Récupération de RM10 ${testDate}`,
+        date: testDate,
+        exercises: filteredInputs,
+      });
+
+      alert("Enregistrement réussi !");
       setModalOpen(true);
     } catch (error) {
-      alert("Erreur lors de l'enregistrement des résultats du test.");
+      console.error("Save error:", error);
+      alert("Erreur lors de l'enregistrement. Veuillez vérifier votre connexion et réessayer.");
     }
   };
 
-  const selectedClient = selectedClientId ? findClientById(selectedClientId) : null;
+  const currentClient = getCurrentClient();
 
   return (
     <>
-      {" "}
-      {/* ENTETE DE PAGE DYNAMIQUE */}
       <div className="bg-white p-1 md:p-4 rounded-md shadow-md mb-4 md:mb-8">
         <motion.h1 className="text-4xl sm:text-5xl font-bold text-center my-4 text-gray-800 uppercase" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          {" "}
-          REFERENCES RM10{" "}
+          REFERENCES RM10
         </motion.h1>
       </div>
-      <div className=" w-full flex flex-col mx-auto bg-white p-8 rounded-md shadow-2xl transition-transform duration-300">
+
+      <div className="w-full flex flex-col mx-auto bg-white p-8 rounded-md shadow-2xl transition-transform duration-300">
         <p className="text-center mb-4 text-lg">
           <input type="date" value={testDate} onChange={(e) => setTestDate(e.target.value)} className="border border-gray-300 rounded-md p-2" />
         </p>
 
-        <div className="mb-6">
-          <label htmlFor="clientSelect" className="block text-sm font-medium text-gray-700 mb-2">
-            Sélectionner un client
-          </label>
-          <select id="clientSelect" value={selectedClientId} onChange={handleClientChange} className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-            <option value="">Sélectionnez un client</option>
-            {clients.map((client) => (
-              <option key={client.id} value={client.id}>
-                {client.nom} {client.prenom}
-              </option>
-            ))}
-          </select>
-        </div>
+        {loggedUser.role_nom === "Administrateur" && (
+          <div className="mb-6">
+            <label htmlFor="clientSelect" className="block text-sm font-medium text-gray-700 mb-2">
+              Sélectionner un client
+            </label>
+            <select id="clientSelect" value={selectedClientId} onChange={handleClientChange} className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">Sélectionnez un client</option>
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.nom} {client.prenom}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        {selectedClient && (
+        {currentClient && (
           <p className="mb-4 text-center text-green-600">
-            Client sélectionné: {selectedClient.nom} {selectedClient.prenom}
+            {currentClient.sexe === "Homme" ? "Client rattaché au formulaire" : "Cliente rattachée au formulaire"} :{" "}
+            <span className="font-bold">
+              {currentClient.nom} {currentClient.prenom}
+            </span>
           </p>
         )}
 
@@ -141,7 +181,7 @@ const TableauDesStats = () => {
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)} title="Récapitulatif des Valeurs">
         <div>
           <p>
-            <strong>Client:</strong> {selectedClient?.nom} {selectedClient?.prenom}
+            <strong>Client:</strong> {currentClient?.nom} {currentClient?.prenom}
           </p>
           <p>
             <strong>Date du test:</strong> {testDate}
