@@ -6,6 +6,7 @@ import { MdMenu, MdClose } from "react-icons/md";
 import { useAuth } from "../contexts/AuthContext";
 import { FaQuoteLeft } from "react-icons/fa";
 import logo from "../assets/Blancsolo.png";
+import ScrollingWordsBanner from "../Components/ScrollingWordsBanner";
 
 const LandingP = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -169,14 +170,17 @@ const MobileMenu = ({ isOpen, setIsOpen, menuItems, isAuthenticated, handleLogin
 };
 
 const Hero = React.forwardRef((props, ref) => (
-  <section ref={ref} className="h-screen flex items-center justify-center bg-cover bg-center text-white" style={{ backgroundImage: `url(${require("../assets/wall.jpeg")})` }}>
-    <motion.div className="text-center bg-black bg-opacity-50 p-8 rounded-lg" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-      <h2 className="relative text-6xl font-bold mb-4">
-        MSXFIT™ <span className="hidden md:inline text-base md:absolute bottom-0">par Marsaleix Romain</span>
-      </h2>
-      <p className="text-xl">Transformez votre corps, transformez votre vie grâce à un entraînement personnalisé et motivant.</p>
-    </motion.div>
-  </section>
+  <>
+    <section ref={ref} className="h-screen flex items-center justify-center bg-cover bg-center text-white" style={{ backgroundImage: `url(${require("../assets/wall.jpeg")})` }}>
+      <motion.div className="text-center bg-black bg-opacity-50 p-8 rounded-lg" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+        <h2 className="relative text-6xl font-bold mb-4">
+          MSXFIT™ <span className="hidden md:inline text-base md:absolute bottom-0">par Marsaleix Romain</span>
+        </h2>
+        <p className="text-xl">Transformez votre corps, transformez votre vie grâce à un entraînement personnalisé et motivant.</p>
+      </motion.div>
+    </section>
+    <ScrollingWordsBanner />
+  </>
 ));
 
 const About = React.forwardRef((props, ref) => (

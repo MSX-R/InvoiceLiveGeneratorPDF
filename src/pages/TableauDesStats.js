@@ -88,7 +88,7 @@ const TableauDesStats = () => {
 
     try {
       await saveRMTestResults(currentClient.id, {
-        clientId: currentClient.id, //! VOIR SI l'envoid e l'id du client (connecté ou selectioné) est iun probleme en plus de la reponse du formulaie mais je pense pas
+        clientId: currentClient.id, //! VOIR SI l'envoid e l'id du client (connecté ou selectioné) est un probleme en plus de la reponse du formulaie mais je pense pas
         name: `Récupération de RM10 ${testDate}`,
         date: testDate,
         exercises: filteredInputs,
