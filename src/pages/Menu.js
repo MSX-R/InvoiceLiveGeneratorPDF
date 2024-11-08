@@ -103,6 +103,15 @@ const Menu = () => {
               >
                 <MdHome className="mr-2" size={24} /> Site Public
               </button>
+              <button
+                className="flex items-center text-left py-2 px-8 rounded-md hover:bg-gray-700"
+                onClick={() => {
+                  navigate("/Dashboard/Dashboard2");
+                  setIsSidebarOpen(false);
+                }}
+              >
+                <MdHome className="mr-2" size={24} /> Dashboard2
+              </button>
               <div className="border-b border-gray-600 my-2"></div> {/* Ligne de séparation après le lien Site Public */}
               {/* Parcourir les types de boutons et les afficher */}
               {Object.entries(groupedButtons).map(([type, buttons]) => {

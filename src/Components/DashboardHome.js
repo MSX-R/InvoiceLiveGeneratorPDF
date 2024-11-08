@@ -2,7 +2,7 @@ import React from "react";
 import { useAuth } from "../contexts/AuthContext"; // Utilisation de useAuth pour accéder au contexte d'authentification
 import { Link } from "react-router-dom";
 import dashboardButtons from "../config/menu.json"; // Importez votre fichier JSON contenant les boutons
-
+import CalendarStrip from "../Components/CalendarStrip";
 // Importation des icônes
 import { FaUsers, FaChartLine, FaClipboardList, FaFileInvoice, FaStopwatch } from "react-icons/fa";
 import { MdAssignment, MdFitnessCenter, MdShowChart, MdTimer } from "react-icons/md"; // Assurez-vous d'importer toutes les icônes utilisées

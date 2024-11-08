@@ -31,6 +31,7 @@ import { ClientsProvider } from "./contexts/ClientsContext";
 import QuestionnaireEntretien from "./pages/QuestionnaireEntretien";
 import TestVamevalPiste from "./pages/TestVamevalPiste";
 import TestLucLeger from "./pages/TestLucLeger";
+import Dashboard2 from "./pages/Dashboard2";
 
 function App() {
   const [invoice, setInvoice] = useState(null);
@@ -106,6 +107,14 @@ function App() {
                     element={
                       <PrivateRoute>
                         <FormulaireDonneesCorporelles />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="dashboard2"
+                    element={
+                      <PrivateRoute>
+                        <Dashboard2 />
                       </PrivateRoute>
                     }
                   />
